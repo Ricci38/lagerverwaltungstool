@@ -6,7 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-public class GUI_tools {
+public class Tools {
 	
 	final static Insets insets = new Insets(5,5,5,5);
 
