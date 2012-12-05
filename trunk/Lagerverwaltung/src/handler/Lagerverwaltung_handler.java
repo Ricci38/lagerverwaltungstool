@@ -1,11 +1,12 @@
 package handler;
 
-import gui.Lagerverwaltung;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
+
+import view.Lagerverwaltung;
 
 
 /*
@@ -25,7 +26,7 @@ public class Lagerverwaltung_handler implements ActionListener {
 	
 	
 	
-	public void announceGUI_Lager(gui.Lagerverwaltung myGUI)
+	public void announceGUI_Lager(view.Lagerverwaltung myGUI)
 	{
 		this.GUI_lager = myGUI;
 	}
