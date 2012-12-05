@@ -1,5 +1,7 @@
 package view;
 
+import javax.swing.JOptionPane;
+
 import model.Lager;
 import controller.Einbuchungsassistent_handler;
 import controller.Lagerverwaltung_handler;
@@ -10,18 +12,15 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		int pane_value;
 		
-		Lager wurzel, knoten, blatt;
-		wurzel = Lager.addWurzel("Lagerverwaltung");
-		knoten = wurzel.addTreeElement("Lager A", 100);
-		blatt = knoten.addTreeElement("Lager A.1", 200);
-		blatt = knoten.addTreeElement("Lager A.2", 300);
-		blatt = blatt.addTreeElement("Lager A.2.1", 1200);
-		knoten = wurzel.addTreeElement("Lager B", 500);
-		blatt = knoten.addTreeElement("Lager B.1", 900);
-	  blatt = knoten.addTreeElement("Lager sdf", 10);
-		
-		
+		Lager wurzel = Lager.addWurzel("Lagerverwaltung");
+		pane_value = JOptionPane.showConfirmDialog(null, "Soll eine Beispielhierarchie für die Lagerverwaltung geladen werden?", 
+										"Lagerhierarchie laden", JOptionPane.YES_NO_OPTION);
+		if (pane_value == JOptionPane.YES_OPTION)
+		{
+			beispielHierarchieLaden(wurzel);
+		}
 //		new GUI_einbuchungsassistent();
 		
 //		new GUI_lieferungsuebersicht();
@@ -40,4 +39,30 @@ public class Main {
 		myEinbuchungsHandler.announceGUI_Einbuchung(myEinbuchung);
 	}
 
+	
+	static void beispielHierarchieLaden(Lager root)
+	{
+		Lager knoten, blatt1, blatt2;
+		knoten = root.addTreeElement("Deutschland", 0);
+		blatt1 = knoten.addTreeElement("Niedersachsen", 0);
+		blatt2 = blatt1.addTreeElement("Hannover-Misburg", 300);
+		blatt2 = blatt1.addTreeElement("Nienburg", 1200);
+		blatt1 = knoten.addTreeElement("NRW", 500);
+		blatt1 = knoten.addTreeElement("Bremen", 500);
+		blatt1 = knoten.addTreeElement("Hessen", 500);
+		blatt1 = knoten.addTreeElement("Sachsen", 500);
+		blatt1 = knoten.addTreeElement("Brandenburg", 500);
+		blatt1 = knoten.addTreeElement("MV", 500);
+		knoten = root.addTreeElement("Europa", 0);
+		blatt1 = knoten.addTreeElement("Frankreich", 0);
+		blatt2 = blatt1.addTreeElement("Paris-Nord", 500);
+		blatt2 = blatt1.addTreeElement("Orléans", 500);
+		blatt2 = blatt1.addTreeElement("Marseille", 500);
+		blatt2 = blatt1.addTreeElement("Nîmes", 500);
+		blatt1 = knoten.addTreeElement("Italien", 0);
+		blatt2 = blatt1.addTreeElement("Mailand", 500);
+		blatt2 = blatt1.addTreeElement("L'aquila", 500);
+		blatt1 = knoten.addTreeElement("Spanien", 500);
+		knoten = root.addTreeElement("Großbritannien", 500);
+	}
 }
