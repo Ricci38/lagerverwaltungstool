@@ -19,7 +19,7 @@ public class GUI_main {
 		blatt = blatt.addTreeElement("Lager A.2.1", 1200);
 		knoten = wurzel.addTreeElement("Lager B", 500);
 		blatt = knoten.addTreeElement("Lager B.1", 900);
-	
+	  blatt = knoten.addTreeElement("Lager sdf", 10);
 		
 		
 //		new GUI_einbuchungsassistent();
