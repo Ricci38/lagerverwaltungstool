@@ -106,7 +106,6 @@ public class Lagerverwaltung extends JFrame {
 		p_tree = new JPanel(new GridLayout());
 		p_tree.setPreferredSize(new Dimension(250, 50)); // Breite des Trees festlegen. Höhe wird wegen des BorderLayouts ignoriert!
 
-		p_tree.setBackground(Color.blue);
 		JScrollPane scrollBar = new JScrollPane(lagerTree);
 		p_tree.add(scrollBar);
 

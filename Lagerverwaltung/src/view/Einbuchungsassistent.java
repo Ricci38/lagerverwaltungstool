@@ -57,7 +57,6 @@ public class Einbuchungsassistent extends JFrame {
 		p_left.setLayout(new GridLayout());
 		p_left.setPreferredSize(new Dimension(150, 100));
 		p_left.setLocation(0, kopfzeilenHoehe);
-		p_left.setBackground(Color.gray);
 
 		JTree lagerTree = new JTree(Lager.getTree());
 		JScrollPane scrollBar = new JScrollPane(lagerTree);
@@ -81,7 +80,7 @@ public class Einbuchungsassistent extends JFrame {
 
 		
 
-		// Aufbau muss dynamisch in einer Methode erfolgen! Nur zur Vorschau!
+		// Weiterer Aufbau erfolgt dynamisch in einer Methode! 
 		Tools.addComponent(p_rigth, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		/*
 		GUI_tools.addComponent(p_rigth, gbl, lagerBezeichnung = new JLabel("Lager 1"), 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
