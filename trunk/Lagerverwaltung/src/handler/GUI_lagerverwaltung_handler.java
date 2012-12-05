@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
  * Darf der Handler mit dem Controller vermischt sein (so wie in controller.GUI_lagerverwaltung_handler)
  * oder muss der Handler vom Controllen abgelöst sein?
  * 
- * 
+ * unnütz!!!!!!!!!!!
  * 
  * 
  */
