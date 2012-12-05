@@ -19,15 +19,9 @@ public class Lieferungsuebersicht extends JFrame {
 
 	Lieferungsuebersicht() {
 		super("Lieferungsübersicht");
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE); // FIXME: Muss definitiv
-														// geändert werden -
-														// Anwendung schließt
-														// sich beim Schließen
-														// dieses Fensters sonst
-														// vollständig
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setSize(800, 500);
 		this.setLocation(300, 100);
-		// this.setResizable(false); //XXX: Ändern?
 		Container c = this.getContentPane();
 		c.setLayout(null);
 
