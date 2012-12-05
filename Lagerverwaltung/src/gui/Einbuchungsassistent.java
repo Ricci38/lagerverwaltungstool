@@ -21,7 +21,7 @@ import javax.swing.event.TreeSelectionListener;
 
 import model.Lager;
 
-public class GUI_einbuchungsassistent extends JFrame {
+public class Einbuchungsassistent extends JFrame {
 
 	private static final long serialVersionUID = 9039036090326121805L;
 	private static int anz_hinzugefuegterLager = 0;
@@ -34,13 +34,13 @@ public class GUI_einbuchungsassistent extends JFrame {
 	int kopfzeilenHoehe = 40;
 	GridBagLayout gbl;
 
-	public GUI_einbuchungsassistent(EventListener listener) {
+	public Einbuchungsassistent(EventListener listener) {
 		super("Einbuchungsasstistent");
 		this.setSize(550, 400);
 		this.setLocation(300, 250);
 		this.setResizable(true);
 		this.setMinimumSize(new Dimension(500, 350)); 
-		this.setDefaultCloseOperation(GUI_einbuchungsassistent.DISPOSE_ON_CLOSE);		//Schlieﬂt das einzelne Frame, 
+		this.setDefaultCloseOperation(Einbuchungsassistent.DISPOSE_ON_CLOSE);		//Schlieﬂt das einzelne Frame, 
 																						//aber nicht das gesamte Programm
 
 		Container c = this.getContentPane();
@@ -82,7 +82,7 @@ public class GUI_einbuchungsassistent extends JFrame {
 		
 
 		// Aufbau muss dynamisch in einer Methode erfolgen! Nur zur Vorschau!
-		GUI_tools.addComponent(p_rigth, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_rigth, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		/*
 		GUI_tools.addComponent(p_rigth, gbl, lagerBezeichnung = new JLabel("Lager 1"), 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		GUI_tools.addComponent(p_rigth, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
@@ -112,8 +112,8 @@ public class GUI_einbuchungsassistent extends JFrame {
 		 * Dann kann aus der Handlerklasse auf die Methode und somit auf die Textfeldreferenzen zugegriffen werden
 		 */
 		
-		GUI_tools.addComponent(p_rigth, gbl, new JLabel(name), 0, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		GUI_tools.addComponent(p_rigth, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_rigth, gbl, new JLabel(name), 0, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_rigth, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		prozentAnteil.addActionListener(textField_listener);
 		p_rigth.updateUI();
 		anz_hinzugefuegterLager++;

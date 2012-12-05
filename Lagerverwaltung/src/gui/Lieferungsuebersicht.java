@@ -10,14 +10,14 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class GUI_lieferungsuebersicht extends JFrame {
+public class Lieferungsuebersicht extends JFrame {
 
 	private static final long serialVersionUID = 3073425246104436942L;
 
 	JPanel p_top, p_left, p_rigth;
 	JTable tbl_buchungsdetails;
 
-	GUI_lieferungsuebersicht() {
+	Lieferungsuebersicht() {
 		super("Lieferungsübersicht");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE); // FIXME: Muss definitiv
 														// geändert werden -

@@ -4,7 +4,7 @@ import model.Lager;
 import controller.GUI_einbuchungsassistent_handler;
 import controller.GUI_lagerverwaltung_handler;
 
-public class GUI_main {
+public class Main {
 
 	/**
 	 * @param args
@@ -27,7 +27,7 @@ public class GUI_main {
 //		new GUI_lieferungsuebersicht();
 		
 		GUI_lagerverwaltung_handler myLagerverwaltungHandler = new GUI_lagerverwaltung_handler();
-		GUI_lagerverwaltung myLagerverwaltung = new GUI_lagerverwaltung(myLagerverwaltungHandler);	
+		Lagerverwaltung myLagerverwaltung = new Lagerverwaltung(myLagerverwaltungHandler);	
 		myLagerverwaltungHandler.announceGUI_Lager(myLagerverwaltung);
 		
 
@@ -36,7 +36,7 @@ public class GUI_main {
 	public static void verbindungEinbuchungsassistent()
 	{
 		GUI_einbuchungsassistent_handler myEinbuchungsHandler = new GUI_einbuchungsassistent_handler();
-		GUI_einbuchungsassistent myEinbuchung = new GUI_einbuchungsassistent(myEinbuchungsHandler);
+		Einbuchungsassistent myEinbuchung = new Einbuchungsassistent(myEinbuchungsHandler);
 		myEinbuchungsHandler.announceGUI_Einbuchung(myEinbuchung);
 	}
 

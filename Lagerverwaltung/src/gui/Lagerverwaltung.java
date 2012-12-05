@@ -20,7 +20,7 @@ import javax.swing.tree.DefaultTreeModel;
 
 import model.Lager;
 
-public class GUI_lagerverwaltung extends JFrame {
+public class Lagerverwaltung extends JFrame {
 
 	private static final long serialVersionUID = 306848107804623710L;
 
@@ -29,9 +29,9 @@ public class GUI_lagerverwaltung extends JFrame {
 	JLabel l_titel, menue_beschriftung;
 	static JTree lagerTree; // XXX: Trennung MVC?
 
-	GUI_lagerverwaltung(ActionListener listener) {
+	Lagerverwaltung(ActionListener listener) {
 		super("Lagerverwaltung");
-		this.setDefaultCloseOperation(GUI_lagerverwaltung.EXIT_ON_CLOSE); // XXX: Soll das so bleiben? Sonst: Zuerst speichern, dann exit(0) - o. Ä.
+		this.setDefaultCloseOperation(Lagerverwaltung.EXIT_ON_CLOSE); // XXX: Soll das so bleiben? Sonst: Zuerst speichern, dann exit(0) - o. Ä.
 		this.setSize(1200, 800);
 		this.setMinimumSize(new Dimension(900, 500)); 
 		this.setLocation(100, 50);
@@ -87,15 +87,15 @@ public class GUI_lagerverwaltung extends JFrame {
 		p_platzhalter2.setMinimumSize(new Dimension(150, 30));
 		
 		// ### Komponenten dem unteren Unterpanel hinzufügen ###
-		GUI_tools.addComponent(p_top_sub_bottom, gbl2, neuesLager, 0, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		GUI_tools.addComponent(p_top_sub_bottom, gbl2, buchen, 1, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		GUI_tools.addComponent(p_top_sub_bottom, gbl2, p_platzhalter1, 2, 0, 1, 0, 0, 0, GridBagConstraints.NONE);
-		GUI_tools.addComponent(p_top_sub_bottom, gbl2, undo, 3, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		GUI_tools.addComponent(p_top_sub_bottom, gbl2, redo, 4, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		GUI_tools.addComponent(p_top_sub_bottom, gbl2, p_platzhalter2, 5, 0, 5, 1, 1, 0, GridBagConstraints.NONE);
-		GUI_tools.addComponent(p_top_sub_bottom, gbl2, buchungsuebersicht, 10, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		GUI_tools.addComponent(p_top_sub_bottom, gbl2, lieferungFuerLager, 11, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		GUI_tools.addComponent(p_top_sub_bottom, gbl2, lagersaldo, 12, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, neuesLager, 0, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, buchen, 1, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, p_platzhalter1, 2, 0, 1, 0, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, undo, 3, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, redo, 4, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, p_platzhalter2, 5, 0, 5, 1, 1, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, buchungsuebersicht, 10, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, lieferungFuerLager, 11, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, lagersaldo, 12, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		
 		// ### Dem oberen Panel die beiden Unterpanels zuweisen ###
 		p_top.add(p_top_sub_top);
