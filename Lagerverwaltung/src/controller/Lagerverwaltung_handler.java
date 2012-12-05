@@ -11,7 +11,7 @@ import javax.swing.JTextField;
 
 import model.Lager;
 
-public class GUI_lagerverwaltung_handler implements ActionListener {
+public class Lagerverwaltung_handler implements ActionListener {
 
 	Lagerverwaltung GUI_lager;
 

@@ -11,7 +11,7 @@ import javax.swing.event.TreeSelectionListener;
 
 import model.Lager;
 
-public class GUI_einbuchungsassistent_handler implements ActionListener, TreeSelectionListener{
+public class Einbuchungsassistent_handler implements ActionListener, TreeSelectionListener{
 
 	Einbuchungsassistent GUI_einbuchung;
 	

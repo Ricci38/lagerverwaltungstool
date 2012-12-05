@@ -1,8 +1,8 @@
 package gui;
 
 import model.Lager;
-import controller.GUI_einbuchungsassistent_handler;
-import controller.GUI_lagerverwaltung_handler;
+import controller.Einbuchungsassistent_handler;
+import controller.Lagerverwaltung_handler;
 
 public class Main {
 
@@ -26,7 +26,7 @@ public class Main {
 		
 //		new GUI_lieferungsuebersicht();
 		
-		GUI_lagerverwaltung_handler myLagerverwaltungHandler = new GUI_lagerverwaltung_handler();
+		Lagerverwaltung_handler myLagerverwaltungHandler = new Lagerverwaltung_handler();
 		Lagerverwaltung myLagerverwaltung = new Lagerverwaltung(myLagerverwaltungHandler);	
 		myLagerverwaltungHandler.announceGUI_Lager(myLagerverwaltung);
 		
@@ -35,7 +35,7 @@ public class Main {
 	
 	public static void verbindungEinbuchungsassistent()
 	{
-		GUI_einbuchungsassistent_handler myEinbuchungsHandler = new GUI_einbuchungsassistent_handler();
+		Einbuchungsassistent_handler myEinbuchungsHandler = new Einbuchungsassistent_handler();
 		Einbuchungsassistent myEinbuchung = new Einbuchungsassistent(myEinbuchungsHandler);
 		myEinbuchungsHandler.announceGUI_Einbuchung(myEinbuchung);
 	}
