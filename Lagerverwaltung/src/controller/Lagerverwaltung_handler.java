@@ -1,7 +1,5 @@
 package controller;
 
-import gui.Lagerverwaltung;
-import gui.Main;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,13 +7,16 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import view.Lagerverwaltung;
+import view.Main;
+
 import model.Lager;
 
 public class Lagerverwaltung_handler implements ActionListener {
 
 	Lagerverwaltung GUI_lager;
 
-	public void announceGUI_Lager(gui.Lagerverwaltung myGUI) {
+	public void announceGUI_Lager(view.Lagerverwaltung myGUI) {
 		this.GUI_lager = myGUI;
 	}
 
