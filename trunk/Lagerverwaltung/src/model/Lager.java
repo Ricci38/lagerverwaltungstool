@@ -24,7 +24,7 @@ public class Lager extends DefaultMutableTreeNode {
 
 	public int getBestand() {
 		int bestand_summe = 0;
-		// ((MyMutableTreeNode)(this.getParent())).getChildAfter(this) == null
+
 
 		if (this.isLeaf()) // falls dieser Knoten keine Kinder hat
 		{
