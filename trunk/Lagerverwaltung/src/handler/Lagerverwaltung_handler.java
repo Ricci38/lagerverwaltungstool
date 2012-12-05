@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
  * 
  * 
  */
-public class GUI_lagerverwaltung_handler implements ActionListener {
+public class Lagerverwaltung_handler implements ActionListener {
 
 	Lagerverwaltung GUI_lager;
 	
