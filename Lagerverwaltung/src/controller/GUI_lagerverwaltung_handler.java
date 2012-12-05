@@ -1,7 +1,7 @@
 package controller;
 
-import gui.GUI_lagerverwaltung;
-import gui.GUI_main;
+import gui.Lagerverwaltung;
+import gui.Main;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,9 +13,9 @@ import model.Lager;
 
 public class GUI_lagerverwaltung_handler implements ActionListener {
 
-	GUI_lagerverwaltung GUI_lager;
+	Lagerverwaltung GUI_lager;
 
-	public void announceGUI_Lager(gui.GUI_lagerverwaltung myGUI) {
+	public void announceGUI_Lager(gui.Lagerverwaltung myGUI) {
 		this.GUI_lager = myGUI;
 	}
 
@@ -27,7 +27,7 @@ public class GUI_lagerverwaltung_handler implements ActionListener {
 
 			// Neuen Knoten hinzufügen
 			Lager pre_knoten;
-			pre_knoten = GUI_lagerverwaltung.getAusgewaehlterKnoten();
+			pre_knoten = Lagerverwaltung.getAusgewaehlterKnoten();
 
 			// Falls ein Knoten ausgewählt wurde
 			if (!(pre_knoten == null)) {
@@ -60,7 +60,7 @@ public class GUI_lagerverwaltung_handler implements ActionListener {
 
 				if (pane_value == JOptionPane.OK_OPTION) {
 					pre_knoten.addTreeElement(name, menge);
-					GUI_lagerverwaltung.TreeRefresh(); // Anzeige des Trees aktualisieren
+					Lagerverwaltung.TreeRefresh(); // Anzeige des Trees aktualisieren
 				}
 
 			}
@@ -71,7 +71,7 @@ public class GUI_lagerverwaltung_handler implements ActionListener {
 
 		else if (e.getActionCommand().toLowerCase().equals(("Neue Buchung").toLowerCase())) {
 			// Anmeldung des Handlers und Erzeugung des Frames
-			GUI_main.verbindungEinbuchungsassistent();
+			Main.verbindungEinbuchungsassistent();
 		}
 
 		else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
@@ -86,7 +86,7 @@ public class GUI_lagerverwaltung_handler implements ActionListener {
 			// JOptionPane.showMessageDialog(null, "Lagersaldo");
 
 			Lager pre_knoten;
-			pre_knoten = GUI_lagerverwaltung.getAusgewaehlterKnoten();
+			pre_knoten = Lagerverwaltung.getAusgewaehlterKnoten();
 
 			JOptionPane.showMessageDialog(null, pre_knoten.getBestand());
 		}

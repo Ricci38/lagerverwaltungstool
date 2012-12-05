@@ -1,6 +1,6 @@
 package controller;
 
-import gui.GUI_einbuchungsassistent;
+import gui.Einbuchungsassistent;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,9 +13,9 @@ import model.Lager;
 
 public class GUI_einbuchungsassistent_handler implements ActionListener, TreeSelectionListener{
 
-	GUI_einbuchungsassistent GUI_einbuchung;
+	Einbuchungsassistent GUI_einbuchung;
 	
-	public void announceGUI_Einbuchung(GUI_einbuchungsassistent myGUI)
+	public void announceGUI_Einbuchung(Einbuchungsassistent myGUI)
 	{
 		this.GUI_einbuchung = myGUI;
 	}
