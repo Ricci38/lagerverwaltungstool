@@ -8,13 +8,13 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import model.Lager;
-import view.Einbuchungsassistent;
+import view.Oberflaeche;
 
 public class Einbuchungsassistent_handler implements ActionListener, TreeSelectionListener {
 
-	Einbuchungsassistent GUI_einbuchung;
+	Oberflaeche GUI_einbuchung;
 
-	public void announceGUI_Einbuchung(Einbuchungsassistent myGUI) {
+	public void announceGUI_Einbuchung(Oberflaeche myGUI) {
 		this.GUI_einbuchung = myGUI;
 	}
 
@@ -39,7 +39,7 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 
-		if (((Lager) e.getPath().getLastPathComponent()).isBestandHaltend())			//auch möglich mit isLeaf()
+		if (((Lager) e.getPath().getLastPathComponent()).isBestandHaltend())			
 		{
 			this.GUI_einbuchung.addLager(e.getPath().getLastPathComponent().toString(), this);
 		} else

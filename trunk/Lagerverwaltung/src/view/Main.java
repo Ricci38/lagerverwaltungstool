@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 
 import model.Lager;
 import controller.Einbuchungsassistent_handler;
+import controller.Lagerverwaltung_handler;
 
 public class Main {
 
@@ -21,21 +22,24 @@ public class Main {
 		if (pane_value == JOptionPane.YES_OPTION) {
 			beispielHierarchieLaden(wurzel);
 		}
-		//		new GUI_einbuchungsassistent();
-		//		new GUI_lieferungsuebersicht();
 
-		//		Lagerverwaltung_handler myLagerverwaltungHandler = new Lagerverwaltung_handler();
+				Lagerverwaltung_handler myLagerverwaltungHandler = new Lagerverwaltung_handler();
+				Einbuchungsassistent_handler myEinbuchungsHandler = new Einbuchungsassistent_handler();
 		//		Lagerverwaltung myLagerverwaltung = new Lagerverwaltung(myLagerverwaltungHandler);
 		//		myLagerverwaltungHandler.announceGUI_Lager(myLagerverwaltung);
 
+		Oberflaeche.setLagerListener(myLagerverwaltungHandler);
+		Oberflaeche.setEinbuchungListener(myEinbuchungsHandler);
 		Oberflaeche.getInstance().showLagerverwaltung();
-
+		
+		myLagerverwaltungHandler.announceGUI_Lager(Oberflaeche.getInstance());
+		myEinbuchungsHandler.announceGUI_Einbuchung(Oberflaeche.getInstance());
+		
 	}
 
 	public static void verbindungEinbuchungsassistent() {
-		Einbuchungsassistent_handler myEinbuchungsHandler = new Einbuchungsassistent_handler();
-		Einbuchungsassistent myEinbuchung = new Einbuchungsassistent(myEinbuchungsHandler);
-		myEinbuchungsHandler.announceGUI_Einbuchung(myEinbuchung);
+		
+		Oberflaeche.getInstance().showEinbuchungsAssi();
 	}
 
 	private static void beispielHierarchieLaden(Lager root) {

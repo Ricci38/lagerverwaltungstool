@@ -28,6 +28,9 @@ public class Oberflaeche {
 
 	// ### Singeltonvariable ###
 	private static Oberflaeche theInstance;
+	
+	// ### ActionListener für die Oberflächen ###
+	static ActionListener listener_Lagerverwaltung, listener_EinbuchungsAssi, listener_LieferungsUebersicht;
 
 	// ### Variablen für die einzelnen Oberflächen ###
 	private JFrame lagerverwaltung;
@@ -37,7 +40,7 @@ public class Oberflaeche {
 	// ### Variablen für das Hauptfenster ###
 	private JPanel p_top, p_top_sub_top, p_top_sub_bottom, p_tree, p_center, p_platzhalter1, p_platzhalter2;
 	private JButton redo, undo, buchen, buchungsuebersicht, lagersaldo, lieferungFuerLager, neuesLager;
-	private JLabel l_titel, menue_beschriftung;
+	private JLabel l_titel;
 	private JTree lagerTree;
 
 	// ### Variablen für die Lieferungsübersicht ###
@@ -52,6 +55,7 @@ public class Oberflaeche {
 	private JButton btn_bestaetigen, btn_abbruch;
 	private final int kopfzeilenHoehe = 40;
 	private GridBagLayout gbl;
+	private static int anz_hinzugefuegterLager = 0;
 
 	// ### Listener ###
 	private ActionListener listener; // FIXME passende Listener anpassen / erstellen!
@@ -108,13 +112,13 @@ public class Oberflaeche {
 		lieferungFuerLager = new JButton("Lagerübersicht");
 
 		// ### Actionlistener bekannt machen ###
-		undo.addActionListener(listener);
-		redo.addActionListener(listener);
-		buchen.addActionListener(listener);
-		neuesLager.addActionListener(listener);
-		buchungsuebersicht.addActionListener(listener);
-		lagersaldo.addActionListener(listener);
-		lieferungFuerLager.addActionListener(listener);
+		undo.addActionListener(listener_Lagerverwaltung);
+		redo.addActionListener(listener_Lagerverwaltung);
+		buchen.addActionListener(listener_Lagerverwaltung);
+		neuesLager.addActionListener(listener_Lagerverwaltung);
+		buchungsuebersicht.addActionListener(listener_Lagerverwaltung);
+		lagersaldo.addActionListener(listener_Lagerverwaltung);
+		lieferungFuerLager.addActionListener(listener_Lagerverwaltung);
 
 		// ### Platzhalter ###
 		p_platzhalter1.setPreferredSize(new Dimension(5, 30));
@@ -245,9 +249,9 @@ public class Oberflaeche {
 		p_EiAs_button.add(btn_abbruch = new JButton("Abbruch"));
 
 		// Listener den Buttons und dem Tree bekannt machen
-		btn_bestaetigen.addActionListener(listener);
-		btn_abbruch.addActionListener(listener);
-		lagerTree.addTreeSelectionListener((TreeSelectionListener) listener);
+		btn_bestaetigen.addActionListener(listener_EinbuchungsAssi);
+		btn_abbruch.addActionListener(listener_EinbuchungsAssi);
+		lagerTree.addTreeSelectionListener((TreeSelectionListener) listener_EinbuchungsAssi);
 
 		// TODO Aufbau muss dynamisch in einer Methode erfolgen! Nur zur Vorschau!
 		Tools.addComponent(p_EiAs_rigth, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
@@ -264,7 +268,7 @@ public class Oberflaeche {
 		 * gbl, anteilsMenge = new JLabel("XX"), 2, 2, 1, 1, 0, 0,
 		 * GridBagConstraints.HORIZONTAL);
 		 */
-		//GUI_tools.addComponent(p_rigth, gbl, p_button, 0, 3, 4, 1, 0, 0, GridBagConstraints.NONE);
+		//Tools.addComponent(p_EiAs_rigth, gbl, p_EiAs_button, 0, 3, 4, 1, 0, 0, GridBagConstraints.NONE);
 
 		//Scrollbar zum rechten Panel hinzufügen
 		JScrollPane scrollBar_center = new JScrollPane(p_EiAs_rigth);
@@ -286,6 +290,39 @@ public class Oberflaeche {
 		return theInstance;
 	}
 
+	public void addLager(String name, ActionListener textField_listener)
+	{
+		/*
+		 * Doppelte Einträge müssen noch verhindert werden
+		 * 
+		 * Erzeugte Textfelder in einer statischen ArrayList sammeln und diese per statischer Methode zugänglich machen.
+		 * Dann kann aus der Handlerklasse auf die Methode und somit auf die Textfeldreferenzen zugegriffen werden
+		 */
+		
+		Tools.addComponent(p_EiAs_rigth, gbl, new JLabel(name), 0, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_EiAs_rigth, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		prozentAnteil.addActionListener(textField_listener);
+		p_EiAs_rigth.updateUI();
+		anz_hinzugefuegterLager++;
+	}
+
+	
+	public static void setLagerListener(ActionListener l)
+	{
+		listener_Lagerverwaltung = l;
+	}
+	
+	public static void setEinbuchungListener(ActionListener l)
+	{
+		listener_EinbuchungsAssi = l;
+	}
+	
+	public static void setLieferungListener(ActionListener l)
+	{
+		listener_LieferungsUebersicht = l;
+	}
+	
+	
 	// ### Show & Hide Frames ###
 	public void showLagerverwaltung() {
 		lagerverwaltung.setVisible(true);
@@ -314,6 +351,12 @@ public class Oberflaeche {
 	// ### JTree neu aufbauen ###
 	public void refreshTree() {
 		((DefaultTreeModel) lagerTree.getModel()).reload();
+	}
+	
+	public Lager getAusgewaehlterKnoten() {
+		Lager pfad = (Lager) lagerTree.getLastSelectedPathComponent();
+
+		return pfad;
 	}
 
 	// ### Disabling clone() by throwing CloneNotSupportedException ###
