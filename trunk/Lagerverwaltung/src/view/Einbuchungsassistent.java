@@ -21,6 +21,7 @@ import javax.swing.event.TreeSelectionListener;
 
 import model.Lager;
 
+@Deprecated
 public class Einbuchungsassistent extends JFrame {
 
 	private static final long serialVersionUID = 9039036090326121805L;

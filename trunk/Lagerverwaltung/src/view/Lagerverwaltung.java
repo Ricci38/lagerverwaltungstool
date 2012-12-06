@@ -20,6 +20,7 @@ import javax.swing.tree.DefaultTreeModel;
 
 import model.Lager;
 
+@Deprecated
 public class Lagerverwaltung extends JFrame {
 
 	private static final long serialVersionUID = 306848107804623710L;
@@ -33,7 +34,7 @@ public class Lagerverwaltung extends JFrame {
 		super("Lagerverwaltung");
 		this.setDefaultCloseOperation(Lagerverwaltung.EXIT_ON_CLOSE); // XXX: Soll das so bleiben? Sonst: Zuerst speichern, dann exit(0) - o. Ä.
 		this.setSize(1200, 800);
-		this.setMinimumSize(new Dimension(900, 500)); 
+		this.setMinimumSize(new Dimension(900, 500));
 		this.setLocation(100, 50);
 		this.setResizable(true); // Fenstergröße ist variabel XXX: soll das so bleiben?
 
@@ -62,7 +63,6 @@ public class Lagerverwaltung extends JFrame {
 		p_platzhalter2 = new JPanel();
 		p_platzhalter2.setBackground(Color.BLACK);
 
-		
 		undo = new JButton("undo");
 		redo = new JButton("redo");
 		buchen = new JButton("Neue Buchung");
@@ -70,8 +70,8 @@ public class Lagerverwaltung extends JFrame {
 		buchungsuebersicht = new JButton("Lieferungsübersicht");
 		lagersaldo = new JButton("Lagersaldo");
 		lieferungFuerLager = new JButton("Lagerübersicht");
-		
-		//Actionlistener bekannt machen
+
+		// ### Actionlistener bekannt machen ### FIXME Listener :)
 		undo.addActionListener(listener);
 		redo.addActionListener(listener);
 		buchen.addActionListener(listener);
@@ -79,13 +79,13 @@ public class Lagerverwaltung extends JFrame {
 		buchungsuebersicht.addActionListener(listener);
 		lagersaldo.addActionListener(listener);
 		lieferungFuerLager.addActionListener(listener);
-		
+
 		// ### Platzhalter ###
 		p_platzhalter1.setPreferredSize(new Dimension(5, 30));
 		p_platzhalter1.setMinimumSize(new Dimension(5, 30));
 		p_platzhalter2.setPreferredSize(new Dimension(150, 30));
 		p_platzhalter2.setMinimumSize(new Dimension(150, 30));
-		
+
 		// ### Komponenten dem unteren Unterpanel hinzufügen ###
 		Tools.addComponent(p_top_sub_bottom, gbl2, neuesLager, 0, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_top_sub_bottom, gbl2, buchen, 1, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
@@ -96,11 +96,11 @@ public class Lagerverwaltung extends JFrame {
 		Tools.addComponent(p_top_sub_bottom, gbl2, buchungsuebersicht, 10, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_top_sub_bottom, gbl2, lieferungFuerLager, 11, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_top_sub_bottom, gbl2, lagersaldo, 12, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		
+
 		// ### Dem oberen Panel die beiden Unterpanels zuweisen ###
 		p_top.add(p_top_sub_top);
 		p_top.add(p_top_sub_bottom);
-		
+
 		// ### Baum mit Scrollbar im WEST Element ###
 		lagerTree = new JTree(Lager.getTree());
 		p_tree = new JPanel(new GridLayout());
@@ -122,24 +122,20 @@ public class Lagerverwaltung extends JFrame {
 		this.setVisible(true); // TODO: nicht sicher, ob wir das lieber an anderer Stelle machen sollten - gleiches gilt für die anderen Oberflächen
 
 	}
-	
+
 	// ### Anzeige des Trees aktualisieren ###
-	public static void TreeRefresh()
-	{
+	public static void TreeRefresh() {
 		/*
-		 * Refresh kann auch auf einzelne Knoten gelegt werden -> bessere Performance und es würden sich nicht
-		 * alle Knoten immer zuklappen
+		 * Refresh kann auch auf einzelne Knoten gelegt werden -> bessere
+		 * Performance und es würden sich nicht alle Knoten immer zuklappen
 		 */
-		((DefaultTreeModel)lagerTree.getModel()).reload();
+		((DefaultTreeModel) lagerTree.getModel()).reload();
 	}
-	
-	
-	public static Lager getAusgewaehlterKnoten()
-	{
-		Lager pfad = (Lager)lagerTree.getLastSelectedPathComponent();
-		
-		return pfad;	
+
+	public static Lager getAusgewaehlterKnoten() {
+		Lager pfad = (Lager) lagerTree.getLastSelectedPathComponent();
+
+		return pfad;
 	}
-	
-	
+
 }

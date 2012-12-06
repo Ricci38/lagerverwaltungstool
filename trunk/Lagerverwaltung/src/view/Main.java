@@ -4,7 +4,6 @@ import javax.swing.JOptionPane;
 
 import model.Lager;
 import controller.Einbuchungsassistent_handler;
-import controller.Lagerverwaltung_handler;
 
 public class Main {
 
@@ -13,35 +12,33 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		int pane_value;
-		
+
 		Lager wurzel = Lager.addWurzel("Lagerverwaltung");
-		pane_value = JOptionPane.showConfirmDialog(null, "Soll eine Beispielhierarchie für die Lagerverwaltung geladen werden?", 
-										"Lagerhierarchie laden", JOptionPane.YES_NO_OPTION);
-		if (pane_value == JOptionPane.YES_OPTION)
-		{
+		pane_value = JOptionPane.showConfirmDialog(null,
+				"Willkommen im Lagerverwaltungstool!\nSoll eine Beispielhierarchie für die Lagerverwaltung geladen werden?", "Lagerhierarchie laden",
+				JOptionPane.YES_NO_OPTION);
+
+		if (pane_value == JOptionPane.YES_OPTION) {
 			beispielHierarchieLaden(wurzel);
 		}
-//		new GUI_einbuchungsassistent();
-		
-//		new GUI_lieferungsuebersicht();
-		
-		Lagerverwaltung_handler myLagerverwaltungHandler = new Lagerverwaltung_handler();
-		Lagerverwaltung myLagerverwaltung = new Lagerverwaltung(myLagerverwaltungHandler);	
-		myLagerverwaltungHandler.announceGUI_Lager(myLagerverwaltung);
-		
+		//		new GUI_einbuchungsassistent();
+		//		new GUI_lieferungsuebersicht();
+
+		//		Lagerverwaltung_handler myLagerverwaltungHandler = new Lagerverwaltung_handler();
+		//		Lagerverwaltung myLagerverwaltung = new Lagerverwaltung(myLagerverwaltungHandler);
+		//		myLagerverwaltungHandler.announceGUI_Lager(myLagerverwaltung);
+
+		Oberflaeche.getInstance().showLagerverwaltung();
 
 	}
-	
-	public static void verbindungEinbuchungsassistent()
-	{
+
+	public static void verbindungEinbuchungsassistent() {
 		Einbuchungsassistent_handler myEinbuchungsHandler = new Einbuchungsassistent_handler();
 		Einbuchungsassistent myEinbuchung = new Einbuchungsassistent(myEinbuchungsHandler);
 		myEinbuchungsHandler.announceGUI_Einbuchung(myEinbuchung);
 	}
 
-	
-	static void beispielHierarchieLaden(Lager root)
-	{
+	private static void beispielHierarchieLaden(Lager root) {
 		Lager knoten, blatt1, blatt2;
 		knoten = root.addTreeElement("Deutschland", 0);
 		blatt1 = knoten.addTreeElement("Niedersachsen", 0);

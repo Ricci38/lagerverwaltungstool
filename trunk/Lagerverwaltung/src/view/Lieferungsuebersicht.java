@@ -10,6 +10,7 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+@Deprecated
 public class Lieferungsuebersicht extends JFrame {
 
 	private static final long serialVersionUID = 3073425246104436942L;
