@@ -89,7 +89,7 @@ public class Lagerverwaltung_handler implements ActionListener {
 			JOptionPane.showMessageDialog(null, "Lagerübersicht");
 		} else if (e.getActionCommand().toLowerCase().equals(("Lagersaldo").toLowerCase())) {
 			// JOptionPane.showMessageDialog(null, "Lagersaldo");
-
+			//FIXME: Überprüfung ob ein Lager ausgewählt wurde muss noch hinzugefügt werden!
 			Lager pre_knoten;
 			pre_knoten = Oberflaeche.getInstance().getAusgewaehlterKnoten();
 
