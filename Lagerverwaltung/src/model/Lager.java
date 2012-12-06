@@ -5,28 +5,37 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class Lager extends DefaultMutableTreeNode {
 
 	static Lager wurzel;
-	Lager knoten, blatt;
-	boolean isBestandHaltend;
-	int bestand;
-	String name;
+	private Lager knoten, blatt;
+	private boolean isBestandHaltend;
+	private int bestand, id;
+	private String name;
 
 	private static final long serialVersionUID = -6664495404957376450L;
 
+	// ### Konstruktoren ###
 	public Lager(String bez) {
 		super(bez);
-		bestand = 0;
+		this.name = bez;
+		this.bestand = 0;
 	}
 
 	public Lager(String bez, int bestand) {
 		super(bez);
+		this.name = bez;
+		this.bestand = bestand;
+	}
+	
+	public Lager(int id, String bez, int bestand) {
+		super(bez);
+		this.id = id;
+		this.name = bez;
 		this.bestand = bestand;
 	}
 
 	public int getBestand() {
 		int bestand_summe = 0;
 
-		if (this.isLeaf()) // falls dieser Knoten keine Kinder hat
-		{
+		if (this.isLeaf()) { // falls dieser Knoten keine Kinder hat
 			return this.bestand;
 		} else {
 			// Bestände der einzelnen Kinder/Blätter zusammenaddieren
@@ -101,5 +110,13 @@ public class Lager extends DefaultMutableTreeNode {
 
 	public boolean isBestandHaltend() {
 		return this.isBestandHaltend;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

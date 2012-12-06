@@ -25,7 +25,7 @@ import javax.swing.tree.DefaultTreeModel;
 import model.Lager;
 
 public class Oberflaeche {
-	
+
 	// ### Singeltonvariable ###
 	private static Oberflaeche theInstance;
 
@@ -33,13 +33,13 @@ public class Oberflaeche {
 	private JFrame lagerverwaltung;
 	private JFrame einbuchungsAssi;
 	private JFrame lieferungsUebersicht;
-	
+
 	// ### Variablen für das Hauptfenster ###
 	private JPanel p_top, p_top_sub_top, p_top_sub_bottom, p_tree, p_center, p_platzhalter1, p_platzhalter2;
 	private JButton redo, undo, buchen, buchungsuebersicht, lagersaldo, lieferungFuerLager, neuesLager;
 	private JLabel l_titel, menue_beschriftung;
 	private JTree lagerTree;
-	
+
 	// ### Variablen für die Lieferungsübersicht ###
 	private JPanel p_LiUe_top, p_LiUe_left, p_LiUe_rigth;
 	private JTable tbl_LiUe_buchungsdetails;
@@ -52,12 +52,12 @@ public class Oberflaeche {
 	private JButton btn_bestaetigen, btn_abbruch;
 	private final int kopfzeilenHoehe = 40;
 	private GridBagLayout gbl;
-	
+
 	// ### Listener ###
 	private ActionListener listener; // FIXME passende Listener anpassen / erstellen!
+
 	// ... TreeSelectionListener bla
-	
-	
+
 	// ### privater Konstruktor (Singelton) ###
 	private Oberflaeche() {
 		buildLagerverwaltung();
@@ -65,13 +65,16 @@ public class Oberflaeche {
 		buildLieferungsUebersicht();
 	}
 
+	/**
+	 * Erstellt die Oberfläche für das Hauptfenster der Lagerverwaltung
+	 */
 	private void buildLagerverwaltung() {
 		if (lagerverwaltung != null) return;
 		// TODO Überprüfen der gesamten Methode! (Gefahr von Copypasta!)
 		lagerverwaltung = new JFrame("Lagerverwaltung");
 		lagerverwaltung.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		lagerverwaltung.setSize(1200, 800);
-		lagerverwaltung.setMinimumSize(new Dimension(900, 500)); 
+		lagerverwaltung.setMinimumSize(new Dimension(900, 500));
 		lagerverwaltung.setLocation(100, 50);
 
 		Container c = lagerverwaltung.getContentPane();
@@ -95,7 +98,7 @@ public class Oberflaeche {
 
 		p_platzhalter1 = new JPanel();
 		p_platzhalter2 = new JPanel();
-		
+
 		undo = new JButton("undo");
 		redo = new JButton("redo");
 		buchen = new JButton("Neue Buchung");
@@ -103,7 +106,7 @@ public class Oberflaeche {
 		buchungsuebersicht = new JButton("Lieferungsübersicht");
 		lagersaldo = new JButton("Lagersaldo");
 		lieferungFuerLager = new JButton("Lagerübersicht");
-		
+
 		// ### Actionlistener bekannt machen ###
 		undo.addActionListener(listener);
 		redo.addActionListener(listener);
@@ -112,13 +115,13 @@ public class Oberflaeche {
 		buchungsuebersicht.addActionListener(listener);
 		lagersaldo.addActionListener(listener);
 		lieferungFuerLager.addActionListener(listener);
-		
+
 		// ### Platzhalter ###
 		p_platzhalter1.setPreferredSize(new Dimension(5, 30));
 		p_platzhalter1.setMinimumSize(new Dimension(5, 30));
 		p_platzhalter2.setPreferredSize(new Dimension(150, 30));
 		p_platzhalter2.setMinimumSize(new Dimension(150, 30));
-		
+
 		// ### Komponenten dem unteren Unterpanel hinzufügen ###
 		Tools.addComponent(p_top_sub_bottom, gbl2, neuesLager, 0, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_top_sub_bottom, gbl2, buchen, 1, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
@@ -129,11 +132,11 @@ public class Oberflaeche {
 		Tools.addComponent(p_top_sub_bottom, gbl2, buchungsuebersicht, 10, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_top_sub_bottom, gbl2, lieferungFuerLager, 11, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_top_sub_bottom, gbl2, lagersaldo, 12, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		
+
 		// ### Dem oberen Panel die beiden Unterpanels zuweisen ###
 		p_top.add(p_top_sub_top);
 		p_top.add(p_top_sub_bottom);
-		
+
 		// ### Baum mit Scrollbar im WEST Element ###
 		lagerTree = new JTree(Lager.getTree());
 		p_tree = new JPanel(new GridLayout());
@@ -153,6 +156,9 @@ public class Oberflaeche {
 		c.add(p_center, BorderLayout.CENTER);
 	}
 
+	/**
+	 * Erstellt die Oberfläche für die Lieferungsübersicht
+	 */
 	private void buildLieferungsUebersicht() {
 		if (lieferungsUebersicht != null) return;
 		// TODO Fehlen hier irgendwelche Listener? Ich denke ja - nicht sicher :D
@@ -195,22 +201,24 @@ public class Oberflaeche {
 		c.add(p_LiUe_rigth);
 	}
 
+	/**
+	 * Erstellt die Oberfläche für den Einbuchungsassistenten
+	 */
 	private void buildEinbuchungsAssi() {
 		if (lieferungsUebersicht != null) return;
 		// TODO Gesamte Methode auf Fehler überprüfen! (Copypasta)
 		einbuchungsAssi = new JFrame("Einbuchungsassistent");
 		einbuchungsAssi.setSize(550, 400);
 		einbuchungsAssi.setLocation(300, 250);
-		einbuchungsAssi.setMinimumSize(new Dimension(500, 350)); 
-		einbuchungsAssi.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);		//Schließt das einzelne Frame, 
-																						//aber nicht das gesamte Programm
+		einbuchungsAssi.setMinimumSize(new Dimension(500, 350));
+		einbuchungsAssi.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //Schließt das einzelne Frame, aber nicht das gesamte Programm
 
 		Container c = einbuchungsAssi.getContentPane();
 		c.setLayout(new BorderLayout());
 
 		p_EiAs_top = new JPanel();
-		p_EiAs_top.setSize(einbuchungsAssi.getWidth(), kopfzeilenHoehe);			//Breite wird wegen des BorderLayouts ignoriert!
-//		p_EiAs_top.setBackground(Color.blue);
+		p_EiAs_top.setSize(einbuchungsAssi.getWidth(), kopfzeilenHoehe); //Breite wird wegen des BorderLayouts ignoriert!
+		//		p_EiAs_top.setBackground(Color.blue);
 		l_EiAs_treeUeberschrift = new JLabel();
 		l_EiAs_treeUeberschrift.setText("Bitte wählen Sie die Lager aus, dessen Bestand verändert werden soll.");
 		p_EiAs_top.add(l_EiAs_treeUeberschrift);
@@ -219,40 +227,45 @@ public class Oberflaeche {
 		p_EiAs_left.setLayout(new GridLayout());
 		p_EiAs_left.setPreferredSize(new Dimension(150, 100));
 		p_EiAs_left.setLocation(0, kopfzeilenHoehe);
-//		p_EiAs_left.setBackground(Color.gray);
+		//		p_EiAs_left.setBackground(Color.gray);
 
 		JTree lagerTree = new JTree(Lager.getTree());
 		JScrollPane scrollBar = new JScrollPane(lagerTree);
 		p_EiAs_left.add(scrollBar);
-		
+
 		p_EiAs_rigth = new JPanel();
 		gbl = new GridBagLayout();
 		p_EiAs_rigth.setLayout(gbl);
-//		p_EiAs_rigth.setBackground(Color.GREEN);
-		
+		//		p_EiAs_rigth.setBackground(Color.GREEN);
+
 		// Panel für die Buttons, um eine bessere Formatierung zu erreichen
 		p_EiAs_button = new JPanel();
-//		p_EiAs_button.setBackground(Color.CYAN);
+		//		p_EiAs_button.setBackground(Color.CYAN);
 		p_EiAs_button.add(btn_bestaetigen = new JButton("Bestätigen"));
 		p_EiAs_button.add(btn_abbruch = new JButton("Abbruch"));
-		
+
 		// Listener den Buttons und dem Tree bekannt machen
 		btn_bestaetigen.addActionListener(listener);
 		btn_abbruch.addActionListener(listener);
-		lagerTree.addTreeSelectionListener((TreeSelectionListener)listener);
-		
+		lagerTree.addTreeSelectionListener((TreeSelectionListener) listener);
 
 		// TODO Aufbau muss dynamisch in einer Methode erfolgen! Nur zur Vorschau!
 		Tools.addComponent(p_EiAs_rigth, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		/*
-		GUI_tools.addComponent(p_rigth, gbl, lagerBezeichnung = new JLabel("Lager 1"), 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		GUI_tools.addComponent(p_rigth, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		GUI_tools.addComponent(p_rigth, gbl, anteilsMenge = new JLabel("XX"), 2, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		GUI_tools.addComponent(p_rigth, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 2, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		GUI_tools.addComponent(p_rigth, gbl, anteilsMenge = new JLabel("XX"), 2, 2, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		*/
+		 * GUI_tools.addComponent(p_rigth, gbl, lagerBezeichnung = new
+		 * JLabel("Lager 1"), 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		 * GUI_tools.addComponent(p_rigth, gbl, prozentAnteil = new
+		 * JTextField("Prozentualer Anteil"), 1, 1, 1, 1, 0, 0,
+		 * GridBagConstraints.HORIZONTAL); GUI_tools.addComponent(p_rigth, gbl,
+		 * anteilsMenge = new JLabel("XX"), 2, 1, 1, 1, 0, 0,
+		 * GridBagConstraints.HORIZONTAL); GUI_tools.addComponent(p_rigth, gbl,
+		 * prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 2, 1, 1, 0,
+		 * 0, GridBagConstraints.HORIZONTAL); GUI_tools.addComponent(p_rigth,
+		 * gbl, anteilsMenge = new JLabel("XX"), 2, 2, 1, 1, 0, 0,
+		 * GridBagConstraints.HORIZONTAL);
+		 */
 		//GUI_tools.addComponent(p_rigth, gbl, p_button, 0, 3, 4, 1, 0, 0, GridBagConstraints.NONE);
-		
+
 		//Scrollbar zum rechten Panel hinzufügen
 		JScrollPane scrollBar_center = new JScrollPane(p_EiAs_rigth);
 
@@ -261,7 +274,11 @@ public class Oberflaeche {
 		c.add(scrollBar_center, BorderLayout.CENTER);
 	}
 
-	// ### Get the Instance of this Class ###
+	/**
+	 * Get the instance of this singelton
+	 * 
+	 * @return the singelton object of the class 'Oberflaeche'
+	 */
 	public static Oberflaeche getInstance() {
 		if (theInstance == null) {
 			theInstance = new Oberflaeche();
@@ -281,11 +298,11 @@ public class Oberflaeche {
 	public void showLieferungsUebersicht() {
 		lieferungsUebersicht.setVisible(true);
 	}
-	
+
 	public void hideLieferungsUebersicht() {
 		lieferungsUebersicht.setVisible(false);
 	}
-	
+
 	public void showEinbuchungsAssi() {
 		einbuchungsAssi.setVisible(true);
 	}
@@ -297,31 +314,6 @@ public class Oberflaeche {
 	// ### JTree neu aufbauen ###
 	public void refreshTree() {
 		((DefaultTreeModel) lagerTree.getModel()).reload();
-	}
-
-	// ## Getter & Setter ###
-	public JFrame getLagerverwaltung() {
-		return lagerverwaltung;
-	}
-
-	public void setLagerverwaltung(JFrame lagerverwaltung) {
-		this.lagerverwaltung = lagerverwaltung;
-	}
-
-	public JFrame getEinbuchungsAssi() {
-		return einbuchungsAssi;
-	}
-
-	public void setEinbuchungsAssi(JFrame einbuchungsAssi) {
-		this.einbuchungsAssi = einbuchungsAssi;
-	}
-
-	public JFrame getLieferungsUebersicht() {
-		return lieferungsUebersicht;
-	}
-
-	public void setLieferungsUebersicht(JFrame lieferungsUebersicht) {
-		this.lieferungsUebersicht = lieferungsUebersicht;
 	}
 
 	// ### Disabling clone() by throwing CloneNotSupportedException ###
