@@ -1,16 +1,14 @@
 package controller;
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import model.Lager;
 import view.Lagerverwaltung;
 import view.Main;
-
-import model.Lager;
 
 public class Lagerverwaltung_handler implements ActionListener {
 
@@ -47,30 +45,23 @@ public class Lagerverwaltung_handler implements ActionListener {
 					menge_str = bestand.getText().trim();
 
 					if (pane_value == JOptionPane.OK_OPTION) {
-						
-						if (name.isEmpty()) 
-						{
+
+						if (name.isEmpty()) {
 							JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!", "Ungültige Bezeichnung",
 									JOptionPane.ERROR_MESSAGE);
-						} 
-						else if (!(menge_str.isEmpty() || menge_str == null))
-						{
-							try
-							{
-								menge = Integer.parseInt(menge_str); 
-							}
-							catch(NumberFormatException ex)
-							{
+						} else if (!(menge_str.isEmpty() || menge_str == null)) {
+							try {
+								menge = Integer.parseInt(menge_str);
+							} catch (NumberFormatException ex) {
 								JOptionPane.showMessageDialog(null, "Es sind nur Werte gleich oder größer 0 erlaubt!: ");
 								menge_str = "";			//Zuweisung eines leeren Strings, damit die do while Schleife erneut durchläuft
 							}
-						}		
+						}
 						// Falls kein Bestand eingegeben wurde wird ein Fehler ausgegeben
 						else
 							JOptionPane.showMessageDialog(null, "Die eingegebene Bestandsmenge ist ungültig!");
 					}
-				} 
-				while ((pane_value == JOptionPane.OK_OPTION) && ((name.isEmpty() || name == null) || (menge_str.isEmpty() || menge_str == null))); // falls auf OK geklickt wurde und...
+				} while ((pane_value == JOptionPane.OK_OPTION) && ((name.isEmpty() || name == null) || (menge_str.isEmpty() || menge_str == null))); // falls auf OK geklickt wurde und...
 
 				if (pane_value == JOptionPane.OK_OPTION) {
 					pre_knoten.addTreeElement(name, menge);
