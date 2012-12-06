@@ -5,7 +5,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class Lager extends DefaultMutableTreeNode {
 
 	static Lager wurzel;
-	private Lager knoten, blatt;
+	private Lager blatt;
 	private boolean isBestandHaltend;
 	private int bestand, id;
 	private String name;

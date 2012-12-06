@@ -7,14 +7,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import model.Lager;
-import view.Lagerverwaltung;
 import view.Main;
+import view.Oberflaeche;
 
 public class Lagerverwaltung_handler implements ActionListener {
 
-	Lagerverwaltung GUI_lager;
+	Oberflaeche GUI_lager;
 
-	public void announceGUI_Lager(view.Lagerverwaltung myGUI) {
+	public void announceGUI_Lager(Oberflaeche myGUI) {
 		this.GUI_lager = myGUI;
 	}
 
@@ -26,7 +26,7 @@ public class Lagerverwaltung_handler implements ActionListener {
 
 			// Neuen Knoten hinzufügen
 			Lager pre_knoten;
-			pre_knoten = Lagerverwaltung.getAusgewaehlterKnoten();
+			pre_knoten = Oberflaeche.getInstance().getAusgewaehlterKnoten();
 
 			// Falls ein Knoten ausgewählt wurde
 			if (!(pre_knoten == null)) {
@@ -65,7 +65,7 @@ public class Lagerverwaltung_handler implements ActionListener {
 
 				if (pane_value == JOptionPane.OK_OPTION) {
 					pre_knoten.addTreeElement(name, menge);
-					Lagerverwaltung.TreeRefresh(); // Anzeige des Trees aktualisieren
+					Oberflaeche.getInstance().refreshTree(); // Anzeige des Trees aktualisieren
 				}
 
 			}
@@ -91,7 +91,7 @@ public class Lagerverwaltung_handler implements ActionListener {
 			// JOptionPane.showMessageDialog(null, "Lagersaldo");
 
 			Lager pre_knoten;
-			pre_knoten = Lagerverwaltung.getAusgewaehlterKnoten();
+			pre_knoten = Oberflaeche.getInstance().getAusgewaehlterKnoten();
 
 			JOptionPane.showMessageDialog(null, pre_knoten.getBestand());
 		}
