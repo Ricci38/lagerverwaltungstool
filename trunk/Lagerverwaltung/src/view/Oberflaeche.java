@@ -9,19 +9,21 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import model.Buchung;
 import model.Lager;
 
 public class Oberflaeche {
@@ -41,7 +43,7 @@ public class Oberflaeche {
 	private JPanel p_top, p_top_sub_top, p_top_sub_bottom, p_tree, p_center, p_platzhalter1, p_platzhalter2;
 	private JButton redo, undo, buchen, buchungsuebersicht, lagersaldo, lieferungFuerLager, neuesLager;
 	private JLabel l_titel;
-	private JTree lagerTree;
+	private JTree lagerTree, lagerTreeBackup;
 
 	// ### Variablen für die Lieferungsübersicht ###
 	private JPanel p_LiUe_top, p_LiUe_left, p_LiUe_rigth;
@@ -57,16 +59,13 @@ public class Oberflaeche {
 	private GridBagLayout gbl;
 	private static int anz_hinzugefuegterLager = 0;
 
-	// ### Listener ###
-	private ActionListener listener; // FIXME passende Listener anpassen / erstellen!
-
-	// ... TreeSelectionListener bla
 
 	// ### privater Konstruktor (Singelton) ###
 	private Oberflaeche() {
+		
 		buildLagerverwaltung();
 		buildEinbuchungsAssi();
-		buildLieferungsUebersicht();
+	    buildLieferungsUebersicht();
 	}
 
 	/**
@@ -143,10 +142,11 @@ public class Oberflaeche {
 
 		// ### Baum mit Scrollbar im WEST Element ###
 		lagerTree = new JTree(Lager.getTree());
+		
 		p_tree = new JPanel(new GridLayout());
 		p_tree.setPreferredSize(new Dimension(250, 50)); // Breite des Trees festlegen. Höhe wird aufgrund des BorderLayouts ignoriert!
-
 		JScrollPane scrollBar = new JScrollPane(lagerTree);
+		lagerTree.addTreeSelectionListener((TreeSelectionListener) listener_Lagerverwaltung);
 		p_tree.add(scrollBar);
 
 		// ### Menüauswahl im CENTER ###
@@ -184,7 +184,8 @@ public class Oberflaeche {
 		p_LiUe_left.setLocation(0, 50);
 		p_LiUe_left.setSize(200, lieferungsUebersicht.getHeight() - p_LiUe_top.getHeight() - 40);
 
-		JTree lagerTree = new JTree(new DefaultMutableTreeNode("root"));
+		//FIXME: lagerTree ist auch eine klassenweite Variable. Habe probiert die zu nutzen... funktioniert aber nicht -.-
+		JTree lagerTree = new JTree(Lager.getTree());
 		JScrollPane scrollBar = new JScrollPane(lagerTree);
 		scrollBar.setSize(p_LiUe_left.getWidth(), p_LiUe_left.getHeight());
 		p_LiUe_left.add(scrollBar);
@@ -290,6 +291,14 @@ public class Oberflaeche {
 		return theInstance;
 	}
 
+	
+	public void zeigeBuchungsdetails(ArrayList<Buchung> buchungsListe)
+	{
+		//TODO: Aktualisierung des Panels und Daten in Tabelle anzeigen
+		JOptionPane.showMessageDialog(null, "Test");
+	}
+	
+	
 	public void addLager(String name, ActionListener textField_listener)
 	{
 		/*

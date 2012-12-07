@@ -5,12 +5,14 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 
 import model.Lager;
 import view.Main;
 import view.Oberflaeche;
 
-public class Lagerverwaltung_handler implements ActionListener {
+public class Lagerverwaltung_handler implements ActionListener, TreeSelectionListener {
 
 	Oberflaeche GUI_lager;
 
@@ -18,7 +20,7 @@ public class Lagerverwaltung_handler implements ActionListener {
 		this.GUI_lager = myGUI;
 	}
 
-	// FIXME: Exception muss noch für String to Int hinzugefügt werden (NumberFormatException)
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
@@ -95,6 +97,16 @@ public class Lagerverwaltung_handler implements ActionListener {
 
 			JOptionPane.showMessageDialog(null, pre_knoten.getBestand());
 		}
+	}
+
+	@Override
+	public void valueChanged(TreeSelectionEvent e) {
+		// TODO Anzeige der Buchungen für das Lager in der Hauptoberfläche
+		if (((Lager) e.getPath().getLastPathComponent()).isLeaf())
+		{
+			Oberflaeche.getInstance().zeigeBuchungsdetails(( (Lager) e.getPath().getLastPathComponent()).getBuchungen());
+		}
+		
 	}
 
 }
