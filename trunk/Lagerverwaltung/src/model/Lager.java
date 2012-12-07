@@ -1,8 +1,11 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import exception.LagerverwaltungsException;
 
 public class Lager extends DefaultMutableTreeNode {
 
@@ -11,7 +14,11 @@ public class Lager extends DefaultMutableTreeNode {
 	private boolean isBestandHaltend;
 	private int bestand, id;
 	private String name;
-	private ArrayList<Buchung> buchungen = new ArrayList<Buchung>();
+	public String getName() {
+		return name;
+	}
+
+	private final ArrayList<Buchung> buchungen = new ArrayList<Buchung>();
 
 	private static final long serialVersionUID = -6664495404957376450L;
 
@@ -27,7 +34,7 @@ public class Lager extends DefaultMutableTreeNode {
 		this.name = bez;
 		this.bestand = bestand;
 	}
-	
+
 	public Lager(int id, String bez, int bestand) {
 		super(bez);
 		this.id = id;
@@ -49,10 +56,9 @@ public class Lager extends DefaultMutableTreeNode {
 			return bestand_summe;
 		}
 	}
-	
+
 	//Gibt den eigenen Bestand des ausgewählten Lagers zurück
-	public int getEinzelBestand()
-	{
+	public int getEinzelBestand() {
 		return this.bestand;
 	}
 
@@ -61,27 +67,38 @@ public class Lager extends DefaultMutableTreeNode {
 	 * darf und die übergebene Menge größer oder gleich 0 ist.
 	 * 
 	 * @param menge
-	 * @return 0 = keine Fehler; 1 = gegebene Menge ist kleiner 0; 2 = kann
-	 *         keinen Bestand haben
+	 * @throws LagerverwaltungsException
 	 */
-	public int setBestand(int menge) {
+	public void setBestand(int menge) {
+		List<String> result = new ArrayList<String>();
 		if (this.isBestandHaltend) {
 			if (menge >= 0) {
 				this.bestand = menge;
-				return 0;
-			} else
-				return 1;
+				return;
+			} else {
+				result.add("Bestand kann nicht kleiner als 0 sein.");
+				throw new LagerverwaltungsException("Bestand vom Lager \"" + this.name + "\" kann nicht gesetzt werden", result, null);
+			}
+		} else {
+			result.add("Lager \"" + this.name + "\" kann keinen Bestand haben.");
+			throw new LagerverwaltungsException("Lager kann keinen Bestand haben.", result, null);
 		}
-		return 2;
+
 	}
 
-	//FIXME: Exception hinzufügen!
-	public int veraenderBestand(int menge) {
+	/**
+	 * 
+	 * @param menge
+	 * @throws LagerverwaltungsException
+	 */
+	public void veraenderBestand(int menge) {
+		List<String> result = new ArrayList<String>();
 		if ((this.bestand + menge >= 0)) {
 			this.bestand = this.bestand + menge;
-			return 0;
-		} else
-			return 1; // Fehler!
+		} else {
+			result.add("Bestand kleiner 0 nicht möglich.");
+			throw new LagerverwaltungsException("Bestand vom Lager \"" + this.name + "\" kann nicht geändert werden.", result, null);
+		}
 	}
 
 	// Wurzel erstellen
@@ -93,7 +110,7 @@ public class Lager extends DefaultMutableTreeNode {
 
 	// Element (Blatt oder Knoten) hinzufügen
 	public Lager addTreeElement(String bez, int menge) {
-		blatt = new Lager(bez + " " + ((Integer) menge).toString());
+		blatt = new Lager(bez + " " + menge);
 		this.add(blatt);
 		this.isBestandHaltend = false; // übergeordneter Knoten darf keinen
 										// Bestand zeigen - falls diese Methode
@@ -127,14 +144,12 @@ public class Lager extends DefaultMutableTreeNode {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
-	public void addBuchung(Buchung b)
-	{
+
+	public void addBuchung(Buchung b) {
 		buchungen.add(b);
 	}
-	
-	public ArrayList<Buchung> getBuchungen()
-	{
+
+	public ArrayList<Buchung> getBuchungen() {
 		return buchungen;
 	}
 }
