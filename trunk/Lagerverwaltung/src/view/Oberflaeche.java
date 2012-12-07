@@ -9,7 +9,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.HashMap;
 
 import javax.swing.JButton;
@@ -45,13 +47,14 @@ public class Oberflaeche {
 	private JButton redo, undo, buchen, buchungsuebersicht, lagersaldo, lieferungFuerLager, neuesLager;
 	private JLabel l_titel;
 	private JTree lagerTree, lagerTreeBackup;
+	private JTable tbl_buchungsUebersicht;
 
 	// ### Variablen für die Lieferungsübersicht ###
 	private JPanel p_LiUe_top, p_LiUe_left, p_LiUe_rigth;
 	private JTable tbl_LiUe_buchungsdetails;
 
 	// ### Variablen für den EinbuchungsAssistent ###
-	private JPanel p_EiAs_top, p_EiAs_left, p_EiAs_rigth, p_EiAs_button;
+	private JPanel p_EiAs_top, p_EiAs_left, p_EiAs_rigth, p_EiAs_button, p_EiAs_rigth_center;
 	private JLabel l_EiAs_treeUeberschrift;
 	private JTextField gesamtmenge, prozentAnteil;
 	private JLabel lagerBezeichnung, anteilsMenge;
@@ -154,8 +157,12 @@ public class Oberflaeche {
 		// ### Menüauswahl im CENTER ###
 		p_center = new JPanel();
 		p_center.setBackground(Color.GREEN);
-		GridBagLayout gbl = new GridBagLayout();
-		p_center.setLayout(gbl);
+		
+		//TODO: Layout aussuchen und schauen in welchem Layout die Tabelle am besten passt
+//		GridBagLayout gbl = new GridBagLayout();
+//		p_center.setLayout(gbl);
+		
+		tbl_buchungsUebersicht = new JTable();
 
 		c.add(p_tree, BorderLayout.WEST);
 		c.add(p_top, BorderLayout.NORTH);
@@ -240,9 +247,13 @@ public class Oberflaeche {
 		JScrollPane scrollBar = new JScrollPane(lagerTree);
 		p_EiAs_left.add(scrollBar);
 
+		
 		p_EiAs_rigth = new JPanel();
+		p_EiAs_rigth.setLayout(new BorderLayout());
+		
+		p_EiAs_rigth_center = new JPanel();
 		gbl = new GridBagLayout();
-		p_EiAs_rigth.setLayout(gbl);
+		p_EiAs_rigth_center.setLayout(gbl);
 		//		p_EiAs_rigth.setBackground(Color.GREEN);
 
 		// Panel für die Buttons, um eine bessere Formatierung zu erreichen
@@ -257,7 +268,8 @@ public class Oberflaeche {
 		lagerTree.addTreeSelectionListener((TreeSelectionListener) listener_EinbuchungsAssi);
 
 		// TODO Aufbau muss dynamisch in einer Methode erfolgen! Nur zur Vorschau!
-		Tools.addComponent(p_EiAs_rigth, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_EiAs_rigth_center, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		gesamtmenge.addMouseListener((MouseListener) listener_EinbuchungsAssi);
 		/*
 		 * GUI_tools.addComponent(p_rigth, gbl, lagerBezeichnung = new
 		 * JLabel("Lager 1"), 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
@@ -274,11 +286,13 @@ public class Oberflaeche {
 		//Tools.addComponent(p_EiAs_rigth, gbl, p_EiAs_button, 0, 3, 4, 1, 0, 0, GridBagConstraints.NONE);
 
 		//Scrollbar zum rechten Panel hinzufügen
-		JScrollPane scrollBar_center = new JScrollPane(p_EiAs_rigth);
+		JScrollPane scrollBar_center = new JScrollPane(p_EiAs_rigth_center);
+		p_EiAs_rigth.add(scrollBar_center, BorderLayout.CENTER);
+		p_EiAs_rigth.add(p_EiAs_button, BorderLayout.SOUTH);
 
 		c.add(p_EiAs_top, BorderLayout.NORTH);
 		c.add(p_EiAs_left, BorderLayout.WEST);
-		c.add(scrollBar_center, BorderLayout.CENTER);
+		c.add(p_EiAs_rigth, BorderLayout.CENTER);
 	}
 
 	/**
@@ -296,20 +310,24 @@ public class Oberflaeche {
 	
 	public void zeigeBuchungsdetails(ArrayList<Buchung> buchungsListe)
 	{
-		//TODO: Aktualisierung des Panels und Daten in Tabelle anzeigen
-		JOptionPane.showMessageDialog(null, "Test");
+		//TODO: Daten in Tabelle anzeigen
+		
+		//p_center.add(new JLabel("Hier kommt eine Buchungsübersicht für das ausgewählte Lager hin"));
+		p_center.add(tbl_buchungsUebersicht);
+		p_center.updateUI();
 	}
 	
 	
-	public void addLager(Lager lager, ActionListener textField_listener)
+	public void addLager(Lager lager, EventListener textField_listener)
 	{
 		
 		if(!hinzugefuegteLager.containsKey(lager))
 		{
-			Tools.addComponent(p_EiAs_rigth, gbl, lagerBezeichnung = new JLabel(lager.toString()), 0, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-			Tools.addComponent(p_EiAs_rigth, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-			prozentAnteil.addActionListener(textField_listener);
-			p_EiAs_rigth.updateUI();
+			Tools.addComponent(p_EiAs_rigth_center, gbl, lagerBezeichnung = new JLabel(lager.toString()), 0, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+			Tools.addComponent(p_EiAs_rigth_center, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+			prozentAnteil.addActionListener((ActionListener) textField_listener);
+			prozentAnteil.addMouseListener((MouseListener) textField_listener);
+			p_EiAs_rigth_center.updateUI();
 			anz_hinzugefuegterLager++;
 			
 			hinzugefuegteLager.put(lager, prozentAnteil);

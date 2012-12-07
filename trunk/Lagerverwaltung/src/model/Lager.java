@@ -35,6 +35,7 @@ public class Lager extends DefaultMutableTreeNode {
 		this.bestand = bestand;
 	}
 
+	//Gibt den eigenen oder oder kumulierten Bestand aller Unterlager wieder
 	public int getBestand() {
 		int bestand_summe = 0;
 
@@ -47,6 +48,12 @@ public class Lager extends DefaultMutableTreeNode {
 			}
 			return bestand_summe;
 		}
+	}
+	
+	//Gibt den eigenen Bestand des ausgewählten Lagers zurück
+	public int getEinzelBestand()
+	{
+		return this.bestand;
 	}
 
 	/**
