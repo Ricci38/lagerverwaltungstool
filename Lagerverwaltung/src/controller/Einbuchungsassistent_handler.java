@@ -44,7 +44,7 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 					menge = Integer.parseInt(element.getValue().getText());
 					lager = element.getKey();
 					lager.veraenderBestand(menge);
-					lager.addBuchung(buchung = new Buchung(menge, Lagerverwaltung_handler.lieferungID++));
+					lager.addBuchung(buchung = new Buchung(menge, Lagerverwaltung_handler.lieferungID++, lieferung.getLieferungsDatum()));
 
 					lieferung.addBuchung(buchung);
 				} catch (NumberFormatException ex1) {
