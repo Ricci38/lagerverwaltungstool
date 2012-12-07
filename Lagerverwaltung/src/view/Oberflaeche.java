@@ -23,6 +23,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultTreeModel;
 
 import model.Buchung;
@@ -48,10 +49,6 @@ public class Oberflaeche {
 	private JTree lagerTree;
 	private JTable tbl_buchungsUebersicht;
 
-	// ### Variablen für die Lieferungsübersicht ###
-	private JPanel p_LiUe_top, p_LiUe_left, p_LiUe_rigth;
-	private JTable tbl_LiUe_buchungsdetails;
-
 	// ### Variablen für den EinbuchungsAssistent ###
 	private JPanel p_EiAs_top, p_EiAs_left, p_EiAs_rigth, p_EiAs_button, p_EiAs_rigth_center;
 	private JLabel l_EiAs_treeUeberschrift;
@@ -68,8 +65,7 @@ public class Oberflaeche {
 	private Oberflaeche() {
 		
 		buildLagerverwaltung();
-		
-	    buildLieferungsUebersicht();
+		buildEinbuchungsAssi();
 	}
 
 	/**
@@ -161,63 +157,15 @@ public class Oberflaeche {
 //		GridBagLayout gbl = new GridBagLayout();
 //		p_center.setLayout(gbl);
 		
-		tbl_buchungsUebersicht = new JTable();
-
 		c.add(p_tree, BorderLayout.WEST);
 		c.add(p_top, BorderLayout.NORTH);
 		c.add(p_center, BorderLayout.CENTER);
 	}
 
 	/**
-	 * Erstellt die Oberfläche für die Lieferungsübersicht
-	 */
-	private void buildLieferungsUebersicht() {
-		if (lieferungsUebersicht != null) return;
-		// TODO Fehlen hier irgendwelche Listener? Ich denke ja - nicht sicher :D
-		// TODO Ganze Methode einmal gründlich überprüfen auf Fehler! (Copypasta!)
-		lieferungsUebersicht = new JFrame("Lieferungsübersicht");
-		lieferungsUebersicht.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		lieferungsUebersicht.setSize(800, 500);
-		lieferungsUebersicht.setLocation(300, 100);
-		Container c = lieferungsUebersicht.getContentPane();
-		c.setLayout(null);
-
-		p_LiUe_top = new JPanel();
-		p_LiUe_top.setLocation(0, 0);
-		p_LiUe_top.setSize(lieferungsUebersicht.getWidth(), 50);
-//		p_LiUe_top.setBackground(Color.ORANGE);
-
-		p_LiUe_left = new JPanel();
-		p_LiUe_left.setLayout(null);
-		p_LiUe_left.setLocation(0, 50);
-		p_LiUe_left.setSize(200, lieferungsUebersicht.getHeight() - p_LiUe_top.getHeight() - 40);
-
-		//FIXME: lagerTree ist auch eine klassenweite Variable. Habe probiert die zu nutzen... funktioniert aber nicht -.-
-		JTree lagerTree = new JTree(Lager.getTree());
-		JScrollPane scrollBar = new JScrollPane(lagerTree);
-		scrollBar.setSize(p_LiUe_left.getWidth(), p_LiUe_left.getHeight());
-		p_LiUe_left.add(scrollBar);
-
-		p_LiUe_rigth = new JPanel();
-		// p_rigth.setLayout(null); // XXX: was ist damit?
-//		p_LiUe_rigth.setBackground(Color.magenta);
-		p_LiUe_rigth.setLocation(p_LiUe_left.getWidth(), 50);
-		p_LiUe_rigth.setSize(lieferungsUebersicht.getWidth() - p_LiUe_left.getWidth() - 25, lieferungsUebersicht.getHeight() - p_LiUe_top.getHeight() - 40);
-
-		tbl_LiUe_buchungsdetails = new JTable(2, 6);
-		tbl_LiUe_buchungsdetails.setLocation(p_LiUe_left.getWidth() + 50, p_LiUe_top.getHeight() + 80);
-
-		p_LiUe_rigth.add(tbl_LiUe_buchungsdetails);
-
-		c.add(p_LiUe_top);
-		c.add(p_LiUe_left);
-		c.add(p_LiUe_rigth);
-	}
-
-	/**
 	 * Erstellt die Oberfläche für den Einbuchungsassistenten
 	 */
-	public void buildEinbuchungsAssi() {
+	private void buildEinbuchungsAssi() {
 		if (einbuchungsAssi != null) return;
 		// TODO Gesamte Methode auf Fehler überprüfen! (Copypasta)
 		einbuchungsAssi = new JFrame("Einbuchungsassistent");
@@ -231,7 +179,6 @@ public class Oberflaeche {
 
 		p_EiAs_top = new JPanel();
 		p_EiAs_top.setSize(einbuchungsAssi.getWidth(), kopfzeilenHoehe); //Breite wird wegen des BorderLayouts ignoriert!
-		//		p_EiAs_top.setBackground(Color.blue);
 		l_EiAs_treeUeberschrift = new JLabel();
 		l_EiAs_treeUeberschrift.setText("Bitte wählen Sie die Lager aus, dessen Bestand verändert werden soll.");
 		p_EiAs_top.add(l_EiAs_treeUeberschrift);
@@ -240,7 +187,6 @@ public class Oberflaeche {
 		p_EiAs_left.setLayout(new GridLayout());
 		p_EiAs_left.setPreferredSize(new Dimension(150, 100));
 		p_EiAs_left.setLocation(0, kopfzeilenHoehe);
-		//		p_EiAs_left.setBackground(Color.gray);
 
 		JTree lagerTree = new JTree(Lager.getTree());
 		JScrollPane scrollBar = new JScrollPane(lagerTree);
@@ -253,11 +199,9 @@ public class Oberflaeche {
 		p_EiAs_rigth_center = new JPanel();
 		gbl = new GridBagLayout();
 		p_EiAs_rigth_center.setLayout(gbl);
-		//		p_EiAs_rigth.setBackground(Color.GREEN);
 
 		// Panel für die Buttons, um eine bessere Formatierung zu erreichen
 		p_EiAs_button = new JPanel();
-		//		p_EiAs_button.setBackground(Color.CYAN);
 		p_EiAs_button.add(btn_bestaetigen = new JButton("Bestätigen"));
 		p_EiAs_button.add(btn_abbruch = new JButton("Abbruch"));
 
@@ -295,10 +239,18 @@ public class Oberflaeche {
 	public void zeigeBuchungsdetails(ArrayList<Buchung> buchungsListe)
 	{
 		Lager lager = getAusgewaehlterKnoten();
+		if (lager == null) return;
+		String[] spalten = new String[]{"Lagername","Menge"};
+		DefaultTableModel test1 = new DefaultTableModel(spalten, 0);
+		tbl_buchungsUebersicht = new JTable(test1);
+		
 		//TODO: Daten in Tabelle anzeigen
 		p_center.removeAll();
 		p_center.add(new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand()));
 		
+		if (lager.isLeaf()) {
+			// DO STH
+		}
 		
 		p_center.add(tbl_buchungsUebersicht);
 		p_center.updateUI();
