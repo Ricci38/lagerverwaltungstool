@@ -17,7 +17,6 @@ import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -46,7 +45,7 @@ public class Oberflaeche {
 	private JPanel p_top, p_top_sub_top, p_top_sub_bottom, p_tree, p_center, p_platzhalter1, p_platzhalter2;
 	private JButton redo, undo, buchen, buchungsuebersicht, lagersaldo, lieferungFuerLager, neuesLager;
 	private JLabel l_titel;
-	private JTree lagerTree, lagerTreeBackup;
+	private JTree lagerTree;
 	private JTable tbl_buchungsUebersicht;
 
 	// ### Variablen für die Lieferungsübersicht ###
@@ -62,7 +61,7 @@ public class Oberflaeche {
 	private final int kopfzeilenHoehe = 40;
 	private GridBagLayout gbl;
 	private static int anz_hinzugefuegterLager = 0;
-	private HashMap<Lager, JTextField> hinzugefuegteLager = new HashMap<Lager, JTextField>();
+	private final HashMap<Lager, JTextField> hinzugefuegteLager = new HashMap<Lager, JTextField>();
 
 
 	// ### privater Konstruktor (Singelton) ###
@@ -267,23 +266,8 @@ public class Oberflaeche {
 		btn_abbruch.addActionListener(listener_EinbuchungsAssi);
 		lagerTree.addTreeSelectionListener((TreeSelectionListener) listener_EinbuchungsAssi);
 
-		// TODO Aufbau muss dynamisch in einer Methode erfolgen! Nur zur Vorschau!
 		Tools.addComponent(p_EiAs_rigth_center, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		gesamtmenge.addMouseListener((MouseListener) listener_EinbuchungsAssi);
-		/*
-		 * GUI_tools.addComponent(p_rigth, gbl, lagerBezeichnung = new
-		 * JLabel("Lager 1"), 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		 * GUI_tools.addComponent(p_rigth, gbl, prozentAnteil = new
-		 * JTextField("Prozentualer Anteil"), 1, 1, 1, 1, 0, 0,
-		 * GridBagConstraints.HORIZONTAL); GUI_tools.addComponent(p_rigth, gbl,
-		 * anteilsMenge = new JLabel("XX"), 2, 1, 1, 1, 0, 0,
-		 * GridBagConstraints.HORIZONTAL); GUI_tools.addComponent(p_rigth, gbl,
-		 * prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 2, 1, 1, 0,
-		 * 0, GridBagConstraints.HORIZONTAL); GUI_tools.addComponent(p_rigth,
-		 * gbl, anteilsMenge = new JLabel("XX"), 2, 2, 1, 1, 0, 0,
-		 * GridBagConstraints.HORIZONTAL);
-		 */
-		//Tools.addComponent(p_EiAs_rigth, gbl, p_EiAs_button, 0, 3, 4, 1, 0, 0, GridBagConstraints.NONE);
 
 		//Scrollbar zum rechten Panel hinzufügen
 		JScrollPane scrollBar_center = new JScrollPane(p_EiAs_rigth_center);
@@ -310,9 +294,12 @@ public class Oberflaeche {
 	
 	public void zeigeBuchungsdetails(ArrayList<Buchung> buchungsListe)
 	{
+		Lager lager = getAusgewaehlterKnoten();
 		//TODO: Daten in Tabelle anzeigen
+		p_center.removeAll();
+		p_center.add(new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand()));
 		
-		p_center.add(new JLabel("Hier kommt eine Buchungsübersicht für das ausgewählte Lager hin"));
+		
 		p_center.add(tbl_buchungsUebersicht);
 		p_center.updateUI();
 	}
