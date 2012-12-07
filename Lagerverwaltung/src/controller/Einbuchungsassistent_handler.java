@@ -2,7 +2,8 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ import model.Buchung;
 import model.Lager;
 import view.Oberflaeche;
 
-public class Einbuchungsassistent_handler implements ActionListener, TreeSelectionListener {
+public class Einbuchungsassistent_handler implements ActionListener, TreeSelectionListener, MouseListener {
 
 	Oberflaeche GUI_einbuchung;
 	private int menge;
@@ -40,6 +41,7 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 				} 
 				catch (NumberFormatException ex) 
 				{
+					//TODO: Falls hier ein Fehler auftritt überprüft er trotzdem noch alle Elemente...
 					JOptionPane.showMessageDialog(null, "Es sind nur Zahlenwerte erlaubt! ");	
 				}	
 			}
@@ -70,6 +72,37 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 			this.GUI_einbuchung.addLager( (Lager) e.getPath().getLastPathComponent(), this);
 		} else
 			JOptionPane.showMessageDialog(null, "Dieses Lager kann keinen Bestand halten!");
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) 
+	{
+		((JTextField) e.getSource()).setText("");
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		
+		
 	}
 
 }

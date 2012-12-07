@@ -32,42 +32,51 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 			// Falls ein Knoten ausgewählt wurde
 			if (!(pre_knoten == null)) {
-				String name = null, menge_str = null;
-				int menge = 0, pane_value;
-				JTextField lagername = new JTextField();
-				JTextField bestand = new JTextField();
-				Object message[] = { "Lagername: ", lagername, "Anfangs Bestand: ", bestand };
-				JOptionPane pane = new JOptionPane(message, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-
-				// Dialog erstellen und Eingabeparameter einlesen
-				do {
-					pane.createDialog("Neues Lager erstellen").setVisible(true); // Eingabemaske für den Knotennamen
-					pane_value = ((Integer) pane.getValue()).intValue(); // Button Benutzung des Benutzers einlesen (Ok oder Abbruch)
-					name = lagername.getText().trim();
-					menge_str = bestand.getText().trim();
-
-					if (pane_value == JOptionPane.OK_OPTION) {
-
-						if (name.isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!", "Ungültige Bezeichnung",
-									JOptionPane.ERROR_MESSAGE);
-						} else if (!(menge_str.isEmpty() || menge_str == null)) {
-							try {
-								menge = Integer.parseInt(menge_str);
-							} catch (NumberFormatException ex) {
-								JOptionPane.showMessageDialog(null, "Es sind nur Werte gleich oder größer 0 erlaubt!: ");
-								menge_str = "";			//Zuweisung eines leeren Strings, damit die do while Schleife erneut durchläuft
+				//Lagererstellung ist nur bei einem Bestand von 0 zulässig!
+				if (pre_knoten.getEinzelBestand() == 0)
+				{
+					String name = null, menge_str = null;
+					int menge = 0, pane_value;
+					JTextField lagername = new JTextField();
+					JTextField bestand = new JTextField();
+					Object message[] = { "Lagername: ", lagername, "Anfangs Bestand: ", bestand };
+					JOptionPane pane = new JOptionPane(message, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+	
+					// Dialog erstellen und Eingabeparameter einlesen
+					do {
+						pane.createDialog("Neues Lager erstellen").setVisible(true); // Eingabemaske für den Knotennamen
+						pane_value = ((Integer) pane.getValue()).intValue(); // Button Benutzung des Benutzers einlesen (Ok oder Abbruch)
+						name = lagername.getText().trim();
+						menge_str = bestand.getText().trim();
+	
+						if (pane_value == JOptionPane.OK_OPTION) {
+	
+							if (name.isEmpty()) {
+								JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!", "Ungültige Bezeichnung",
+										JOptionPane.ERROR_MESSAGE);
+							} else if (!(menge_str.isEmpty() || menge_str == null)) {
+								try {
+									menge = Integer.parseInt(menge_str);
+								} catch (NumberFormatException ex) {
+									JOptionPane.showMessageDialog(null, "Es sind nur Werte gleich oder größer 0 erlaubt!: ");
+									menge_str = "";			//Zuweisung eines leeren Strings, damit die do while Schleife erneut durchläuft
+								}
+							
 							}
+							// Falls kein Bestand eingegeben wurde wird ein Fehler ausgegeben
+							else
+								JOptionPane.showMessageDialog(null, "Die eingegebene Bestandsmenge ist ungültig!");
 						}
-						// Falls kein Bestand eingegeben wurde wird ein Fehler ausgegeben
-						else
-							JOptionPane.showMessageDialog(null, "Die eingegebene Bestandsmenge ist ungültig!");
+					} while ((pane_value == JOptionPane.OK_OPTION) && ((name.isEmpty() || name == null) || (menge_str.isEmpty() || menge_str == null))); // falls auf OK geklickt wurde und...
+	
+					if (pane_value == JOptionPane.OK_OPTION) {
+						pre_knoten.addTreeElement(name, menge);
+						Oberflaeche.getInstance().refreshTree(); // Anzeige des Trees aktualisieren
 					}
-				} while ((pane_value == JOptionPane.OK_OPTION) && ((name.isEmpty() || name == null) || (menge_str.isEmpty() || menge_str == null))); // falls auf OK geklickt wurde und...
-
-				if (pane_value == JOptionPane.OK_OPTION) {
-					pre_knoten.addTreeElement(name, menge);
-					Oberflaeche.getInstance().refreshTree(); // Anzeige des Trees aktualisieren
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Das ausgewählte Lager besitzt einen Bestand. Lagererstellung nicht möglich!");
 				}
 
 			}
