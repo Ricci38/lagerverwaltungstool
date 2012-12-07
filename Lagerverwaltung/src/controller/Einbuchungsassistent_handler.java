@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,12 +15,14 @@ import javax.swing.event.TreeSelectionListener;
 
 import model.Buchung;
 import model.Lager;
+import model.Lieferung;
 import view.Oberflaeche;
 
 public class Einbuchungsassistent_handler implements ActionListener, TreeSelectionListener, MouseListener {
 
 	Oberflaeche GUI_einbuchung;
-	private int menge;
+	
+	
 	HashMap<Lager, JTextField> lagerListe = new HashMap<Lager, JTextField>();
 	
 
@@ -31,32 +34,33 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().toLowerCase().equals(("Bestätigen").toLowerCase())) {
 			
+			Lieferung lieferung = new Lieferung(new Date());
+			Buchung buchung;
+			int menge;
+			
 			lagerListe = Oberflaeche.getInstance().getHinzugefuegteLager();
 			for(Map.Entry<Lager, JTextField> element:lagerListe.entrySet())
 			{
 				try 
 				{
 					menge = Integer.parseInt(element.getValue().getText());	
-					element.getKey().addBuchung(new Buchung(menge));
+					element.getKey().addBuchung(buchung = new Buchung(menge, Lagerverwaltung_handler.lieferungID++));
+					lieferung.addBuchung(buchung);
 				} 
 				catch (NumberFormatException ex) 
 				{
 					//TODO: Falls hier ein Fehler auftritt überprüft er trotzdem noch alle Elemente...
 					JOptionPane.showMessageDialog(null, "Es sind nur Zahlenwerte erlaubt! ");	
+					return;
 				}	
+				
 			}
 			
 			JOptionPane.showMessageDialog(null, "Buchung ausgeführt!");
 			
 		} else if (e.getActionCommand().toLowerCase().equals(("Abbruch").toLowerCase())) {
-			JOptionPane.showMessageDialog(null, "Abbruch!");
-		} else if (e.getActionCommand().toLowerCase().equals(("prozentAnteil").toLowerCase()))		//Vergleich funktioniert nicht, 
-																								//da als String der 
-																								//Textfeldwert zurückgegeben wird
-		{
-			JOptionPane.showMessageDialog(null, "Textfeld wurde verändert");
-
-		} 	
+			Oberflaeche.getInstance().hideEinbuchungsAssi();
+		} 
 		else 
 		{
 			JOptionPane.showMessageDialog(null, "Hier kommt bald was...");

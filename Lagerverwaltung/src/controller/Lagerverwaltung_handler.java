@@ -9,12 +9,12 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import model.Lager;
-import view.Main;
 import view.Oberflaeche;
 
 public class Lagerverwaltung_handler implements ActionListener, TreeSelectionListener {
 
 	Oberflaeche GUI_lager;
+	static int lieferungID = 0;
 
 	public void announceGUI_Lager(Oberflaeche myGUI) {
 		this.GUI_lager = myGUI;
@@ -85,9 +85,10 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				JOptionPane.showMessageDialog(null, "Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
 		}
 
-		else if (e.getActionCommand().toLowerCase().equals(("Neue Buchung").toLowerCase())) {
+		else if (e.getActionCommand().toLowerCase().equals(("Neue Lieferung").toLowerCase())) {
 			// Anmeldung des Handlers und Erzeugung des Frames
-			Main.verbindungEinbuchungsassistent();
+			Oberflaeche.getInstance().resetEinbuchungsAssi();
+			Oberflaeche.getInstance().showEinbuchungsAssi();
 		}
 
 		else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
