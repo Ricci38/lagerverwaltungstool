@@ -69,7 +69,7 @@ public class Oberflaeche {
 	private Oberflaeche() {
 		
 		buildLagerverwaltung();
-		buildEinbuchungsAssi();
+		
 	    buildLieferungsUebersicht();
 	}
 
@@ -109,7 +109,7 @@ public class Oberflaeche {
 
 		undo = new JButton("undo");
 		redo = new JButton("redo");
-		buchen = new JButton("Neue Buchung");
+		buchen = new JButton("Neue Lieferung");
 		neuesLager = new JButton("Neues Lager");
 		buchungsuebersicht = new JButton("Lieferungsübersicht");
 		lagersaldo = new JButton("Lagersaldo");
@@ -218,8 +218,8 @@ public class Oberflaeche {
 	/**
 	 * Erstellt die Oberfläche für den Einbuchungsassistenten
 	 */
-	private void buildEinbuchungsAssi() {
-		if (lieferungsUebersicht != null) return;
+	public void buildEinbuchungsAssi() {
+		if (einbuchungsAssi != null) return;
 		// TODO Gesamte Methode auf Fehler überprüfen! (Copypasta)
 		einbuchungsAssi = new JFrame("Einbuchungsassistent");
 		einbuchungsAssi.setSize(550, 400);
@@ -312,12 +312,17 @@ public class Oberflaeche {
 	{
 		//TODO: Daten in Tabelle anzeigen
 		
-		//p_center.add(new JLabel("Hier kommt eine Buchungsübersicht für das ausgewählte Lager hin"));
+		p_center.add(new JLabel("Hier kommt eine Buchungsübersicht für das ausgewählte Lager hin"));
 		p_center.add(tbl_buchungsUebersicht);
 		p_center.updateUI();
 	}
 	
-	
+	public void resetEinbuchungsAssi()
+	{
+		einbuchungsAssi = null;
+		hinzugefuegteLager.clear();
+		buildEinbuchungsAssi();
+	}
 	public void addLager(Lager lager, EventListener textField_listener)
 	{
 		

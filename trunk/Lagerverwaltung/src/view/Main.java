@@ -37,10 +37,7 @@ public class Main {
 		
 	}
 
-	public static void verbindungEinbuchungsassistent() {
-		
-		Oberflaeche.getInstance().showEinbuchungsAssi();
-	}
+	
 
 	private static void beispielHierarchieLaden(Lager root) {
 		Lager knoten, blatt1, blatt2;
