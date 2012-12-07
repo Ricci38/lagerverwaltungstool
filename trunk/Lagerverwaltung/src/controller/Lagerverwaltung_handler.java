@@ -92,7 +92,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		} else if (e.getActionCommand().toLowerCase().equals(("redo").toLowerCase())) {
 			JOptionPane.showMessageDialog(null, "redo");
 		} else if (e.getActionCommand().toLowerCase().equals(("Lieferungsübersicht").toLowerCase())) {
-			Oberflaeche.getInstance().showLieferungsUebersicht();
+			// FIXME !!!
 		} else if (e.getActionCommand().toLowerCase().equals(("Lagerübersicht").toLowerCase())) {
 			JOptionPane.showMessageDialog(null, "Lagerübersicht");
 		} else if (e.getActionCommand().toLowerCase().equals(("Lagersaldo").toLowerCase())) {

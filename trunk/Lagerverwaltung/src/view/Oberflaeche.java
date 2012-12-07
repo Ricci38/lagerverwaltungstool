@@ -40,11 +40,10 @@ public class Oberflaeche {
 	// ### Variablen für die einzelnen Oberflächen ###
 	private JFrame lagerverwaltung;
 	private JFrame einbuchungsAssi;
-	private JFrame lieferungsUebersicht;
 
 	// ### Variablen für das Hauptfenster ###
 	private JPanel p_top, p_top_sub_top, p_top_sub_bottom, p_tree, p_center, p_platzhalter1, p_platzhalter2;
-	private JButton redo, undo, buchen, buchungsuebersicht, lagersaldo, lieferungFuerLager, neuesLager;
+	private JButton redo, undo, buchen, buchungsuebersicht, lieferungFuerLager, neuesLager;
 	private JLabel l_titel;
 	private JTree lagerTree;
 	private JTable tbl_buchungsUebersicht;
@@ -107,7 +106,6 @@ public class Oberflaeche {
 		buchen = new JButton("Neue Lieferung");
 		neuesLager = new JButton("Neues Lager");
 		buchungsuebersicht = new JButton("Lieferungsübersicht");
-		lagersaldo = new JButton("Lagersaldo");
 		lieferungFuerLager = new JButton("Lagerübersicht");
 
 		// ### Actionlistener bekannt machen ###
@@ -116,7 +114,6 @@ public class Oberflaeche {
 		buchen.addActionListener(listener_Lagerverwaltung);
 		neuesLager.addActionListener(listener_Lagerverwaltung);
 		buchungsuebersicht.addActionListener(listener_Lagerverwaltung);
-		lagersaldo.addActionListener(listener_Lagerverwaltung);
 		lieferungFuerLager.addActionListener(listener_Lagerverwaltung);
 
 		// ### Platzhalter ###
@@ -134,7 +131,6 @@ public class Oberflaeche {
 		Tools.addComponent(p_top_sub_bottom, gbl2, p_platzhalter2, 5, 0, 5, 1, 1, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_top_sub_bottom, gbl2, buchungsuebersicht, 10, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_top_sub_bottom, gbl2, lieferungFuerLager, 11, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		Tools.addComponent(p_top_sub_bottom, gbl2, lagersaldo, 12, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 
 		// ### Dem oberen Panel die beiden Unterpanels zuweisen ###
 		p_top.add(p_top_sub_top);
@@ -240,18 +236,24 @@ public class Oberflaeche {
 	{
 		Lager lager = getAusgewaehlterKnoten();
 		if (lager == null) return;
-		String[] spalten = new String[]{"Lagername","Menge"};
-		DefaultTableModel test1 = new DefaultTableModel(spalten, 0);
-		tbl_buchungsUebersicht = new JTable(test1);
+		String[] spalten = new String[]{"ID","Lagername","Menge"};
+		String[][] daten = new String[20][3];
+		DefaultTableModel test1 = new DefaultTableModel(spalten, 1);
+		int i = 0;
 		
 		//TODO: Daten in Tabelle anzeigen
 		p_center.removeAll();
 		p_center.add(new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand()));
 		
 		if (lager.isLeaf()) {
-			// DO STH
+			for (Buchung b : buchungsListe) {
+				daten[i][0] = ((Integer)b.getLieferungID()).toString();
+				daten[i][1] = ((Integer)b.getMenge()).toString();
+				daten[i++][2] = b.getDatum().toString();
+			}
 		}
-		
+		tbl_buchungsUebersicht = new JTable(3,2); // FIXME Daten richtig anzeigen & Spalten nicht bearbeitbar machen
+//		tbl_buchungsUebersicht.getColumnModel().setColumnSelectionAllowed(false);
 		p_center.add(tbl_buchungsUebersicht);
 		p_center.updateUI();
 	}
@@ -306,14 +308,6 @@ public class Oberflaeche {
 
 	public void hideLagerverwaltung() {
 		lagerverwaltung.setVisible(false);
-	}
-
-	public void showLieferungsUebersicht() {
-		lieferungsUebersicht.setVisible(true);
-	}
-
-	public void hideLieferungsUebersicht() {
-		lieferungsUebersicht.setVisible(false);
 	}
 
 	public void showEinbuchungsAssi() {
