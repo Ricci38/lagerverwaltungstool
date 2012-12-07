@@ -58,6 +58,8 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 			}
 
 			JOptionPane.showMessageDialog(null, "Buchung ausgeführt!");
+			Oberflaeche.getInstance().hideEinbuchungsAssi();
+			Oberflaeche.getInstance().refreshTree();
 
 		} else if (e.getActionCommand().toLowerCase().equals(("Abbruch").toLowerCase())) {
 			Oberflaeche.getInstance().hideEinbuchungsAssi();

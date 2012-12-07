@@ -14,9 +14,6 @@ public class Lager extends DefaultMutableTreeNode {
 	private boolean isBestandHaltend;
 	private int bestand, id;
 	private String name;
-	public String getName() {
-		return name;
-	}
 
 	private final ArrayList<Buchung> buchungen = new ArrayList<Buchung>();
 
@@ -30,7 +27,7 @@ public class Lager extends DefaultMutableTreeNode {
 	}
 
 	public Lager(String bez, int bestand) {
-		super(bez);
+		super(bez + " " + bestand);
 		this.name = bez;
 		this.bestand = bestand;
 	}
@@ -83,7 +80,6 @@ public class Lager extends DefaultMutableTreeNode {
 			result.add("Lager \"" + this.name + "\" kann keinen Bestand haben.");
 			throw new LagerverwaltungsException("Lager kann keinen Bestand haben.", result, null);
 		}
-
 	}
 
 	/**
@@ -95,6 +91,7 @@ public class Lager extends DefaultMutableTreeNode {
 		List<String> result = new ArrayList<String>();
 		if ((this.bestand + menge >= 0)) {
 			this.bestand = this.bestand + menge;
+			this.setUserObject(this.name + " " + this.bestand); // Ändert angezeigten Namen im Baum
 		} else {
 			result.add("Bestand kleiner 0 nicht möglich.");
 			throw new LagerverwaltungsException("Bestand vom Lager \"" + this.name + "\" kann nicht geändert werden.", result, null);
@@ -110,7 +107,7 @@ public class Lager extends DefaultMutableTreeNode {
 
 	// Element (Blatt oder Knoten) hinzufügen
 	public Lager addTreeElement(String bez, int menge) {
-		blatt = new Lager(bez + " " + menge);
+		blatt = new Lager(bez, menge);
 		this.add(blatt);
 		this.isBestandHaltend = false; // übergeordneter Knoten darf keinen
 										// Bestand zeigen - falls diese Methode
@@ -128,7 +125,7 @@ public class Lager extends DefaultMutableTreeNode {
 		return blatt;
 	}
 
-	// erstellten Baum zurückgeben
+	
 	public static Lager getTree() {
 		return wurzel;
 	}
@@ -151,5 +148,9 @@ public class Lager extends DefaultMutableTreeNode {
 
 	public ArrayList<Buchung> getBuchungen() {
 		return buchungen;
+	}
+	
+	public String getName() {
+		return name;
 	}
 }
