@@ -36,6 +36,7 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 			
 			Lieferung lieferung = new Lieferung(new Date());
 			Buchung buchung;
+			Lager lager;
 			int menge;
 			
 			lagerListe = Oberflaeche.getInstance().getHinzugefuegteLager();
@@ -44,7 +45,10 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 				try 
 				{
 					menge = Integer.parseInt(element.getValue().getText());	
-					element.getKey().addBuchung(buchung = new Buchung(menge, Lagerverwaltung_handler.lieferungID++));
+					lager = element.getKey();
+					lager.veraenderBestand(menge);
+					lager.addBuchung(buchung = new Buchung(menge, Lagerverwaltung_handler.lieferungID++));
+					
 					lieferung.addBuchung(buchung);
 				} 
 				catch (NumberFormatException ex) 
