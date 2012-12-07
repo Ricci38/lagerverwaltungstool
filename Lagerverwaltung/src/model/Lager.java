@@ -75,12 +75,10 @@ public class Lager extends DefaultMutableTreeNode {
 		return 2;
 	}
 
+	//FIXME: Exception hinzufügen!
 	public int veraenderBestand(int menge) {
-		if (menge >= 0) {
+		if ((this.bestand + menge >= 0)) {
 			this.bestand = this.bestand + menge;
-			return 0; // Fehlerfrei
-		} else if ((this.bestand - menge >= 0)) {
-			this.bestand = this.bestand - menge;
 			return 0;
 		} else
 			return 1; // Fehler!
