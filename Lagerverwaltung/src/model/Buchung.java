@@ -7,12 +7,16 @@ public class Buchung {
 
 	
 	
-	public Buchung()
+	public Buchung(int m)
 	{
 		//TODO: Attribute setzen
+		this.menge = m;
 	}
 	
 	
-	//Setter und Getter
+	public int getMenge()
+	{
+		return this.menge;
+	}
 	
 }
