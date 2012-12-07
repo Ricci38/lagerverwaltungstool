@@ -30,8 +30,10 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 		{
 			JOptionPane.showMessageDialog(null, "Textfeld wurde verändert");
 
-		} else {
-			JOptionPane.showMessageDialog(null, "Unbekannte Aktion: " + e.getActionCommand());
+		} 	
+		else 
+		{
+			JOptionPane.showMessageDialog(null, "Hier kommt bald was...");
 		}
 
 	}

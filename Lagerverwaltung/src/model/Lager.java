@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class Lager extends DefaultMutableTreeNode {
@@ -9,6 +11,7 @@ public class Lager extends DefaultMutableTreeNode {
 	private boolean isBestandHaltend;
 	private int bestand, id;
 	private String name;
+	private ArrayList<Buchung> buchungen = new ArrayList<Buchung>();
 
 	private static final long serialVersionUID = -6664495404957376450L;
 
@@ -118,5 +121,15 @@ public class Lager extends DefaultMutableTreeNode {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public void addBuchung(Buchung b)
+	{
+		buchungen.add(b);
+	}
+	
+	public ArrayList<Buchung> getBuchungen()
+	{
+		return buchungen;
 	}
 }
