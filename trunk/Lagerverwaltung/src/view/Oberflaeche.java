@@ -10,6 +10,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -58,6 +59,7 @@ public class Oberflaeche {
 	private final int kopfzeilenHoehe = 40;
 	private GridBagLayout gbl;
 	private static int anz_hinzugefuegterLager = 0;
+	private HashMap<Lager, JTextField> hinzugefuegteLager = new HashMap<Lager, JTextField>();
 
 
 	// ### privater Konstruktor (Singelton) ###
@@ -299,22 +301,25 @@ public class Oberflaeche {
 	}
 	
 	
-	public void addLager(String name, ActionListener textField_listener)
+	public void addLager(Lager lager, ActionListener textField_listener)
 	{
-		/*
-		 * Doppelte Einträge müssen noch verhindert werden
-		 * 
-		 * Erzeugte Textfelder in einer statischen ArrayList sammeln und diese per statischer Methode zugänglich machen.
-		 * Dann kann aus der Handlerklasse auf die Methode und somit auf die Textfeldreferenzen zugegriffen werden
-		 */
 		
-		Tools.addComponent(p_EiAs_rigth, gbl, new JLabel(name), 0, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		Tools.addComponent(p_EiAs_rigth, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		prozentAnteil.addActionListener(textField_listener);
-		p_EiAs_rigth.updateUI();
-		anz_hinzugefuegterLager++;
+		if(!hinzugefuegteLager.containsKey(lager))
+		{
+			Tools.addComponent(p_EiAs_rigth, gbl, lagerBezeichnung = new JLabel(lager.toString()), 0, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+			Tools.addComponent(p_EiAs_rigth, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 7 + anz_hinzugefuegterLager, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+			prozentAnteil.addActionListener(textField_listener);
+			p_EiAs_rigth.updateUI();
+			anz_hinzugefuegterLager++;
+			
+			hinzugefuegteLager.put(lager, prozentAnteil);
+		}
 	}
 
+	public HashMap<Lager, JTextField> getHinzugefuegteLager()
+	{
+		return hinzugefuegteLager;
+	}
 	
 	public static void setLagerListener(ActionListener l)
 	{
