@@ -1,7 +1,10 @@
 package view;
 
+import java.util.Date;
+
 import javax.swing.JOptionPane;
 
+import model.Buchung;
 import model.Lager;
 import controller.Einbuchungsassistent_handler;
 import controller.Lagerverwaltung_handler;
@@ -13,7 +16,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		int pane_value;
-
+		
 		Lager wurzel = Lager.addWurzel("Lagerverwaltung");
 		pane_value = JOptionPane.showConfirmDialog(null,
 				"Willkommen im Lagerverwaltungstool!\nSoll eine Beispielhierarchie für die Lagerverwaltung geladen werden?", "Lagerhierarchie laden",
@@ -62,5 +65,7 @@ public class Main {
 		blatt2 = blatt1.addTreeElement("L'aquila", 500);
 		blatt1 = knoten.addTreeElement("Spanien", 500);
 		knoten = root.addTreeElement("Großbritannien", 500);
+		knoten.veraenderBestand(100);
+		knoten.addBuchung(new Buchung(100, 22, new Date()));
 	}
 }
