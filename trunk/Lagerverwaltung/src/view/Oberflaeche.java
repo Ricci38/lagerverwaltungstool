@@ -10,6 +10,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.HashMap;
@@ -24,7 +25,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultTreeModel;
 
 import model.Buchung;
@@ -237,6 +237,8 @@ public class Oberflaeche {
 	{
 		Lager lager = getAusgewaehlterKnoten();
 		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
+		
 		// Aufbau einer 3xX Matrix
 		List<ArrayList<String>> daten = new ArrayList<ArrayList<String>>();
 		daten.add(new ArrayList<String>());
@@ -263,7 +265,7 @@ public class Oberflaeche {
 				
 				daten.get(0).add(((Integer)b.getLieferungID()).toString());
 				daten.get(1).add(((Integer)b.getMenge()).toString());
-				daten.get(2).add(b.getDatum().toString());
+				daten.get(2).add(sdf.format(b.getDatum()));
 				i++;
 			}
 			
