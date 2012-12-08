@@ -245,7 +245,6 @@ public class Oberflaeche {
 		
 		if (lager == null) return;
 		String[] spalten = new String[]{"ID","Lagername","Menge"};
-		DefaultTableModel test1 = new DefaultTableModel(spalten, 1);
 		int i = 0;
 		
 		//TODO: Daten in Tabelle anzeigen
@@ -261,23 +260,37 @@ public class Oberflaeche {
 		 */
 		if (lager.isLeaf()) {
 			for (Buchung b : buchungsListe) {
+				
 				daten.get(0).add(((Integer)b.getLieferungID()).toString());
 				daten.get(1).add(((Integer)b.getMenge()).toString());
 				daten.get(2).add(b.getDatum().toString());
 				i++;
 			}
 			
-			if (i > 0) { //FIXME !!! HILFEEE !!!
-				String[][] tblDaten = new String[3][i]; //FIXME Sag mir was hier falsch läuft, sodass er jedes Mal auf die Nase fällt...
-				for (int j = 0; j < i; j++) { //FIXME ...wenn eine oder mehrere Buchungen hier drinnen sind...
-					tblDaten[0][j] = daten.get(0).get(j); //FIXME ...dann gibt es jedes mal eine ArrayOutOfBoundsException...
-					tblDaten[1][j] = daten.get(1).get(j); //FIXME ...und ich verstehe nicht warum... ...habe das schon ein paar mal jetzt debuggt...
-					tblDaten[2][j] = daten.get(2).get(j); //FIXME ...und ich komme nicht drauf was da kaputt ist :(
+			/*
+			 * Ja das wa ne miese Sache. Die Zuweisung in der unteren For-Schleife war falsch. du hattest
+			 * tblDaten[0][j] und es musste aber tblDaten[j][0] sein. Habe ich auch nur durch 
+			 * ausprobieren rausgefunden.
+			 * 
+			 * Die Formatierung und Positionierung muss noch vorgenommen werden ;)
+			 * 
+			 * 
+			 */
+			if (i > 0) { 
+				String[][] tblDaten = new String[i][3]; 
+				
+				for (int j = 0; j < i; j++) { 
+					
+					tblDaten[j][0] = daten.get(0).get(j); 
+					tblDaten[j][1] = daten.get(1).get(j); 
+					tblDaten[j][2] = daten.get(2).get(j); 
+				
 				}
 				
-				tbl_buchungsUebersicht = new JTable(tblDaten, spalten); // FIXME Daten richtig anzeigen & Spalten nicht bearbeitbar machen
-//				tbl_buchungsUebersicht.getColumnModel().setColumnSelectionAllowed(false);
+				// FIXME Daten richtig anzeigen & Spalten nicht bearbeitbar machen
+				tbl_buchungsUebersicht = new JTable(tblDaten, spalten);
 				p_center.add(tbl_buchungsUebersicht);
+			
 			}
 		}
 		p_center.updateUI();
