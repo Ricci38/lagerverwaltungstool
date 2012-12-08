@@ -13,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -235,9 +236,15 @@ public class Oberflaeche {
 	public void zeigeBuchungsdetails(ArrayList<Buchung> buchungsListe)
 	{
 		Lager lager = getAusgewaehlterKnoten();
+		
+		// Aufbau einer 3xX Matrix
+		List<ArrayList<String>> daten = new ArrayList<ArrayList<String>>();
+		daten.add(new ArrayList<String>());
+		daten.add(new ArrayList<String>());
+		daten.add(new ArrayList<String>());
+		
 		if (lager == null) return;
 		String[] spalten = new String[]{"ID","Lagername","Menge"};
-		String[][] daten = new String[20][3];
 		DefaultTableModel test1 = new DefaultTableModel(spalten, 1);
 		int i = 0;
 		
@@ -245,16 +252,34 @@ public class Oberflaeche {
 		p_center.removeAll();
 		p_center.add(new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand()));
 		
+		
+		/*
+		 *  Hier vielleicht schon eine zweite for-Schleife drum herum legen, um auch von einem Lager, das kein 'leaf' ist,
+		 *  alle darunter liegenden Lager zu erfassen.
+		 *  Dann müsste auch die Matrix oben um eine ArrayList<String> erweitert werden, um den Lagernamen aufnehmen zu können.
+		 *  Das ist denke ich mal einfacher, als wenn wir das dann noch einmal anders machen für die "Oberlager".
+		 */
 		if (lager.isLeaf()) {
 			for (Buchung b : buchungsListe) {
-				daten[i][0] = ((Integer)b.getLieferungID()).toString();
-				daten[i][1] = ((Integer)b.getMenge()).toString();
-				daten[i++][2] = b.getDatum().toString();
+				daten.get(0).add(((Integer)b.getLieferungID()).toString());
+				daten.get(1).add(((Integer)b.getMenge()).toString());
+				daten.get(2).add(b.getDatum().toString());
+				i++;
+			}
+			
+			if (i > 0) { //FIXME !!! HILFEEE !!!
+				String[][] tblDaten = new String[3][i]; //FIXME Sag mir was hier falsch läuft, sodass er jedes Mal auf die Nase fällt...
+				for (int j = 0; j < i; j++) { //FIXME ...wenn eine oder mehrere Buchungen hier drinnen sind...
+					tblDaten[0][j] = daten.get(0).get(j); //FIXME ...dann gibt es jedes mal eine ArrayOutOfBoundsException...
+					tblDaten[1][j] = daten.get(1).get(j); //FIXME ...und ich verstehe nicht warum... ...habe das schon ein paar mal jetzt debuggt...
+					tblDaten[2][j] = daten.get(2).get(j); //FIXME ...und ich komme nicht drauf was da kaputt ist :(
+				}
+				
+				tbl_buchungsUebersicht = new JTable(tblDaten, spalten); // FIXME Daten richtig anzeigen & Spalten nicht bearbeitbar machen
+//				tbl_buchungsUebersicht.getColumnModel().setColumnSelectionAllowed(false);
+				p_center.add(tbl_buchungsUebersicht);
 			}
 		}
-		tbl_buchungsUebersicht = new JTable(3,2); // FIXME Daten richtig anzeigen & Spalten nicht bearbeitbar machen
-//		tbl_buchungsUebersicht.getColumnModel().setColumnSelectionAllowed(false);
-		p_center.add(tbl_buchungsUebersicht);
 		p_center.updateUI();
 	}
 	
