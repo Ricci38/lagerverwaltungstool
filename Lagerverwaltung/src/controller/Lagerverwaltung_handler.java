@@ -9,6 +9,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import model.Lager;
+import model.Lieferung;
 import view.Oberflaeche;
 
 public class Lagerverwaltung_handler implements ActionListener, TreeSelectionListener {
@@ -93,10 +94,11 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			JOptionPane.showMessageDialog(null, "redo");
 		} else if (e.getActionCommand().toLowerCase().equals(("Lieferungsübersicht").toLowerCase())) {
 			// FIXME !!!
+			Oberflaeche.getInstance().zeigeLieferungen(Lieferung.getAllLieferungen());
+			
 		} else if (e.getActionCommand().toLowerCase().equals(("Lagerübersicht").toLowerCase())) {
 			JOptionPane.showMessageDialog(null, "Lagerübersicht");
 		} else if (e.getActionCommand().toLowerCase().equals(("Lagersaldo").toLowerCase())) {
-			// JOptionPane.showMessageDialog(null, "Lagersaldo");
 			//FIXME: Überprüfung ob ein Lager ausgewählt wurde muss noch hinzugefügt werden!
 			Lager pre_knoten;
 			pre_knoten = Oberflaeche.getInstance().getAusgewaehlterKnoten();
@@ -107,11 +109,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
-		// TODO Anzeige der Buchungen für das Lager in der Hauptoberfläche
-//		if (((Lager) e.getPath().getLastPathComponent()).isLeaf()) {
 			Oberflaeche.getInstance().zeigeBuchungsdetails(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
-//		}
-
 	}
 
 }

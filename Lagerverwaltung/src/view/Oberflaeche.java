@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.ScrollPane;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
@@ -29,6 +30,7 @@ import javax.swing.tree.DefaultTreeModel;
 
 import model.Buchung;
 import model.Lager;
+import model.Lieferung;
 
 public class Oberflaeche {
 
@@ -230,13 +232,10 @@ public class Oberflaeche {
 	public void zeigeBuchungsdetails(ArrayList<Buchung> buchungsListe)
 	{
 		Lager lager = getAusgewaehlterKnoten();
-		
+		JLabel lagerSaldo;
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
 		
-		
-		//TODO: Layout anpassen: Daten sollen nicht zentralisiert, sondern oben auf der gesamten Breite angezeigt werden
-		GridBagLayout gbl = new GridBagLayout();
-		p_center.setLayout(gbl);
+		p_center.setLayout(new BorderLayout());
 		
 		// Aufbau einer 3 x X Matrix
 		List<ArrayList<String>> daten = new ArrayList<ArrayList<String>>();
@@ -248,10 +247,12 @@ public class Oberflaeche {
 		String[] spalten = new String[]{"ID","Lagername","Menge"};
 		int i = 0;
 		
-		//TODO: Daten in Tabelle anzeigen
 		p_center.removeAll();
-		Tools.addComponent(p_center, gbl, new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand()), 0, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		
+		lagerSaldo = new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand());
+		lagerSaldo.setFont(new Font("Helvetica", Font.BOLD, 13));
+
+		p_center.add(lagerSaldo, BorderLayout.NORTH);
+
 		/*
 		 *  Hier vielleicht schon eine zweite for-Schleife drum herum legen, um auch von einem Lager, das kein 'leaf' ist,
 		 *  alle darunter liegenden Lager zu erfassen.
@@ -267,9 +268,6 @@ public class Oberflaeche {
 				i++;
 			}
 			
-			/*
-			 * Die Formatierung und Positionierung muss noch vorgenommen werden ;)
-			 */
 			if (i > 0) { 
 				String[][] tblDaten = new String[i][3]; 
 				
@@ -281,19 +279,26 @@ public class Oberflaeche {
 				}
 				
 				
-				// FIXME Daten richtig anzeigen & Spalten nicht bearbeitbar machen
+				// FIXME Daten nicht bearbeitbar machen
 				tbl_buchungsUebersicht = new JTable(tblDaten, spalten);
 				
-				/*
-				 * //XXX: Das hier sollte eigentlich so tun, 
-				 * als ob die Tabelle die Höhe des Panels hat, damit die Tabelle nicht immer 
-				 * in der Mitte rumfliegt, sondern oben ist....
-				 */
-				tbl_buchungsUebersicht.setFillsViewportHeight(true);		
-				Tools.addComponent(p_center, gbl, tbl_buchungsUebersicht, 0, 1, 4, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+				tbl_buchungsUebersicht.setFillsViewportHeight(true);	
+				p_center.add(new JScrollPane(tbl_buchungsUebersicht), BorderLayout.CENTER); 
 			}
 		}
 		p_center.updateUI();
+	}
+	
+	
+	public void zeigeLieferungen(ArrayList<Lieferung> l)
+	{
+		ArrayList<Lieferung> lieferungen = l;
+		p_center.removeAll();
+			
+		//TODO: Daten in Tabelle darstellen!
+		//ActionListener hinzufügen um die zugehörigen Buchungen darzustellen!
+		
+		
 	}
 	
 	public void resetEinbuchungsAssi()
