@@ -9,6 +9,8 @@ public class Buchung {
 	private final Date datum;
 
 	public Buchung(int m, int id, Date datum) {
+		//FIXME: Hier müsste eine Buchung ausgeführt werden, anstatt die Menge einfach zu setzen
+		//Dann würde auch jedes Lager das mit einem Anfangsbestand (z.B. in der Beispielhierarchie) erstellt wurde eine Zugangsbuchung haben
 		this.menge = m;
 		this.lieferung_ID = id;
 		this.datum = datum;

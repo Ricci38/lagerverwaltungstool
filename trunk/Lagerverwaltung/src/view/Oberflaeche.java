@@ -89,13 +89,11 @@ public class Oberflaeche {
 		p_top.setLayout(new GridLayout(2, 1)); // Tabellenlayout um die beiden Panels untereinander zu stapeln
 		p_top.setSize(lagerverwaltung.getWidth(), 80);
 		p_top_sub_top = new JPanel();
-//		p_top_sub_top.setBackground(Color.RED);
 		l_titel = new JLabel("Lagerverwaltungstool v1.0");
 		l_titel.setFont(new Font("Helvetica", Font.BOLD, 18));
 		p_top_sub_top.add(l_titel);
 
 		p_top_sub_bottom = new JPanel();
-//		p_top_sub_bottom.setBackground(Color.CYAN);
 		GridBagLayout gbl2 = new GridBagLayout();
 		p_top_sub_bottom.setLayout(gbl2);
 
@@ -150,10 +148,6 @@ public class Oberflaeche {
 		p_center = new JPanel();
 		p_center.setBackground(Color.GREEN);
 		
-		//TODO: Layout aussuchen und schauen in welchem Layout die Tabelle am besten passt
-//		GridBagLayout gbl = new GridBagLayout();
-//		p_center.setLayout(gbl);
-		
 		c.add(p_tree, BorderLayout.WEST);
 		c.add(p_top, BorderLayout.NORTH);
 		c.add(p_center, BorderLayout.CENTER);
@@ -182,7 +176,7 @@ public class Oberflaeche {
 
 		p_EiAs_left = new JPanel();
 		p_EiAs_left.setLayout(new GridLayout());
-		p_EiAs_left.setPreferredSize(new Dimension(150, 100));
+		p_EiAs_left.setPreferredSize(new Dimension(200, 100));
 		p_EiAs_left.setLocation(0, kopfzeilenHoehe);
 
 		JTree lagerTree = new JTree(Lager.getTree());
@@ -239,6 +233,11 @@ public class Oberflaeche {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
 		
+		
+		//TODO: Layout anpassen: Daten sollen nicht zentralisiert, sondern oben auf der gesamten Breite angezeigt werden
+		GridBagLayout gbl = new GridBagLayout();
+		p_center.setLayout(gbl);
+		
 		// Aufbau einer 3xX Matrix
 		List<ArrayList<String>> daten = new ArrayList<ArrayList<String>>();
 		daten.add(new ArrayList<String>());
@@ -251,8 +250,7 @@ public class Oberflaeche {
 		
 		//TODO: Daten in Tabelle anzeigen
 		p_center.removeAll();
-		p_center.add(new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand()));
-		
+		Tools.addComponent(p_center, gbl, new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand()), 0, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		
 		/*
 		 *  Hier vielleicht schon eine zweite for-Schleife drum herum legen, um auch von einem Lager, das kein 'leaf' ist,
@@ -286,13 +284,12 @@ public class Oberflaeche {
 					tblDaten[j][0] = daten.get(0).get(j); 
 					tblDaten[j][1] = daten.get(1).get(j); 
 					tblDaten[j][2] = daten.get(2).get(j); 
-				
 				}
+				
 				
 				// FIXME Daten richtig anzeigen & Spalten nicht bearbeitbar machen
 				tbl_buchungsUebersicht = new JTable(tblDaten, spalten);
-				p_center.add(tbl_buchungsUebersicht);
-			
+				Tools.addComponent(p_center, gbl, tbl_buchungsUebersicht, 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 			}
 		}
 		p_center.updateUI();
