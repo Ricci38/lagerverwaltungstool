@@ -238,7 +238,7 @@ public class Oberflaeche {
 		GridBagLayout gbl = new GridBagLayout();
 		p_center.setLayout(gbl);
 		
-		// Aufbau einer 3xX Matrix
+		// Aufbau einer 3 x X Matrix
 		List<ArrayList<String>> daten = new ArrayList<ArrayList<String>>();
 		daten.add(new ArrayList<String>());
 		daten.add(new ArrayList<String>());
@@ -268,13 +268,7 @@ public class Oberflaeche {
 			}
 			
 			/*
-			 * Ja das wa ne miese Sache. Die Zuweisung in der unteren For-Schleife war falsch. du hattest
-			 * tblDaten[0][j] und es musste aber tblDaten[j][0] sein. Habe ich auch nur durch 
-			 * ausprobieren rausgefunden.
-			 * 
 			 * Die Formatierung und Positionierung muss noch vorgenommen werden ;)
-			 * 
-			 * 
 			 */
 			if (i > 0) { 
 				String[][] tblDaten = new String[i][3]; 
@@ -289,7 +283,14 @@ public class Oberflaeche {
 				
 				// FIXME Daten richtig anzeigen & Spalten nicht bearbeitbar machen
 				tbl_buchungsUebersicht = new JTable(tblDaten, spalten);
-				Tools.addComponent(p_center, gbl, tbl_buchungsUebersicht, 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+				
+				/*
+				 * //XXX: Das hier sollte eigentlich so tun, 
+				 * als ob die Tabelle die Höhe des Panels hat, damit die Tabelle nicht immer 
+				 * in der Mitte rumfliegt, sondern oben ist....
+				 */
+				tbl_buchungsUebersicht.setFillsViewportHeight(true);		
+				Tools.addComponent(p_center, gbl, tbl_buchungsUebersicht, 0, 1, 4, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 			}
 		}
 		p_center.updateUI();

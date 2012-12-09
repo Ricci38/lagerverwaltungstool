@@ -85,8 +85,18 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		((JTextField) e.getSource()).setText("");
-
+		//Unterscheidung zwischen Zahl und Text in dem Textfeld 
+		//Bei Zahl: Textfeld wird nicht geleert
+		//Bei Text: Textfeld wird geleert
+		try			
+		{
+			Integer.parseInt(((JTextField) e.getSource()).getText());  
+			//Falls hier keine Exception geworfen wird ist es eine Zahl
+		}
+		catch(NumberFormatException ex)
+		{
+			((JTextField) e.getSource()).setText("");
+		}
 	}
 
 	@Override
