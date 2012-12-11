@@ -27,6 +27,7 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 
+import lagerverwaltungStart.Main;
 import model.Buchung;
 import model.Lager;
 import model.Lieferung;
@@ -49,7 +50,6 @@ public class Oberflaeche {
 	private JLabel l_titel;
 	private JTree lagerTree;
 	private JTable tbl_buchungsUebersicht;
-
 	// ### Variablen für den EinbuchungsAssistent ###
 	private JPanel p_EiAs_top, p_EiAs_left, p_EiAs_rigth, p_EiAs_button, p_EiAs_rigth_center;
 	private JLabel l_EiAs_treeUeberschrift;
@@ -90,7 +90,7 @@ public class Oberflaeche {
 		p_top.setLayout(new GridLayout(2, 1)); // Tabellenlayout um die beiden Panels untereinander zu stapeln
 		p_top.setSize(lagerverwaltung.getWidth(), 80);
 		p_top_sub_top = new JPanel();
-		l_titel = new JLabel("Lagerverwaltungstool v1.0");
+		l_titel = new JLabel("Lagerverwaltungstool v" + Main.VERSION);
 		l_titel.setFont(new Font("Helvetica", Font.BOLD, 18));
 		p_top_sub_top.add(l_titel);
 
@@ -311,6 +311,7 @@ public class Oberflaeche {
 	{
 		einbuchungsAssi = null;
 		hinzugefuegteLager.clear();
+		anz_hinzugefuegterLager = 0;
 		buildEinbuchungsAssi();
 	}
 	public void addLager(Lager lager, EventListener textField_listener)

@@ -1,4 +1,4 @@
-package view;
+package lagerverwaltungStart;
 
 import java.util.Date;
 
@@ -6,10 +6,13 @@ import javax.swing.JOptionPane;
 
 import model.Buchung;
 import model.Lager;
+import view.Oberflaeche;
 import controller.Einbuchungsassistent_handler;
 import controller.Lagerverwaltung_handler;
 
 public class Main {
+	
+	public static final String VERSION = "0.5";
 
 	/**
 	 * @param args
@@ -39,8 +42,6 @@ public class Main {
 		myEinbuchungsHandler.announceGUI_Einbuchung(Oberflaeche.getInstance());
 		
 	}
-
-	
 
 	private static void beispielHierarchieLaden(Lager root) {
 		Lager knoten, blatt1, blatt2;
