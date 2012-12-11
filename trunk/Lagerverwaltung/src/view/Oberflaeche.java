@@ -301,8 +301,8 @@ public class Oberflaeche {
 		ArrayList<Lieferung> lieferungen = l;
 		p_center.removeAll();
 			
-		//TODO: Daten in Tabelle darstellen!
-		//ActionListener hinzufügen um die zugehörigen Buchungen darzustellen!
+		//TODO Daten in Tabelle darstellen!
+		//TODO ActionListener hinzufügen um die zugehörigen Buchungen darzustellen!
 		
 		
 	}
