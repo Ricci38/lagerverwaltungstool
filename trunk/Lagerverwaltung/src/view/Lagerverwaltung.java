@@ -71,7 +71,6 @@ public class Lagerverwaltung extends JFrame {
 		lagersaldo = new JButton("Lagersaldo");
 		lieferungFuerLager = new JButton("Lagerübersicht");
 
-		// ### Actionlistener bekannt machen ### FIXME Listener :)
 		undo.addActionListener(listener);
 		redo.addActionListener(listener);
 		buchen.addActionListener(listener);

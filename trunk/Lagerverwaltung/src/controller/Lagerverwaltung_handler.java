@@ -2,18 +2,24 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
+import model.Buchung;
 import model.Lager;
 import model.Lieferung;
 import view.Oberflaeche;
+import view.Tools;
 import view.impl.OberflaecheImpl;
 
-public class Lagerverwaltung_handler implements ActionListener, TreeSelectionListener {
+public class Lagerverwaltung_handler implements ActionListener, TreeSelectionListener, MouseListener {
 
 	Oberflaeche GUI_lager;
 	static int lieferungID = 0;
@@ -84,7 +90,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		}
 
 		else if (e.getActionCommand().toLowerCase().equals(("Neue Lieferung").toLowerCase())) {
-			// Anmeldung des Handlers und Erzeugung des Frames
 			OberflaecheImpl.getInstance().resetEinbuchungsAssi();
 			OberflaecheImpl.getInstance().showEinbuchungsAssi();
 		}
@@ -98,19 +103,59 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			OberflaecheImpl.getInstance().zeigeLieferungen(Lieferung.getAllLieferungen());
 			
 		} else if (e.getActionCommand().toLowerCase().equals(("Lagerübersicht").toLowerCase())) {
+			//XXX: dieser Button ist doch eigentlich auch Sinnfrei... Man bekommt die Lagerübersicht
+			//sobald man ein Lager anklickt...
 			JOptionPane.showMessageDialog(null, "Lagerübersicht");
-		} else if (e.getActionCommand().toLowerCase().equals(("Lagersaldo").toLowerCase())) {
+		} 
+		
+		//XXX:Funktion wird nicht mehr benötigt
+		/*
+		else if (e.getActionCommand().toLowerCase().equals(("Lagersaldo").toLowerCase())) {
 			//FIXME: Überprüfung ob ein Lager ausgewählt wurde muss noch hinzugefügt werden!
 			Lager pre_knoten;
 			pre_knoten = OberflaecheImpl.getInstance().getAusgewaehlterKnoten();
 
 			JOptionPane.showMessageDialog(null, pre_knoten.getBestand());
 		}
+		*/
 	}
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 			OberflaecheImpl.getInstance().zeigeBuchungsdetails(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		int selectedRow;
+		String value;
+		JTable tbl_lieferungsUebersicht = (JTable) e.getSource();
+		selectedRow = tbl_lieferungsUebersicht.getSelectedRow();
+		if (selectedRow == -1)		//Keine Zeile ausgewählt
+			return;
+		
+		value = tbl_lieferungsUebersicht.getValueAt(selectedRow, 0).toString();				//Wert (Datum) der ausgewählten Zeile und ersten Spalte
+		
+		Lieferung lieferung = Lieferung.getLieferung(value);
+		
+		List<Buchung> buchungen = lieferung.getBuchungen();
+		OberflaecheImpl.getInstance().zeigeLieferungsBuchungen(buchungen);
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
 	}
 
 }

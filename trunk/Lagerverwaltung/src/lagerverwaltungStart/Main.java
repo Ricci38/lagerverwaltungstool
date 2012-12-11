@@ -33,6 +33,7 @@ public class Main {
 
 		OberflaecheImpl.setLagerListener(myLagerverwaltungHandler);
 		OberflaecheImpl.setEinbuchungListener(myEinbuchungsHandler);
+		OberflaecheImpl.setLieferungListener(myLagerverwaltungHandler);
 		OberflaecheImpl.getInstance().showLagerverwaltung();
 		
 		myLagerverwaltungHandler.announceGUI_Lager(OberflaecheImpl.getInstance());
