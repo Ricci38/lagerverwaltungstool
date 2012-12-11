@@ -8,7 +8,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.ScrollPane;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
@@ -280,7 +279,14 @@ public class Oberflaeche {
 				
 				
 				// FIXME Daten nicht bearbeitbar machen
-				tbl_buchungsUebersicht = new JTable(tblDaten, spalten);
+				tbl_buchungsUebersicht = new JTable(tblDaten, spalten) {
+					private static final long serialVersionUID = 861599783877862457L;
+
+					@Override
+					public boolean isCellEditable(int arg0, int arg1) {
+						return false;
+					}
+				};
 				
 				tbl_buchungsUebersicht.setFillsViewportHeight(true);	
 				p_center.add(new JScrollPane(tbl_buchungsUebersicht), BorderLayout.CENTER); 
