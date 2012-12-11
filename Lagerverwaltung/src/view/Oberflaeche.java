@@ -278,7 +278,6 @@ public class Oberflaeche {
 				}
 				
 				
-				// FIXME Daten nicht bearbeitbar machen
 				tbl_buchungsUebersicht = new JTable(tblDaten, spalten) {
 					private static final long serialVersionUID = 861599783877862457L;
 
@@ -296,13 +295,17 @@ public class Oberflaeche {
 	}
 	
 	
-	public void zeigeLieferungen(ArrayList<Lieferung> l)
+	public void zeigeLieferungen(ArrayList<Lieferung> lieferungen)
 	{
-		ArrayList<Lieferung> lieferungen = l;
 		p_center.removeAll();
-			
+		
+		String[][] daten = new String[3][lieferungen.size()];
 		//TODO Daten in Tabelle darstellen!
 		//TODO ActionListener hinzufügen um die zugehörigen Buchungen darzustellen!
+		
+		for (Lieferung l : lieferungen) {
+			l.getLieferungsDatum();
+		}
 		
 		
 	}
