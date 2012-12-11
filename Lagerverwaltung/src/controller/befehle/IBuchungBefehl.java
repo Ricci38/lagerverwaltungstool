@@ -2,11 +2,12 @@ package controller.befehle;
 
 import java.util.Date;
 
+import model.Buchung;
 import model.Lager;
 
 public interface IBuchungBefehl {
 	
-	public void execute(Lager l, int menge, Date d);
+	public Buchung execute(Lager l, int menge, Date d);
 	
 	public void undo();
 	

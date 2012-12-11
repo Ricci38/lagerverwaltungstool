@@ -19,6 +19,8 @@ import model.Lieferung;
 import view.Oberflaeche;
 import view.Tools;
 import view.impl.OberflaecheImpl;
+import controller.befehle.IBuchungBefehl;
+import controller.befehle.impl.BuchungBefehlImpl;
 import exception.LagerverwaltungsException;
 
 public class Einbuchungsassistent_handler implements ActionListener, TreeSelectionListener, MouseListener {
@@ -37,6 +39,7 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 			
 			ArrayList<Buchung> buchungen = new ArrayList<Buchung>();
 			Date d = new Date();
+			IBuchungBefehl befehl = new BuchungBefehlImpl();
 			Buchung buchung;
 			Lager lager;
 			int menge = 0;
@@ -44,10 +47,17 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 
 			lagerListe = OberflaecheImpl.getInstance().getHinzugefuegteLager();
 			for (Map.Entry<Lager, JTextField> element : lagerListe.entrySet()) {
-				if (!isNumber(element.getValue().getText())) {
+				if (!isItANumber(element.getValue().getText())) {
 					Tools.showMsg("Es sind nur Zahlenwerte erlaubt!");
 					return;
 				}
+				menge = Integer.parseInt(element.getValue().getText());
+				lager = element.getKey();
+				if (!lager.checkBestandsaenderung(menge)) {
+					Tools.showMsg("Bestand kann nicht geändert werden!");
+				}
+				else
+					befehl.execute(lager, menge, d);
 			}
 			
 			// FIXME TODO COMMAND PATTERN ANWENDEN!
@@ -118,20 +128,17 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-
 	}
 	
-	private boolean isNumber(String s) {
+	private boolean isItANumber(String s) {
 		try {
 			Integer.parseInt(s);
 			return true;

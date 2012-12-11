@@ -91,6 +91,13 @@ public class Lager extends DefaultMutableTreeNode {
 			throw new LagerverwaltungsException("Bestand vom Lager \"" + this.name + "\" kann nicht geändert werden.", result, null);
 		}
 	}
+	
+	public boolean checkBestandsaenderung(int menge) {
+		if ((this.bestand - menge) >= 0) {
+			return true;
+		}
+		return false;
+	}
 
 	// Wurzel erstellen
 	public static Lager addWurzel(String bez) {
@@ -130,6 +137,10 @@ public class Lager extends DefaultMutableTreeNode {
 
 	public boolean addBuchung(Buchung b) {
 		return buchungen.add(b);
+	}
+	
+	public boolean removeBuchung(Buchung b) {
+		return buchungen.remove(b);
 	}
 
 	public List<Buchung> getBuchungen() {
