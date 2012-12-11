@@ -11,6 +11,7 @@ import javax.swing.event.TreeSelectionListener;
 import model.Lager;
 import model.Lieferung;
 import view.Oberflaeche;
+import view.impl.OberflaecheImpl;
 
 public class Lagerverwaltung_handler implements ActionListener, TreeSelectionListener {
 
@@ -28,7 +29,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 			// Neuen Knoten hinzufügen
 			Lager pre_knoten;
-			pre_knoten = Oberflaeche.getInstance().getAusgewaehlterKnoten();
+			pre_knoten = OberflaecheImpl.getInstance().getAusgewaehlterKnoten();
 
 			// Falls ein Knoten ausgewählt wurde
 			if (!(pre_knoten == null)) {
@@ -70,7 +71,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 					if (pane_value == JOptionPane.OK_OPTION) {
 						pre_knoten.addTreeElement(name, menge);
-						Oberflaeche.getInstance().refreshTree(); // Anzeige des Trees aktualisieren
+						OberflaecheImpl.getInstance().refreshTree(); // Anzeige des Trees aktualisieren
 					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Das ausgewählte Lager besitzt einen Bestand. Lagererstellung nicht möglich!");
@@ -84,8 +85,8 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 		else if (e.getActionCommand().toLowerCase().equals(("Neue Lieferung").toLowerCase())) {
 			// Anmeldung des Handlers und Erzeugung des Frames
-			Oberflaeche.getInstance().resetEinbuchungsAssi();
-			Oberflaeche.getInstance().showEinbuchungsAssi();
+			OberflaecheImpl.getInstance().resetEinbuchungsAssi();
+			OberflaecheImpl.getInstance().showEinbuchungsAssi();
 		}
 
 		else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
@@ -94,14 +95,14 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			JOptionPane.showMessageDialog(null, "redo");
 		} else if (e.getActionCommand().toLowerCase().equals(("Lieferungsübersicht").toLowerCase())) {
 			// FIXME !!!
-			Oberflaeche.getInstance().zeigeLieferungen(Lieferung.getAllLieferungen());
+			OberflaecheImpl.getInstance().zeigeLieferungen(Lieferung.getAllLieferungen());
 			
 		} else if (e.getActionCommand().toLowerCase().equals(("Lagerübersicht").toLowerCase())) {
 			JOptionPane.showMessageDialog(null, "Lagerübersicht");
 		} else if (e.getActionCommand().toLowerCase().equals(("Lagersaldo").toLowerCase())) {
 			//FIXME: Überprüfung ob ein Lager ausgewählt wurde muss noch hinzugefügt werden!
 			Lager pre_knoten;
-			pre_knoten = Oberflaeche.getInstance().getAusgewaehlterKnoten();
+			pre_knoten = OberflaecheImpl.getInstance().getAusgewaehlterKnoten();
 
 			JOptionPane.showMessageDialog(null, pre_knoten.getBestand());
 		}
@@ -109,7 +110,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
-			Oberflaeche.getInstance().zeigeBuchungsdetails(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
+			OberflaecheImpl.getInstance().zeigeBuchungsdetails(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
 	}
 
 }

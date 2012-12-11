@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -12,10 +13,10 @@ public class Lager extends DefaultMutableTreeNode {
 	static Lager wurzel;
 	private Lager blatt;
 	private boolean isBestandHaltend;
-	private int bestand, id;
+	private int bestand;
 	private String name;
 
-	private final ArrayList<Buchung> buchungen = new ArrayList<Buchung>();
+	private final List<Buchung> buchungen = new ArrayList<Buchung>();
 
 	private static final long serialVersionUID = -6664495404957376450L;
 
@@ -23,20 +24,13 @@ public class Lager extends DefaultMutableTreeNode {
 	public Lager(String bez) {
 		super(bez);
 		this.name = bez;
-		this.bestand = 0;
 	}
 
 	public Lager(String bez, int bestand) {
 		super(bez + " " + bestand);
+		Date d = new Date();
 		this.name = bez;
-		this.bestand = bestand;
-	}
-
-	public Lager(int id, String bez, int bestand) {
-		super(bez);
-		this.id = id;
-		this.name = bez;
-		this.bestand = bestand;
+		new Lieferung(d, new Buchung(bestand, d));
 	}
 
 	//Gibt den eigenen oder oder kumulierten Bestand aller Unterlager wieder
@@ -134,19 +128,11 @@ public class Lager extends DefaultMutableTreeNode {
 		return this.isBestandHaltend;
 	}
 
-	public int getId() {
-		return id;
+	public boolean addBuchung(Buchung b) {
+		return buchungen.add(b);
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public void addBuchung(Buchung b) {
-		buchungen.add(b);
-	}
-
-	public ArrayList<Buchung> getBuchungen() {
+	public List<Buchung> getBuchungen() {
 		return buchungen;
 	}
 	

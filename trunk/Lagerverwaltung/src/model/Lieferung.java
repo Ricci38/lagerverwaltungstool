@@ -2,40 +2,46 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Lieferung {
-	private Date lieferungsDatum;
-	private ArrayList<Buchung> buchungen = new ArrayList<Buchung>();
-	private static ArrayList<Lieferung> lieferungen = new ArrayList<Lieferung>();
-	
-	
-	public Lieferung(Date d)
-	{
+	private final Date lieferungsDatum;
+	private final List<Buchung> buchungen;
+	private final int gesamtMenge;
+	private static List<Lieferung> lieferungen = new ArrayList<Lieferung>();
+
+	public Lieferung(Date d, int gesamtMenge, ArrayList<Buchung> b) {
 		this.lieferungsDatum = d;
-		
+		this.gesamtMenge = gesamtMenge;
+		this.buchungen = new ArrayList<Buchung>(b);
 	}
 	
-	public Date getLieferungsDatum()
-	{
+	public Lieferung(Date d, Buchung b) {
+		this.lieferungsDatum = d;
+		List<Buchung> bl = new ArrayList<Buchung>();
+		bl.add(b);
+		this.buchungen = bl;
+		this.gesamtMenge = b.getMenge();
+	}
+
+	public Date getLieferungsDatum() {
 		return this.lieferungsDatum;
 	}
 
-	public ArrayList<Buchung> getBuchungen() {
+	public List<Buchung> getBuchungen() {
 		return buchungen;
 	}
 
-	public void addBuchung(Buchung b) {
-		buchungen.add(b);
-	}
-	
-	public static ArrayList<Lieferung> addLieferung(Lieferung l)
-	{
+	public static List<Lieferung> addLieferungen(Lieferung l) {
 		lieferungen.add(l);
 		return lieferungen;
 	}
-	
-	public static ArrayList<Lieferung> getAllLieferungen()
-	{
+
+	public static List<Lieferung> getAllLieferungen() {
 		return lieferungen;
+	}
+
+	public int getGesamtMenge() {
+		return gesamtMenge;
 	}
 }

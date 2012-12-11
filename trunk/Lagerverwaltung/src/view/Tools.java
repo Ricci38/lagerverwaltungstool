@@ -6,6 +6,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.JOptionPane;
+
 public class Tools {
 	
 	final static Insets insets = new Insets(5,5,5,5);
@@ -23,6 +25,10 @@ public class Tools {
 		gbc.weighty = weighty;
 		gbl.setConstraints(c, gbc);
 		cont.add(c);
+	}
+	
+	public static void showMsg(String s) {
+		JOptionPane.showMessageDialog(null, s);
 	}
 
 }
