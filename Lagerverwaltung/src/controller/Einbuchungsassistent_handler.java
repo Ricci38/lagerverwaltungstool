@@ -4,11 +4,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -17,6 +17,8 @@ import model.Buchung;
 import model.Lager;
 import model.Lieferung;
 import view.Oberflaeche;
+import view.Tools;
+import view.impl.OberflaecheImpl;
 import exception.LagerverwaltungsException;
 
 public class Einbuchungsassistent_handler implements ActionListener, TreeSelectionListener, MouseListener {
@@ -32,39 +34,54 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().toLowerCase().equals(("Bestätigen").toLowerCase())) {
-
-			Lieferung lieferung = new Lieferung(new Date());
+			
+			ArrayList<Buchung> buchungen = new ArrayList<Buchung>();
+			Date d = new Date();
 			Buchung buchung;
 			Lager lager;
-			int menge;
+			int menge = 0;
+			int gesamtMenge = 0;
 
-			lagerListe = Oberflaeche.getInstance().getHinzugefuegteLager();
+			lagerListe = OberflaecheImpl.getInstance().getHinzugefuegteLager();
 			for (Map.Entry<Lager, JTextField> element : lagerListe.entrySet()) {
-				try {
-					menge = Integer.parseInt(element.getValue().getText());
-					lager = element.getKey();
-					lager.veraenderBestand(menge);
-					lager.addBuchung(buchung = new Buchung(menge, Lagerverwaltung_handler.lieferungID++, lieferung.getLieferungsDatum()));
-
-					lieferung.addBuchung(buchung);
-				} catch (NumberFormatException ex1) {
-					JOptionPane.showMessageDialog(null, "Es sind nur Zahlenwerte erlaubt! ");
-					return;
-				} catch (LagerverwaltungsException ex2) {
-					JOptionPane.showMessageDialog(null, ex2.getMessage());
+				if (!isNumber(element.getValue().getText())) {
+					Tools.showMsg("Es sind nur Zahlenwerte erlaubt!");
 					return;
 				}
-
 			}
+			
+			// FIXME TODO COMMAND PATTERN ANWENDEN!
+			for (Map.Entry<Lager, JTextField> elem : lagerListe.entrySet()) {
+				
+				// bbi = new BuchungBefehlImpl();
+				// for (bla) {
+				// 		bbi.execute(Buchung);
+				// }
+				
+				try {
+					menge = Integer.parseInt(elem.getValue().getText());
+					gesamtMenge += menge;
+					lager = elem.getKey();
+					lager.veraenderBestand(menge);
+					lager.addBuchung(buchung = new Buchung(menge, d));
+					buchungen.add(buchung);
+				}catch (LagerverwaltungsException ex) {
+					Tools.showMsg(ex.getMessage());
+					// bbi.undoAll();
+					return;
+				}
+			}
+			Lieferung.addLieferungen(new Lieferung(d, gesamtMenge, buchungen));
 
-			JOptionPane.showMessageDialog(null, "Buchung ausgeführt!");
-			Oberflaeche.getInstance().hideEinbuchungsAssi();
-			Oberflaeche.getInstance().refreshTree();
+			
+			Tools.showMsg("Buchung ausgeführt!");
+			OberflaecheImpl.getInstance().hideEinbuchungsAssi();
+			OberflaecheImpl.getInstance().refreshTree();
 
 		} else if (e.getActionCommand().toLowerCase().equals(("Abbruch").toLowerCase())) {
-			Oberflaeche.getInstance().hideEinbuchungsAssi();
+			OberflaecheImpl.getInstance().hideEinbuchungsAssi();
 		} else {
-			JOptionPane.showMessageDialog(null, "Hier kommt bald was...");
+			Tools.showMsg("Hier kommt bald was...");
 		}
 
 	}
@@ -75,7 +92,7 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 		if (((Lager) e.getPath().getLastPathComponent()).isBestandHaltend()) {
 			this.GUI_einbuchung.addLager((Lager) e.getPath().getLastPathComponent(), this);
 		} else
-			JOptionPane.showMessageDialog(null, "Dieses Lager kann keinen Bestand halten!");
+			Tools.showMsg("Dieses Lager kann keinen Bestand halten!");
 	}
 
 	@Override
@@ -112,6 +129,15 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 	@Override
 	public void mouseExited(MouseEvent e) {
 
+	}
+	
+	private boolean isNumber(String s) {
+		try {
+			Integer.parseInt(s);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 }

@@ -1,18 +1,15 @@
 package lagerverwaltungStart;
 
-import java.util.Date;
-
 import javax.swing.JOptionPane;
 
-import model.Buchung;
 import model.Lager;
-import view.Oberflaeche;
+import view.impl.OberflaecheImpl;
 import controller.Einbuchungsassistent_handler;
 import controller.Lagerverwaltung_handler;
 
 public class Main {
 	
-	public static final String VERSION = "0.5";
+	public static final String VERSION = "0.5a";
 
 	/**
 	 * @param args
@@ -34,12 +31,12 @@ public class Main {
 		//		Lagerverwaltung myLagerverwaltung = new Lagerverwaltung(myLagerverwaltungHandler);
 		//		myLagerverwaltungHandler.announceGUI_Lager(myLagerverwaltung);
 
-		Oberflaeche.setLagerListener(myLagerverwaltungHandler);
-		Oberflaeche.setEinbuchungListener(myEinbuchungsHandler);
-		Oberflaeche.getInstance().showLagerverwaltung();
+		OberflaecheImpl.setLagerListener(myLagerverwaltungHandler);
+		OberflaecheImpl.setEinbuchungListener(myEinbuchungsHandler);
+		OberflaecheImpl.getInstance().showLagerverwaltung();
 		
-		myLagerverwaltungHandler.announceGUI_Lager(Oberflaeche.getInstance());
-		myEinbuchungsHandler.announceGUI_Einbuchung(Oberflaeche.getInstance());
+		myLagerverwaltungHandler.announceGUI_Lager(OberflaecheImpl.getInstance());
+		myEinbuchungsHandler.announceGUI_Einbuchung(OberflaecheImpl.getInstance());
 		
 	}
 
@@ -67,6 +64,6 @@ public class Main {
 		blatt1 = knoten.addTreeElement("Spanien", 500);
 		knoten = root.addTreeElement("Groﬂbritannien", 500);
 		knoten.veraenderBestand(100);
-		knoten.addBuchung(new Buchung(100, 22, new Date()));
+//		knoten.addBuchung(new Buchung(100, 22, new Date()));
 	}
 }
