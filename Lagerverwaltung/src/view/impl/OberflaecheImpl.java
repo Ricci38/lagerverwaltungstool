@@ -40,7 +40,8 @@ public class OberflaecheImpl implements Oberflaeche {
 	private static Oberflaeche theInstance;
 	
 	// ### ActionListener für die Oberflächen ###
-	static ActionListener listener_Lagerverwaltung, listener_EinbuchungsAssi, listener_LieferungsUebersicht;
+	static ActionListener listener_Lagerverwaltung, listener_EinbuchungsAssi;
+	static MouseListener listener_LieferungsUebersicht;
 
 	// ### Variablen für die einzelnen Oberflächen ###
 	private JFrame lagerverwaltung;
@@ -51,7 +52,7 @@ public class OberflaecheImpl implements Oberflaeche {
 	private JButton redo, undo, buchen, buchungsuebersicht, lieferungFuerLager, neuesLager;
 	private JLabel l_titel;
 	private JTree lagerTree;
-	private JTable tbl_buchungsUebersicht;
+	private JTable tbl_buchungsUebersicht, tbl_lieferungsUebersicht;
 	
 	// ### Variablen für den EinbuchungsAssistent ###
 	private JPanel p_EiAs_top, p_EiAs_left, p_EiAs_rigth, p_EiAs_button, p_EiAs_rigth_center;
@@ -77,7 +78,6 @@ public class OberflaecheImpl implements Oberflaeche {
 	 */
 	private void buildLagerverwaltung() {
 		if (lagerverwaltung != null) return;
-		// TODO Überprüfen der gesamten Methode! (Gefahr von Copypasta!)
 		lagerverwaltung = new JFrame("Lagerverwaltung");
 		lagerverwaltung.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		lagerverwaltung.setSize(1200, 800);
@@ -234,7 +234,6 @@ public class OberflaecheImpl implements Oberflaeche {
 	/* (non-Javadoc)
 	 * @see view.Oberflaeche#zeigeBuchungsdetails(java.util.ArrayList)
 	 */
-	@Override
 	public void zeigeBuchungsdetails(List<Buchung> buchungsListe)
 	{
 		Lager lager = getAusgewaehlterKnoten();
@@ -249,15 +248,18 @@ public class OberflaecheImpl implements Oberflaeche {
 		daten.add(new ArrayList<String>());
 		daten.add(new ArrayList<String>());
 		
-		if (lager == null) return;
-		String[] spalten = new String[]{"ID","Lagername","Menge"};
+		if (lager == null && buchungsListe.isEmpty()) return;
+		String[] spalten = new String[]{"ID","Datum","Menge"};		//XXX: Lagername hinzufügen
 		int i = 0;
 		
 		p_center.removeAll();
-		lagerSaldo = new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand());
-		lagerSaldo.setFont(new Font("Helvetica", Font.BOLD, 13));
-
-		p_center.add(lagerSaldo, BorderLayout.NORTH);
+		if(!(lager == null))
+		{
+			lagerSaldo = new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand());
+			lagerSaldo.setFont(new Font("Helvetica", Font.BOLD, 13));
+			p_center.add(lagerSaldo, BorderLayout.NORTH);
+		}
+	
 
 		/*
 		 *  Hier vielleicht schon eine zweite for-Schleife drum herum legen, um auch von einem Lager, das kein 'leaf' ist,
@@ -265,12 +267,12 @@ public class OberflaecheImpl implements Oberflaeche {
 		 *  Dann müsste auch die Matrix oben um eine ArrayList<String> erweitert werden, um den Lagernamen aufnehmen zu können.
 		 *  Das ist denke ich mal einfacher, als wenn wir das dann noch einmal anders machen für die "Oberlager".
 		 */
-		if (lager.isLeaf()) {
+		if ((!(lager == null) && lager.isLeaf()) || !(buchungsListe.isEmpty())) {
 			for (Buchung b : buchungsListe) {
 				
 				daten.get(0).add(((Integer)b.getLieferungID()).toString());
-				daten.get(1).add(((Integer)b.getMenge()).toString());
-				daten.get(2).add(sdf.format(b.getDatum()));
+				daten.get(1).add(sdf.format(b.getDatum()));
+				daten.get(2).add(((Integer)b.getMenge()).toString());
 				i++;
 			}
 			
@@ -308,21 +310,46 @@ public class OberflaecheImpl implements Oberflaeche {
 	@Override
 	public void zeigeLieferungen(List<Lieferung> lieferungen)
 	{
+		if (lieferungen.isEmpty()) 
+			{
+				Tools.showMsg("Es wurden noch keine Lieferungen ausgeführt!");
+				return;
+			}
+		p_center.setLayout(new BorderLayout());
 		p_center.removeAll();
 		
 		int i = 0;
 		
-		String[][] daten = new String[3][lieferungen.size()];
-		//TODO Daten in Tabelle darstellen!
-		//TODO ActionListener hinzufügen um die zugehörigen Buchungen darzustellen!
+		String[] spalten = new String[]{"Datum","Anzahl Buchungen","BlaBla"};
+		String[][] daten = new String[lieferungen.size()][3];
 		
 		for (Lieferung l : lieferungen) {
-			daten[1][i] = l.getLieferungsDatum().toString(); 
-			daten[2][i] = ((Integer)l.getBuchungen().size()).toString();
-			daten[3][i++] = "asdf";
+			daten[i][0] = l.getLieferungsDatum().toString(); 
+			daten[i][1] = ((Integer)l.getBuchungen().size()).toString();
+			daten[i][2] = "asdf";
+			i++;
 		}
 		
+		tbl_lieferungsUebersicht = new JTable(daten, spalten)
+		{
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isCellEditable(int arg0, int arg1) {
+				return false;
+			}
+		};
 		
+		tbl_lieferungsUebersicht.setFillsViewportHeight(true);
+		tbl_lieferungsUebersicht.addMouseListener(listener_LieferungsUebersicht);
+		p_center.add(new JLabel("Lieferungsübersicht: "), BorderLayout.NORTH);
+		p_center.add(new JScrollPane(tbl_lieferungsUebersicht), BorderLayout.CENTER);
+		p_center.updateUI();
+	}
+	
+	public void zeigeLieferungsBuchungen(List<Buchung> buchungen)
+	{
+		OberflaecheImpl.getInstance().zeigeBuchungsdetails(buchungen);
 	}
 	
 	/* (non-Javadoc)
@@ -375,7 +402,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		listener_EinbuchungsAssi = l;
 	}
 	
-	public static void setLieferungListener(ActionListener l)
+	public static void setLieferungListener(MouseListener l)
 	{
 		listener_LieferungsUebersicht = l;
 	}

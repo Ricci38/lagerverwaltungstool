@@ -15,6 +15,8 @@ public interface Oberflaeche {
 	public void zeigeBuchungsdetails(List<Buchung> list);
 
 	public void zeigeLieferungen(List<Lieferung> list);
+	
+	public void zeigeLieferungsBuchungen(List<Buchung> buchungen);
 
 	public void resetEinbuchungsAssi();
 

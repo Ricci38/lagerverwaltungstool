@@ -40,6 +40,20 @@ public class Lieferung {
 	public static List<Lieferung> getAllLieferungen() {
 		return lieferungen;
 	}
+	
+	//Lieferungen werden durch das Datum eindeutig identifiziert -> Selektion anhand des Datums ist möglich
+	public static Lieferung getLieferung(String date)
+	{
+		if (date == null)
+			return null;
+		
+		for (Lieferung l : lieferungen)
+		{
+			if (date.equals(l.getLieferungsDatum().toString()));
+				return l;
+		}
+		return null;
+	}
 
 	public int getGesamtMenge() {
 		return gesamtMenge;
