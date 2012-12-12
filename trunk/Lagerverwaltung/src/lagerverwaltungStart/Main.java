@@ -3,8 +3,8 @@ package lagerverwaltungStart;
 import javax.swing.JOptionPane;
 
 import model.Lager;
+import model.Lieferung;
 import view.impl.OberflaecheImpl;
-import controller.Einbuchungsassistent_handler;
 import controller.Lagerverwaltung_handler;
 
 public class Main {
@@ -27,15 +27,16 @@ public class Main {
 		}
 
 				Lagerverwaltung_handler myLagerverwaltungHandler = new Lagerverwaltung_handler();
-				Einbuchungsassistent_handler myEinbuchungsHandler = new Einbuchungsassistent_handler();
 
 		OberflaecheImpl.setLagerListener(myLagerverwaltungHandler);
-		OberflaecheImpl.setEinbuchungListener(myEinbuchungsHandler);
 		OberflaecheImpl.setLieferungListener(myLagerverwaltungHandler);
-		OberflaecheImpl.getInstance().showLagerverwaltung();
+	
 		
 		myLagerverwaltungHandler.announceGUI_Lager(OberflaecheImpl.getInstance());
-		myEinbuchungsHandler.announceGUI_Einbuchung(OberflaecheImpl.getInstance());
+		OberflaecheImpl.getInstance().showLagerverwaltung();
+		
+		OberflaecheImpl.getInstance().selectTreeRoot();
+		OberflaecheImpl.getInstance().zeigeLieferungen(Lieferung.getAllLieferungen());
 		
 	}
 

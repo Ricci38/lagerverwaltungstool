@@ -17,12 +17,12 @@ import model.Lager;
 import model.Lieferung;
 import view.Oberflaeche;
 import view.Tools;
-import view.impl.OberflaecheImpl;
 
 public class Lagerverwaltung_handler implements ActionListener, TreeSelectionListener, MouseListener {
 
 	Oberflaeche GUI_lager;
 	static int lieferungID = 0;
+	
 
 	public void announceGUI_Lager(Oberflaeche myGUI) {
 		this.GUI_lager = myGUI;
@@ -35,7 +35,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 			// Neuen Knoten hinzufügen
 			Lager pre_knoten;
-			pre_knoten = OberflaecheImpl.getInstance().getAusgewaehlterKnoten();
+			pre_knoten = GUI_lager.getAusgewaehlterKnoten();
 
 			// Falls ein Knoten ausgewählt wurde
 			if (pre_knoten != null) {
@@ -77,7 +77,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 					if (pane_value == JOptionPane.OK_OPTION) {
 						pre_knoten.addTreeElement(name, menge);
-						OberflaecheImpl.getInstance().refreshTree(); // Anzeige des Trees aktualisieren
+						GUI_lager.refreshTree(); // Anzeige des Trees aktualisieren
 					}
 				} else {
 					Tools.showMsg("Das ausgewählte Lager besitzt einen Bestand. Lagererstellung nicht möglich!");
@@ -90,28 +90,36 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		}
 
 		else if (e.getActionCommand().toLowerCase().equals(("Neue Lieferung").toLowerCase())) {
-			OberflaecheImpl.getInstance().resetEinbuchungsAssi();
-			OberflaecheImpl.getInstance().showEinbuchungsAssi();
+			GUI_lager.disableLagerUebersicht();
+			GUI_lager.showCardNeueLieferung();
+			GUI_lager.showUndoRedo();
+			
+			//TODO: Nach Abschluss der Lieferung:
+//			GUI_lager.enableLagerUebersicht();
 		}
 
 		else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
-			Tools.showMsg("undo");
-		} else if (e.getActionCommand().toLowerCase().equals(("redo").toLowerCase())) {
-			Tools.showMsg("redo");
-		} else if (e.getActionCommand().toLowerCase().equals(("Lieferungsübersicht").toLowerCase())) {
-			// FIXME !!!
-			OberflaecheImpl.getInstance().zeigeLieferungen(Lieferung.getAllLieferungen());
+			//XXX: zu löschen:
+			GUI_lager.enableLagerUebersicht();
+			GUI_lager.hideUndoRedo();
+			GUI_lager.showCardUebersicht();
 			
-		} else if (e.getActionCommand().toLowerCase().equals(("Lagerübersicht").toLowerCase())) {
-			//XXX: dieser Button ist doch eigentlich auch Sinnfrei... Man bekommt die Lagerübersicht
-			//sobald man ein Lager anklickt...
-			Tools.showMsg("Lagerübersicht");
+		} else if (e.getActionCommand().toLowerCase().equals(("redo").toLowerCase())) {
+//			Tools.showMsg("redo");
+			
+			Tools.showMsg(Lieferung.getAllLieferungen().size());
+			
+			
+		} else if (e.getActionCommand().toLowerCase().equals(("Bestätigen").toLowerCase())) {
+			GUI_lager.enableLagerUebersicht();
+			GUI_lager.hideUndoRedo();
+			GUI_lager.showCardUebersicht();
 		} 
 	}
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
-			OberflaecheImpl.getInstance().zeigeBuchungsdetails(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
+			GUI_lager.zeigeBuchungsdetails(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
 	}
 
 	//FIXME: Lieferungsübersicht wird nicht immer angezeigt. Manchmal muss erst ein Element
@@ -130,7 +138,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		Lieferung lieferung = Lieferung.getLieferung(value);
 		
 		List<Buchung> buchungen = lieferung.getBuchungen();
-		OberflaecheImpl.getInstance().zeigeLieferungsBuchungen(buchungen);
+		GUI_lager.zeigeLieferungsBuchungen(buchungen);
 	}
 
 	@Override
