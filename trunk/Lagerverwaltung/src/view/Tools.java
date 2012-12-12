@@ -31,4 +31,7 @@ public class Tools {
 		JOptionPane.showMessageDialog(null, s);
 	}
 
+	public static void showMsg(int i) {
+		JOptionPane.showMessageDialog(null, i);
+	}
 }

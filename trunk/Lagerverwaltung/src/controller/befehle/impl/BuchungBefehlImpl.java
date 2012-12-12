@@ -18,21 +18,21 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 
 	@Override
 	public Buchung execute(Lager l, int menge, Date d) {
-		Buchung buchung;
+		Buchung b;
 		l.veraenderBestand(menge);
-		l.addBuchung(buchung = new Buchung(menge, d));
-		buchungsStackUndo.push(buchung);
+		l.addBuchung(b = new Buchung(menge, d));
+		buchungsStackUndo.push(b);
 		lagerStackUndo.push(l);
-		return buchung;
+		return b;
 	}
 
 	@Override
 	public void undo() {
 		try {
-			Buchung buchung = buchungsStackRedo.push(buchungsStackUndo.pop());
-			Lager lager = lagerStackRedo.push(lagerStackUndo.pop());
-			lager.removeBuchung(buchung);
-			lager.veraenderBestand(-buchung.getMenge());
+			Buchung b = buchungsStackRedo.push(buchungsStackUndo.pop());
+			Lager l = lagerStackRedo.push(lagerStackUndo.pop());
+			l.removeBuchung(b);
+			l.veraenderBestand(-b.getMenge());
 		}catch (Exception e) {
 			Tools.showMsg("Ich nix rückgängig machen können.");
 			return;
@@ -42,7 +42,10 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 	@Override
 	public void redo() {
 		// TODO Auto-generated method stub
-		
+		Buchung b = buchungsStackUndo.push(buchungsStackRedo.pop());
+		Lager l = lagerStackUndo.push(lagerStackRedo.pop());
+		l.veraenderBestand(b.getMenge());
+		l.addBuchung(b);
 	}
 
 	@Override
