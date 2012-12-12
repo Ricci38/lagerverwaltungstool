@@ -41,7 +41,7 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 
 	@Override
 	public void redo() {
-		// TODO Auto-generated method stub
+		
 		Buchung b = buchungsStackUndo.push(buchungsStackRedo.pop());
 		Lager l = lagerStackUndo.push(lagerStackRedo.pop());
 		l.veraenderBestand(b.getMenge());
@@ -50,8 +50,15 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 
 	@Override
 	public void undoAll() {
-		// TODO Auto-generated method stub
-		
+	
+		while (!buchungsStackUndo.isEmpty() || !lagerStackUndo.isEmpty())
+		{
+			undo();
+		}
+		buchungsStackUndo.clear();
+		buchungsStackRedo.clear();
+		lagerStackUndo.clear();
+		lagerStackRedo.clear();
 	}
 	
 }
