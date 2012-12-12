@@ -89,6 +89,8 @@ public class OberflaecheImpl implements Oberflaeche {
 		lagerverwaltung.setMinimumSize(new Dimension(900, 500));
 		lagerverwaltung.setLocation(30, 10);
 		
+		//FIXME: Programm schließt auch wenn man auf Nein klickt
+		//vielleicht nicht den WindowClosing, sondern ein anderes Event überschreiben
 		lagerverwaltung.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -185,7 +187,6 @@ public class OberflaecheImpl implements Oberflaeche {
 	 */
 	private void buildEinbuchungsAssi() {
 		if (einbuchungsAssi != null) return;
-		// TODO Gesamte Methode auf Fehler überprüfen! (Copypasta)
 		einbuchungsAssi = new JFrame("Einbuchungsassistent");
 		einbuchungsAssi.setSize(550, 400);
 		einbuchungsAssi.setLocation(300, 250);
