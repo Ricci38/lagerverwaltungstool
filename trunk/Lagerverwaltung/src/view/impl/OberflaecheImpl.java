@@ -80,9 +80,9 @@ public class OberflaecheImpl implements Oberflaeche {
 		if (lagerverwaltung != null) return;
 		lagerverwaltung = new JFrame("Lagerverwaltung");
 		lagerverwaltung.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		lagerverwaltung.setSize(1200, 800);
+		lagerverwaltung.setSize(1000, 700);
 		lagerverwaltung.setMinimumSize(new Dimension(900, 500));
-		lagerverwaltung.setLocation(100, 50);
+		lagerverwaltung.setLocation(30, 10);
 
 		Container c = lagerverwaltung.getContentPane();
 		c.setLayout(new BorderLayout(10, 10)); // in Klammer kann der Freiraum zwischen den einzelnen Elementen angegeben werden
@@ -234,6 +234,7 @@ public class OberflaecheImpl implements Oberflaeche {
 	/* (non-Javadoc)
 	 * @see view.Oberflaeche#zeigeBuchungsdetails(java.util.ArrayList)
 	 */
+	@Override
 	public void zeigeBuchungsdetails(List<Buchung> buchungsListe)
 	{
 		Lager lager = getAusgewaehlterKnoten();
@@ -347,6 +348,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center.updateUI();
 	}
 	
+	@Override
 	public void zeigeLieferungsBuchungen(List<Buchung> buchungen)
 	{
 		OberflaecheImpl.getInstance().zeigeBuchungsdetails(buchungen);
