@@ -11,7 +11,7 @@ import view.impl.OberflaecheImpl;
 import controller.Lagerverwaltung_handler;
 
 public class Main {
-	
+
 	public static final String VERSION = "0.7a";
 
 	/**
@@ -19,25 +19,23 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		int pane_value;
-		
-		Lager wurzel = Lager.addWurzel("Lagerverwaltung");
-		pane_value = JOptionPane.showConfirmDialog(null,
-				"Willkommen im Lagerverwaltungstool v"+VERSION+"!\nSoll eine Beispielhierarchie für die Lagerverwaltung geladen werden?", "Lagerhierarchie laden",
-				JOptionPane.YES_NO_OPTION);
 
+		Lager wurzel = Lager.addWurzel("Lagerverwaltung");
+		pane_value = JOptionPane.showConfirmDialog(null, "Willkommen im Lagerverwaltungstool v" + VERSION
+				+ "!\nSoll eine Beispielhierarchie für die Lagerverwaltung geladen werden?", "Lagerhierarchie laden", JOptionPane.YES_NO_OPTION);
+
+		Lagerverwaltung_handler myLagerverwaltungHandler = new Lagerverwaltung_handler();
+
+		OberflaecheImpl.setLagerListener(myLagerverwaltungHandler);
+		OberflaecheImpl.setLieferungListener(myLagerverwaltungHandler);
+
+		myLagerverwaltungHandler.announceGUI_Lager(OberflaecheImpl.getInstance());
+		OberflaecheImpl.getInstance().showLagerverwaltung();
+		
 		if (pane_value == JOptionPane.YES_OPTION) {
 			beispielHierarchieLaden(wurzel);
 		}
 
-				Lagerverwaltung_handler myLagerverwaltungHandler = new Lagerverwaltung_handler();
-
-		OberflaecheImpl.setLagerListener(myLagerverwaltungHandler);
-		OberflaecheImpl.setLieferungListener(myLagerverwaltungHandler);
-	
-		
-		myLagerverwaltungHandler.announceGUI_Lager(OberflaecheImpl.getInstance());
-		OberflaecheImpl.getInstance().showLagerverwaltung();
-		
 		OberflaecheImpl.getInstance().selectTreeRoot();
 		OberflaecheImpl.getInstance().zeigeLieferungen(Lieferung.getAllLieferungen());
 		
@@ -68,8 +66,7 @@ public class Main {
 		blatt2 = blatt1.addTreeElement("L'aquila");
 		blatt1 = knoten.addTreeElement("Spanien");
 		knoten = root.addTreeElement("Großbritannien");
-		
+
 		Lagerverwaltung_handler.getBefehlLieferung().execute(new Date(), Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
-		
 	}
 }
