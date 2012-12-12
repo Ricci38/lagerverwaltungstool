@@ -38,7 +38,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			pre_knoten = OberflaecheImpl.getInstance().getAusgewaehlterKnoten();
 
 			// Falls ein Knoten ausgewählt wurde
-			if (!(pre_knoten == null)) {
+			if (pre_knoten != null) {
 				//Lagererstellung ist nur bei einem Bestand von 0 zulässig!
 				if (pre_knoten.getEinzelBestand() == 0) {
 					String name = null, menge_str = null;
@@ -64,14 +64,14 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 								try {
 									menge = Integer.parseInt(menge_str);
 								} catch (NumberFormatException ex) {
-									JOptionPane.showMessageDialog(null, "Es sind nur Werte gleich oder größer 0 erlaubt!: ");
+									Tools.showMsg("Es sind nur Werte gleich oder größer 0 erlaubt!: ");
 									menge_str = "";			//Zuweisung eines leeren Strings, damit die do while Schleife erneut durchläuft
 								}
 
 							}
 							// Falls kein Bestand eingegeben wurde wird ein Fehler ausgegeben
 							else
-								JOptionPane.showMessageDialog(null, "Die eingegebene Bestandsmenge ist ungültig!");
+								Tools.showMsg("Die eingegebene Bestandsmenge ist ungültig!");
 						}
 					} while ((pane_value == JOptionPane.OK_OPTION) && ((name.isEmpty() || name == null) || (menge_str.isEmpty() || menge_str == null))); // falls auf OK geklickt wurde und...
 
@@ -80,13 +80,13 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 						OberflaecheImpl.getInstance().refreshTree(); // Anzeige des Trees aktualisieren
 					}
 				} else {
-					JOptionPane.showMessageDialog(null, "Das ausgewählte Lager besitzt einen Bestand. Lagererstellung nicht möglich!");
+					Tools.showMsg("Das ausgewählte Lager besitzt einen Bestand. Lagererstellung nicht möglich!");
 				}
 
 			}
 			// Falls kein Lager ausgewählt wurde wird ein Fehler ausgegeben
 			else
-				JOptionPane.showMessageDialog(null, "Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
+				Tools.showMsg("Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
 		}
 
 		else if (e.getActionCommand().toLowerCase().equals(("Neue Lieferung").toLowerCase())) {
@@ -95,9 +95,9 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		}
 
 		else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
-			JOptionPane.showMessageDialog(null, "undo");
+			Tools.showMsg("undo");
 		} else if (e.getActionCommand().toLowerCase().equals(("redo").toLowerCase())) {
-			JOptionPane.showMessageDialog(null, "redo");
+			Tools.showMsg("redo");
 		} else if (e.getActionCommand().toLowerCase().equals(("Lieferungsübersicht").toLowerCase())) {
 			// FIXME !!!
 			OberflaecheImpl.getInstance().zeigeLieferungen(Lieferung.getAllLieferungen());
@@ -105,7 +105,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		} else if (e.getActionCommand().toLowerCase().equals(("Lagerübersicht").toLowerCase())) {
 			//XXX: dieser Button ist doch eigentlich auch Sinnfrei... Man bekommt die Lagerübersicht
 			//sobald man ein Lager anklickt...
-			JOptionPane.showMessageDialog(null, "Lagerübersicht");
+			Tools.showMsg("Lagerübersicht");
 		} 
 		
 		//XXX:Funktion wird nicht mehr benötigt
@@ -115,7 +115,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			Lager pre_knoten;
 			pre_knoten = OberflaecheImpl.getInstance().getAusgewaehlterKnoten();
 
-			JOptionPane.showMessageDialog(null, pre_knoten.getBestand());
+			Tools.showMsg(pre_knoten.getBestand());
 		}
 		*/
 	}
