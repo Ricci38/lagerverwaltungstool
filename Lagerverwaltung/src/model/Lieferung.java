@@ -1,5 +1,6 @@
 package model;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +10,7 @@ public class Lieferung {
 	private final List<Buchung> buchungen;
 	private final int gesamtMenge;
 	private static List<Lieferung> lieferungen = new ArrayList<Lieferung>();
+	
 
 	public Lieferung(Date d, int gesamtMenge, List<Buchung> b) {
 		this.lieferungsDatum = d;
@@ -22,6 +24,7 @@ public class Lieferung {
 		bl.add(b);
 		this.buchungen = bl;
 		this.gesamtMenge = b.getMenge();
+		lieferungen.add(this);
 	}
 
 	public Date getLieferungsDatum() {
@@ -44,12 +47,11 @@ public class Lieferung {
 	//Lieferungen werden durch das Datum eindeutig identifiziert -> Selektion anhand des Datums ist möglich
 	public static Lieferung getLieferung(String date)
 	{
-		if (date == null)
-			return null;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
 		
 		for (Lieferung l : lieferungen)
 		{
-			if (date.equals(l.getLieferungsDatum().toString()));
+			if ((sdf.format(l.getLieferungsDatum())).equals(date))
 				return l;
 		}
 		return null;

@@ -1,6 +1,5 @@
 package view;
 
-import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,10 +17,6 @@ public interface Oberflaeche {
 	
 	public void zeigeLieferungsBuchungen(List<Buchung> buchungen);
 
-	public void resetEinbuchungsAssi();
-
-	public void addLager(Lager lager, EventListener textField_listener);
-
 	public HashMap<Lager, JTextField> getHinzugefuegteLager();
 
 	// ### Show & Hide Frames ###
@@ -29,10 +24,20 @@ public interface Oberflaeche {
 
 	public void hideLagerverwaltung();
 
-	public void showEinbuchungsAssi();
-
-	public void hideEinbuchungsAssi();
-
+	public void showCardNeueLieferung();
+	
+	public void showCardUebersicht();
+	
+	public void enableLagerUebersicht();
+	
+	public void disableLagerUebersicht();
+	
+	public void showUndoRedo();
+	
+	public void hideUndoRedo();
+	
+	public void selectTreeRoot();
+	
 	// ### JTree neu aufbauen ###
 	public void refreshTree();
 
