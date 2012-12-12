@@ -272,19 +272,21 @@ public class OberflaecheImpl implements Oberflaeche {
 			for (Buchung b : buchungsListe) {
 				
 				daten.get(0).add(((Integer)b.getLieferungID()).toString());
-				daten.get(1).add(sdf.format(b.getDatum()));
-				daten.get(2).add(((Integer)b.getMenge()).toString());
+				daten.get(1).add(lager.getName());
+				daten.get(2).add(sdf.format(b.getDatum()));
+				daten.get(3).add(((Integer)b.getMenge()).toString());
 				i++;
 			}
 			
 			if (i > 0) { 
-				String[][] tblDaten = new String[i][3]; 
+				String[][] tblDaten = new String[i][4]; 
 				
 				for (int j = 0; j < i; j++) { 
 					
 					tblDaten[j][0] = daten.get(0).get(j); 
-					tblDaten[j][1] = daten.get(1).get(j); 
+					tblDaten[j][1] = daten.get(1).get(j);
 					tblDaten[j][2] = daten.get(2).get(j); 
+					tblDaten[j][3] = daten.get(3).get(j); 
 				}
 				
 				
