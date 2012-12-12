@@ -93,7 +93,7 @@ public class Lager extends DefaultMutableTreeNode {
 	}
 	
 	public boolean checkBestandsaenderung(int menge) {
-		if ((this.bestand - menge) >= 0) {
+		if ((this.bestand + menge) >= 0) {
 			return true;
 		}
 		return false;

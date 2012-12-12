@@ -20,7 +20,9 @@ import view.Oberflaeche;
 import view.Tools;
 import view.impl.OberflaecheImpl;
 import controller.befehle.IBuchungBefehl;
+import controller.befehle.ILieferungBefehl;
 import controller.befehle.impl.BuchungBefehlImpl;
+import controller.befehle.impl.LieferungBefehlImpl;
 import exception.LagerverwaltungsException;
 
 public class Einbuchungsassistent_handler implements ActionListener, TreeSelectionListener, MouseListener {
@@ -39,7 +41,8 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 			
 			ArrayList<Buchung> buchungen = new ArrayList<Buchung>();
 			Date d = new Date();
-			IBuchungBefehl befehl = new BuchungBefehlImpl();
+			IBuchungBefehl befehlBuchung = new BuchungBefehlImpl();
+			ILieferungBefehl befehlLieferung = new LieferungBefehlImpl();
 			Buchung buchung;
 			Lager lager;
 			int menge = 0;
@@ -58,7 +61,11 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 					return;
 				}
 				else
-					befehl.execute(lager, menge, d);
+				{
+					buchungen.add(befehlBuchung.execute(lager, menge, d));
+					gesamtMenge += menge;
+				}
+				
 			}
 			
 			// FIXME TODO COMMAND PATTERN ANWENDEN!
@@ -69,20 +76,22 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 				// 		bbi.execute(Buchung);
 				// }
 				
-				try {
-					menge = Integer.parseInt(elem.getValue().getText());
-					gesamtMenge += menge;
-					lager = elem.getKey();
-					lager.veraenderBestand(menge);
-					lager.addBuchung(buchung = new Buchung(menge, d));
-					buchungen.add(buchung);
-				}catch (LagerverwaltungsException ex) {
-					Tools.showMsg(ex.getMessage());
-					// bbi.undoAll();
-					return;
-				}
+//				try {
+//					menge = Integer.parseInt(elem.getValue().getText());
+//					gesamtMenge += menge;
+//					lager = elem.getKey();
+//					lager.veraenderBestand(menge);
+//					lager.addBuchung(buchung = new Buchung(menge, d));
+//					buchungen.add(buchung);
+//				}catch (LagerverwaltungsException ex) {
+//					Tools.showMsg(ex.getMessage());
+//					// bbi.undoAll();
+//					return;
+//				}
 			}
-			Lieferung.addLieferungen(new Lieferung(d, gesamtMenge, buchungen));
+			
+			Lieferung.addLieferungen(befehlLieferung.execute(d, gesamtMenge, buchungen));
+			//Lieferung.addLieferungen(new Lieferung(d, gesamtMenge, buchungen));
 
 			
 			Tools.showMsg("Buchungen ausgeführt!");
