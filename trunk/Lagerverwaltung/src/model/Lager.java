@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import controller.Lagerverwaltung_handler;
 import exception.LagerverwaltungsException;
 
 public class Lager extends DefaultMutableTreeNode {
@@ -26,14 +27,14 @@ public class Lager extends DefaultMutableTreeNode {
 		this.name = bez;
 	}
 
-	//FIXME: Der Anfangsbestand muss per Buchung hinzugefügt werden
+	//FIXME: Der Anfangsbestand muss per Buchung/Lieferung hinzugefügt werden
 	//dazu muss das Befehlsobject der Methode addBuchung hier ankommen... 
 	//setter bzw. getter in den klassen, um den Befehl an den benötigten stellen zu setzen??
 	public Lager(String bez, int bestand) {
 		super(bez + " " + bestand);
 		Date d = new Date();
 		this.name = bez;
-		new Lieferung(d, new Buchung(bestand, d));
+		Lagerverwaltung_handler.getBefehlBuchung().execute(this, bestand, d);
 	}
 
 	//Gibt den eigenen oder oder kumulierten Bestand aller Unterlager wieder

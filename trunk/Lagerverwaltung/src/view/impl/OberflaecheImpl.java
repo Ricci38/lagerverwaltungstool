@@ -52,17 +52,17 @@ public class OberflaecheImpl implements Oberflaeche {
 
 	// ### Variablen für das Hauptfenster ###
 	private JPanel p_top, p_top_sub_top, p_top_sub_bottom, p_tree, p_center, p_platzhalter1, p_platzhalter2;
-	private JPanel p_center_lieferungen, p_center_buchungen, p_center_neue_lieferung;
+	private JPanel p_center_lieferungen, p_center_lieferungdetails, p_center_neue_lieferung, p_center_neue_lieferung_north, p_center_neue_lieferung_south, p_center_neue_lieferung_center, p_center_lagerbuchungen;
 	private JButton redo, undo, buchen, lageruebersicht, neuesLager;
 	private JLabel l_titel;
 	private JTree lagerTree;
-	private JTable tbl_buchungsUebersicht, tbl_lieferungsUebersicht;
+	private JTable tbl_buchungsUebersicht, tbl_lieferungsUebersicht, tbl_lagerbuchungen;
 	private JTabbedPane p_center_tabbs = new JTabbedPane();
 
 	// ### Variablen für den EinbuchungsAssistent ###
 	private JTextField gesamtmenge, prozentAnteil;
 	private JLabel lagerBezeichnung, anteilsMenge;
-	private JButton btn_bestaetigen, btn_abbruch;
+	private JButton btn_best, btn_abbr;
 	private GridBagLayout gbl;
 	private static int anz_hinzugefuegterLager = 0;
 	private final HashMap<Lager, JTextField> hinzugefuegteLager = new HashMap<Lager, JTextField>();
@@ -99,7 +99,7 @@ public class OberflaecheImpl implements Oberflaeche {
 				}
 			}
 		});
-
+		
 		Container c = lagerverwaltung.getContentPane();
 		c.setLayout(new BorderLayout(10, 10)); // in Klammer kann der Freiraum zwischen den einzelnen Elementen angegeben werden
 
@@ -164,10 +164,36 @@ public class OberflaecheImpl implements Oberflaeche {
 		// ### Menüauswahl im CENTER ###
 		p_center_tabbs = new JTabbedPane();
 		p_center_tabbs.addTab("Lieferungen", p_center_lieferungen = new JPanel());
-		p_center_tabbs.addTab("Buchungen", p_center_buchungen = new JPanel());
-
+		p_center_tabbs.addTab("Lieferungdetails", p_center_lieferungdetails = new JPanel());
+		p_center_tabbs.addTab("Lagerbuchungen", p_center_lagerbuchungen = new JPanel());
+		
+		GridBagLayout gbl_lieferung = new GridBagLayout();
+		
 		p_center_neue_lieferung = new JPanel();
-
+		p_center_neue_lieferung_north = new JPanel();
+		p_center_neue_lieferung_center = new JPanel();
+		p_center_neue_lieferung_south = new JPanel();
+		p_center_neue_lieferung_south.setLayout(gbl_lieferung);
+		p_center_neue_lieferung_south.setPreferredSize(new Dimension(1,100));
+		Tools.addComponent(p_center_neue_lieferung_south, gbl_lieferung,btn_best = new JButton("Bestätigen"), 1, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_center_neue_lieferung_south, gbl_lieferung,btn_abbr = new JButton("Abbrechen"), 3, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		p_center_neue_lieferung.setLayout(new BorderLayout());
+		p_center_neue_lieferung.add(p_center_neue_lieferung_north, BorderLayout.NORTH);
+		p_center_neue_lieferung.add(p_center_neue_lieferung_center, BorderLayout.CENTER);
+		p_center_neue_lieferung.add(p_center_neue_lieferung_south, BorderLayout.SOUTH);
+		
+		btn_best.addActionListener(listener_Lagerverwaltung);
+		btn_abbr.addActionListener(listener_Lagerverwaltung);
+		
+		p_center_neue_lieferung_north.add(new JLabel("Gesamtmenge: "));
+		p_center_neue_lieferung_north.add(gesamtmenge = new JTextField("Gesamtmenge"));
+		gesamtmenge.addMouseListener(listener_LieferungsUebersicht);
+		
+		
+		
+		gbl = new GridBagLayout();
+		
+		
 		//TODO: Scheiß Version des Einbuchungsassistenten
 		p_center = new JPanel();
 		p_center.setLayout(new CardLayout());
@@ -177,7 +203,17 @@ public class OberflaecheImpl implements Oberflaeche {
 		c.add(p_top, BorderLayout.NORTH);
 		c.add(p_center, BorderLayout.CENTER);
 	}
-
+	
+	@Override
+	public void x(String n, ActionListener l) {
+		p_center_neue_lieferung.removeAll();
+		Tools.addComponent(p_center_neue_lieferung, gbl, new JLabel(n), 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		prozentAnteil.addActionListener(l);
+		p_center_neue_lieferung.updateUI();
+	}
+	
+	
 	//gibt das CardLayout zurück, um die Cards ansprechen zu können
 	@Override
 	public void showCardNeueLieferung() {
@@ -232,17 +268,12 @@ public class OberflaecheImpl implements Oberflaeche {
 		return theInstance;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see view.Oberflaeche#zeigeBuchungsdetails(java.util.ArrayList)
-	 */
 	@Override
-	public void zeigeBuchungsdetails(List<Buchung> buchungsListe) {
+	public void zeigeLieferungsdetails(List<Buchung> buchungsListe) {
 		Lager lager = getAusgewaehlterKnoten();
 		JLabel lagerSaldo;
 
-		p_center_buchungen.setLayout(new BorderLayout());
+		p_center_lieferungdetails.setLayout(new BorderLayout());
 
 		// Aufbau einer 4 x X Matrix
 		List<ArrayList<String>> daten = new ArrayList<ArrayList<String>>();
@@ -251,21 +282,13 @@ public class OberflaecheImpl implements Oberflaeche {
 		daten.add(new ArrayList<String>());
 		daten.add(new ArrayList<String>());
 
-		if (lager != null) {
-			lagerSaldo = new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand());
-			lagerSaldo.setFont(new Font("Helvetica", Font.BOLD, 13));
-			p_center_buchungen.add(lagerSaldo, BorderLayout.NORTH);
-		} else if (lager == null || buchungsListe.isEmpty()) return;
+		if (lager == null || buchungsListe.isEmpty()) return;
 
-		String[] spalten = new String[] { "ID", "Lager", "Datum", "Menge" };
-		int i = 0;
+		String[] spalten = new String[] { "Buchungs ID", "Lager", "Datum", "Menge" };
 
-		p_center_buchungen.removeAll();
-		if (lager != null) {
-			lagerSaldo = new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand());
-			lagerSaldo.setFont(new Font("Helvetica", Font.BOLD, 13));
-			p_center_buchungen.add(lagerSaldo, BorderLayout.NORTH);
-		}
+		p_center_lieferungdetails.removeAll();
+		
+		int i = buchungsListe.size();
 
 		/*
 		 * Hier vielleicht schon eine zweite for-Schleife drum herum legen, um
@@ -278,11 +301,10 @@ public class OberflaecheImpl implements Oberflaeche {
 		if ((lager != null && lager.isLeaf()) || !(buchungsListe.isEmpty())) {
 			for (Buchung b : buchungsListe) {
 
-				daten.get(0).add(((Integer) b.getLieferungID()).toString());
-				daten.get(1).add(lager.getName());
+				daten.get(0).add(((Integer) b.getBuchungID()).toString());
+				daten.get(1).add(b.getLagerName());
 				daten.get(2).add(sdf.format(b.getDatum()));
 				daten.get(3).add(((Integer) b.getMenge()).toString());
-				i++;
 			}
 
 			if (i > 0) {
@@ -306,25 +328,20 @@ public class OberflaecheImpl implements Oberflaeche {
 				};
 
 				tbl_buchungsUebersicht.setFillsViewportHeight(true);
-				p_center_buchungen.add(new JScrollPane(tbl_buchungsUebersicht), BorderLayout.CENTER);
+				p_center_lieferungdetails.add(new JScrollPane(tbl_buchungsUebersicht), BorderLayout.CENTER);
 			}
 		}
-		p_center_buchungen.updateUI();
+		p_center_lieferungdetails.updateUI();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see view.Oberflaeche#zeigeLieferungen(java.util.ArrayList)
-	 */
 	@Override
 	public void zeigeLieferungen(List<Lieferung> lieferungen) {
 		if (lieferungen.isEmpty()) {
-			Tools.showMsg("Es wurden noch keine Lieferungen ausgeführt!");
+			p_center_lieferungen.add(new JLabel("Es wurden noch keine Lieferungen ausgeführt."));
 			return;
 		}
-		p_center_lieferungen.setLayout(new BorderLayout());
 		p_center_lieferungen.removeAll();
+		p_center_lieferungen.setLayout(new BorderLayout());
 
 		int i = 0;
 
@@ -353,17 +370,54 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center_lieferungen.add(new JScrollPane(tbl_lieferungsUebersicht), BorderLayout.CENTER);
 		p_center_lieferungen.updateUI();
 	}
+	
+	@Override
+	public void zeigeLagerbuchungen(List<Buchung> b) {
+		if (b.isEmpty()) {
+			p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
+			return;
+		}
+		p_center_lagerbuchungen.removeAll();
+		p_center_lagerbuchungen.setLayout(new BorderLayout());
+
+		int i = 0;
+
+		String[] spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
+		String[][] daten = new String[b.size()][3];
+
+		for (Buchung bu : b) {
+			daten[i][0] = ((Integer)bu.getBuchungID()).toString();
+			daten[i][1] = sdf.format(bu.getDatum());
+			daten[i++][2] = ((Integer)bu.getMenge()).toString();
+		}
+
+		tbl_lagerbuchungen = new JTable(daten, spalten) {
+
+			private static final long serialVersionUID = 6620092595652821138L;
+
+			@Override
+			public boolean isCellEditable(int arg0, int arg1) {
+				return false;
+			}
+		};
+
+		tbl_lagerbuchungen.setFillsViewportHeight(true);
+		p_center_lagerbuchungen.add(new JLabel("Buchungen von Lager \""+ getAusgewaehlterKnoten() +"\": "), BorderLayout.NORTH);
+		p_center_lagerbuchungen.add(new JScrollPane(tbl_lagerbuchungen), BorderLayout.CENTER);
+		p_center_lagerbuchungen.updateUI();
+	}
 
 	@Override
 	public void zeigeLieferungsBuchungen(List<Buchung> buchungen) {
-		theInstance.zeigeBuchungsdetails(buchungen);
+		theInstance.zeigeLieferungsdetails(buchungen);
+		// TODO zeige richtigen Tab an^^
+	}
+	
+	@Override
+	public void showTabLagerbuchung() {
+		// TODO do sth
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see view.Oberflaeche#getHinzugefuegteLager()
-	 */
 	@Override
 	public HashMap<Lager, JTextField> getHinzugefuegteLager() {
 		return hinzugefuegteLager;
@@ -382,42 +436,22 @@ public class OberflaecheImpl implements Oberflaeche {
 	}
 
 	// ### Show & Hide Frames ###
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see view.Oberflaeche#showLagerverwaltung()
-	 */
 	@Override
 	public void showLagerverwaltung() {
 		lagerverwaltung.setVisible(true);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see view.Oberflaeche#hideLagerverwaltung()
-	 */
 	@Override
 	public void hideLagerverwaltung() {
 		lagerverwaltung.setVisible(false);
 	}
 
 	// ### JTree neu aufbauen ###
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see view.Oberflaeche#refreshTree()
-	 */
 	@Override
 	public void refreshTree() {
 		((DefaultTreeModel) lagerTree.getModel()).reload();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see view.Oberflaeche#getAusgewaehlterKnoten()
-	 */
 	@Override
 	public Lager getAusgewaehlterKnoten() {
 		Lager pfad = (Lager) lagerTree.getLastSelectedPathComponent();

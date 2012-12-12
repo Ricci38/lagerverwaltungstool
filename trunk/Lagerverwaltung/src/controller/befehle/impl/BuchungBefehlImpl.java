@@ -9,18 +9,17 @@ import view.Tools;
 import controller.befehle.IBuchungBefehl;
 
 public class BuchungBefehlImpl implements IBuchungBefehl {
-	
+
 	private final Stack<Buchung> buchungsStackUndo = new Stack<Buchung>();
 	private final Stack<Buchung> buchungsStackRedo = new Stack<Buchung>();
 	private final Stack<Lager> lagerStackUndo = new Stack<Lager>();
 	private final Stack<Lager> lagerStackRedo = new Stack<Lager>();
-	
 
 	@Override
 	public Buchung execute(Lager l, int menge, Date d) {
 		Buchung b;
 		l.veraenderBestand(menge);
-		l.addBuchung(b = new Buchung(menge, d));
+		l.addBuchung(b = new Buchung(menge, d, l.getName()));
 		buchungsStackUndo.push(b);
 		lagerStackUndo.push(l);
 		return b;
@@ -33,7 +32,7 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 			Lager l = lagerStackRedo.push(lagerStackUndo.pop());
 			l.removeBuchung(b);
 			l.veraenderBestand(-b.getMenge());
-		}catch (Exception e) {
+		} catch (Exception e) {
 			Tools.showMsg("Ich nix rückgängig machen können.");
 			return;
 		}
@@ -41,7 +40,7 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 
 	@Override
 	public void redo() {
-		
+
 		Buchung b = buchungsStackUndo.push(buchungsStackRedo.pop());
 		Lager l = lagerStackUndo.push(lagerStackRedo.pop());
 		l.veraenderBestand(b.getMenge());
@@ -50,15 +49,18 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 
 	@Override
 	public void undoAll() {
-	
-		while (!buchungsStackUndo.isEmpty() || !lagerStackUndo.isEmpty())
-		{
+		while (!buchungsStackUndo.isEmpty() || !lagerStackUndo.isEmpty()) {
 			undo();
 		}
+		clearAll();
+	}
+
+	@Override
+	public void clearAll() {
 		buchungsStackUndo.clear();
 		buchungsStackRedo.clear();
 		lagerStackUndo.clear();
 		lagerStackRedo.clear();
 	}
-	
+
 }
