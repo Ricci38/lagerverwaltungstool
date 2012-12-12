@@ -60,7 +60,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 							if (name.isEmpty()) {
 								JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!", "Ungültige Bezeichnung",
 										JOptionPane.ERROR_MESSAGE);
-							} else if (!(menge_str.isEmpty() || menge_str == null)) {
+							} else if (!(null == menge_str || menge_str.isEmpty())) {
 								try {
 									menge = Integer.parseInt(menge_str);
 								} catch (NumberFormatException ex) {
@@ -76,7 +76,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 					} while ((pane_value == JOptionPane.OK_OPTION) && ((name.isEmpty() || name == null) || (menge_str.isEmpty() || menge_str == null))); // falls auf OK geklickt wurde und...
 
 					if (pane_value == JOptionPane.OK_OPTION) {
-						pre_knoten.addTreeElement(name, menge);
+						pre_knoten.addTreeElement(name).veraenderBestand(menge);
 						GUI_lager.refreshTree(); // Anzeige des Trees aktualisieren
 					}
 				} else {

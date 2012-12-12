@@ -88,7 +88,7 @@ public class Lager extends DefaultMutableTreeNode {
 		List<String> result = new ArrayList<String>();
 		if ((this.bestand + menge >= 0)) {
 			this.bestand = this.bestand + menge;
-			this.setUserObject(this.name + " " + this.bestand); // Ändert angezeigten Namen im Baum
+			this.setUserObject(this.name + ((menge != 0) ? " " + this.bestand : "")); // Ändert angezeigten Namen im Baum
 		} else {
 			result.add("Bestand kleiner 0 nicht möglich.");
 			throw new LagerverwaltungsException("Bestand vom Lager \"" + this.name + "\" kann nicht geändert werden.", result, null);
@@ -110,8 +110,8 @@ public class Lager extends DefaultMutableTreeNode {
 	}
 
 	// Element (Blatt oder Knoten) hinzufügen
-	public Lager addTreeElement(String bez, int menge) {
-		blatt = new Lager(bez, menge);
+	public Lager addTreeElement(String bez) {
+		blatt = new Lager(bez);
 		this.add(blatt);
 		this.isBestandHaltend = false; // übergeordneter Knoten darf keinen
 										// Bestand zeigen - falls diese Methode
@@ -120,7 +120,6 @@ public class Lager extends DefaultMutableTreeNode {
 										// einen Bestand anzuzeigen
 		blatt.isBestandHaltend = true;
 		blatt.name = bez;
-		blatt.bestand = menge;
 
 		this.setUserObject(this.name); // übergeordneten Knoten umbenennen,
 										// sodass der Bestand nicht mehr
