@@ -28,8 +28,6 @@ public class Main {
 
 				Lagerverwaltung_handler myLagerverwaltungHandler = new Lagerverwaltung_handler();
 				Einbuchungsassistent_handler myEinbuchungsHandler = new Einbuchungsassistent_handler();
-		//		Lagerverwaltung myLagerverwaltung = new Lagerverwaltung(myLagerverwaltungHandler);
-		//		myLagerverwaltungHandler.announceGUI_Lager(myLagerverwaltung);
 
 		OberflaecheImpl.setLagerListener(myLagerverwaltungHandler);
 		OberflaecheImpl.setEinbuchungListener(myEinbuchungsHandler);
@@ -64,7 +62,5 @@ public class Main {
 		blatt2 = blatt1.addTreeElement("L'aquila", 500);
 		blatt1 = knoten.addTreeElement("Spanien", 500);
 		knoten = root.addTreeElement("Groﬂbritannien", 500);
-		knoten.veraenderBestand(100);
-//		knoten.addBuchung(new Buchung(100, 22, new Date()));
 	}
 }
