@@ -16,6 +16,7 @@ public class Lieferung {
 		this.lieferungsDatum = d;
 		this.gesamtMenge = gesamtMenge;
 		this.buchungen = new ArrayList<Buchung>(b);
+		lieferungen.add(this);
 	}
 	
 	public Lieferung(Date d, Buchung b) {

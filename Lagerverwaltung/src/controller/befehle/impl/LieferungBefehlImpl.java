@@ -5,6 +5,7 @@ import java.util.List;
 
 import model.Buchung;
 import model.Lieferung;
+import view.impl.OberflaecheImpl;
 import controller.befehle.ILieferungBefehl;
 
 public class LieferungBefehlImpl implements ILieferungBefehl {
@@ -14,9 +15,11 @@ public class LieferungBefehlImpl implements ILieferungBefehl {
 	 */
 	@Override
 	public Lieferung execute(Date d, int menge, List<Buchung> buchungen) {
-		// TODO Neue Lieferung anlegen
+		for (Buchung b : buchungen) {
+			b.updateDate(d);
+		}
 		Lieferung l = new Lieferung(d, menge, buchungen);
-		
+		OberflaecheImpl.getInstance().zeigeLieferungen(Lieferung.getAllLieferungen());
 		return l;
 	}
 }

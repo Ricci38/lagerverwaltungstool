@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -17,12 +18,18 @@ import model.Lager;
 import model.Lieferung;
 import view.Oberflaeche;
 import view.Tools;
+import controller.befehle.IBuchungBefehl;
+import controller.befehle.ILieferungBefehl;
+import controller.befehle.impl.BuchungBefehlImpl;
+import controller.befehle.impl.LieferungBefehlImpl;
 
 public class Lagerverwaltung_handler implements ActionListener, TreeSelectionListener, MouseListener {
 
 	Oberflaeche GUI_lager;
 	static int lieferungID = 0;
-	
+
+	private static IBuchungBefehl befehlBuchung = new BuchungBefehlImpl();
+	private static ILieferungBefehl befehlLieferung = new LieferungBefehlImpl();
 
 	public void announceGUI_Lager(Oberflaeche myGUI) {
 		this.GUI_lager = myGUI;
@@ -30,6 +37,8 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
+		Tools.showMsg("actionPerformed");
 
 		if (e.getActionCommand().toLowerCase().equals(("Neues Lager").toLowerCase())) {
 
@@ -87,63 +96,76 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			// Falls kein Lager ausgewählt wurde wird ein Fehler ausgegeben
 			else
 				Tools.showMsg("Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
-		}
-
-		else if (e.getActionCommand().toLowerCase().equals(("Neue Lieferung").toLowerCase())) {
+		} else if (e.getActionCommand().toLowerCase().equals(("Neue Lieferung").toLowerCase())) {
 			GUI_lager.disableLagerUebersicht();
 			GUI_lager.showCardNeueLieferung();
 			GUI_lager.showUndoRedo();
-			
-			//TODO: Nach Abschluss der Lieferung:
-//			GUI_lager.enableLagerUebersicht();
-		}
+			//			GUI_lager.x(GUI_lager.getAusgewaehlterKnoten().getName(), this);
 
-		else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
-			//XXX: zu löschen:
-			GUI_lager.enableLagerUebersicht();
-			GUI_lager.hideUndoRedo();
-			GUI_lager.showCardUebersicht();
-			
+			//TODO: Nach Abschluss der Lieferung:
+			//			GUI_lager.enableLagerUebersicht();
+		} else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
+			befehlBuchung.undo();
 		} else if (e.getActionCommand().toLowerCase().equals(("redo").toLowerCase())) {
-//			Tools.showMsg("redo");
-			
+			//			Tools.showMsg("redo");
+
 			Tools.showMsg(Lieferung.getAllLieferungen().size());
-			
-			
+
 		} else if (e.getActionCommand().toLowerCase().equals(("Bestätigen").toLowerCase())) {
 			GUI_lager.enableLagerUebersicht();
 			GUI_lager.hideUndoRedo();
 			GUI_lager.showCardUebersicht();
-		} 
+			befehlLieferung.execute(new Date(), Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+			befehlBuchung.clearAll();
+		} else if (e.getActionCommand().toLowerCase().equals(("Abbrechen").toLowerCase())) {
+			befehlBuchung.undoAll();
+			GUI_lager.enableLagerUebersicht();
+			GUI_lager.hideUndoRedo();
+			GUI_lager.showCardUebersicht();
+		}
 	}
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
-			GUI_lager.zeigeBuchungsdetails(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
+		GUI_lager.zeigeLagerbuchungen(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
 	}
 
-	//FIXME: Lieferungsübersicht wird nicht immer angezeigt. Manchmal muss erst ein Element
-	//des Baums ausgewählt werden, damit es funktioniert
+	// XXX Bedarf einer gründlichen Überprüfung :)
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int selectedRow;
-		String value;
-		JTable tbl_lieferungsUebersicht = (JTable) e.getSource();
-		selectedRow = tbl_lieferungsUebersicht.getSelectedRow();
-		if (selectedRow == -1)		//Keine Zeile ausgewählt
-			return;
-		
-		value = tbl_lieferungsUebersicht.getValueAt(selectedRow, 0).toString();				//Wert (Datum) der ausgewählten Zeile und ersten Spalte
-		
-		Lieferung lieferung = Lieferung.getLieferung(value);
-		
-		List<Buchung> buchungen = lieferung.getBuchungen();
-		GUI_lager.zeigeLieferungsBuchungen(buchungen);
+		try {
+			int selectedRow;
+			String value;
+			JTable tbl_lieferungsUebersicht = (JTable) e.getSource();
+			selectedRow = tbl_lieferungsUebersicht.getSelectedRow();
+			if (selectedRow == -1)		//Keine Zeile ausgewählt
+				return;
+
+			value = tbl_lieferungsUebersicht.getValueAt(selectedRow, 0).toString();				//Wert (Datum) der ausgewählten Zeile und ersten Spalte
+
+			Lieferung lieferung = Lieferung.getLieferung(value);
+
+			List<Buchung> buchungen = lieferung.getBuchungen();
+			GUI_lager.zeigeLieferungsBuchungen(buchungen);
+		} catch (ClassCastException cce) {
+			//Unterscheidung zwischen Zahl und Text in dem Textfeld 
+			//Bei Zahl: Textfeld wird nicht geleert
+			//Bei Text: Textfeld wird geleert
+			try {
+				Integer.parseInt(((JTextField) e.getSource()).getText());
+				//Falls hier keine Exception geworfen wird ist es eine Zahl
+			} catch (NumberFormatException ex) {
+				((JTextField) e.getSource()).setText("");
+			}
+		} finally {
+			Tools.showMsg("finally block");
+		}
+		Tools.showMsg("mouseClicked");
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		
+
 	}
 
 	@Override
@@ -156,6 +178,14 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+	}
+
+	public static IBuchungBefehl getBefehlBuchung() {
+		return befehlBuchung;
+	}
+
+	public static ILieferungBefehl getBefehlLieferung() {
+		return befehlLieferung;
 	}
 
 }

@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import model.Lieferung;
 
 public interface Oberflaeche {
 
-	public void zeigeBuchungsdetails(List<Buchung> list);
+	public void zeigeLieferungsdetails(List<Buchung> list);
 
 	public void zeigeLieferungen(List<Lieferung> list);
 	
@@ -38,9 +39,15 @@ public interface Oberflaeche {
 	
 	public void selectTreeRoot();
 	
+	public void x(String n, ActionListener l);
+	
 	// ### JTree neu aufbauen ###
 	public void refreshTree();
 
 	public Lager getAusgewaehlterKnoten();
+
+	public void showTabLagerbuchung();
+
+	public void zeigeLagerbuchungen(List<Buchung> buchungen);
 
 }

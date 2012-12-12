@@ -15,4 +15,6 @@ public interface IBuchungBefehl {
 	
 	public void undoAll();
 
+	void clearAll();
+
 }

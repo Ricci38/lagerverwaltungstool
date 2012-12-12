@@ -1,7 +1,10 @@
 package lagerverwaltungStart;
 
+import java.util.Date;
+
 import javax.swing.JOptionPane;
 
+import model.Buchung;
 import model.Lager;
 import model.Lieferung;
 import view.impl.OberflaecheImpl;
@@ -9,7 +12,7 @@ import controller.Lagerverwaltung_handler;
 
 public class Main {
 	
-	public static final String VERSION = "0.6a";
+	public static final String VERSION = "0.7a";
 
 	/**
 	 * @param args
@@ -45,11 +48,10 @@ public class Main {
 		knoten = root.addTreeElement("Deutschland");
 		blatt1 = knoten.addTreeElement("Niedersachsen");
 		blatt2 = blatt1.addTreeElement("Hannover-Misburg");
-		blatt2.veraenderBestand(300);
+		Lagerverwaltung_handler.getBefehlBuchung().execute(blatt2, 200, new Date());
 		blatt2 = blatt1.addTreeElement("Nienburg");
-		blatt2.veraenderBestand(1200);
+		Lagerverwaltung_handler.getBefehlBuchung().execute(blatt2, 1200, new Date());
 		blatt1 = knoten.addTreeElement("NRW");
-		blatt1.veraenderBestand(500);
 		blatt1 = knoten.addTreeElement("Bremen");
 		blatt1 = knoten.addTreeElement("Hessen");
 		blatt1 = knoten.addTreeElement("Sachsen");
@@ -67,7 +69,7 @@ public class Main {
 		blatt1 = knoten.addTreeElement("Spanien");
 		knoten = root.addTreeElement("Groﬂbritannien");
 		
-		
+		Lagerverwaltung_handler.getBefehlLieferung().execute(new Date(), Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
 		
 	}
 }
