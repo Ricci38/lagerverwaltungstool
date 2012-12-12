@@ -38,8 +38,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		Tools.showMsg("actionPerformed");
-
 		if (e.getActionCommand().toLowerCase().equals(("Neues Lager").toLowerCase())) {
 
 			// Neuen Knoten hinzufügen
@@ -157,10 +155,9 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			} catch (NumberFormatException ex) {
 				((JTextField) e.getSource()).setText("");
 			}
-		} finally {
-			Tools.showMsg("finally block");
+//		} finally {
+//			Tools.showMsg("finally block");
 		}
-		Tools.showMsg("mouseClicked");
 	}
 
 	@Override

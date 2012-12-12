@@ -167,6 +167,21 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center_tabbs.addTab("Lieferungdetails", p_center_lieferungdetails = new JPanel());
 		p_center_tabbs.addTab("Lagerbuchungen", p_center_lagerbuchungen = new JPanel());
 		
+		buildNeueLieferung();
+		
+		gbl = new GridBagLayout();
+		
+		//TODO: Scheiß Version des Einbuchungsassistenten
+		p_center = new JPanel();
+		p_center.setLayout(new CardLayout());
+		p_center.add(p_center_tabbs, "Übersicht");
+		p_center.add(p_center_neue_lieferung, "NeueLieferung");
+		c.add(p_tree, BorderLayout.WEST);
+		c.add(p_top, BorderLayout.NORTH);
+		c.add(p_center, BorderLayout.CENTER);
+	}
+
+	private void buildNeueLieferung() {
 		GridBagLayout gbl_lieferung = new GridBagLayout();
 		
 		p_center_neue_lieferung = new JPanel();
@@ -188,25 +203,12 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center_neue_lieferung_north.add(new JLabel("Gesamtmenge: "));
 		p_center_neue_lieferung_north.add(gesamtmenge = new JTextField("Gesamtmenge"));
 		gesamtmenge.addMouseListener(listener_LieferungsUebersicht);
-		
-		
-		
-		gbl = new GridBagLayout();
-		
-		
-		//TODO: Scheiß Version des Einbuchungsassistenten
-		p_center = new JPanel();
-		p_center.setLayout(new CardLayout());
-		p_center.add(p_center_tabbs, "Übersicht");
-		p_center.add(p_center_neue_lieferung, "NeueLieferung");
-		c.add(p_tree, BorderLayout.WEST);
-		c.add(p_top, BorderLayout.NORTH);
-		c.add(p_center, BorderLayout.CENTER);
 	}
 	
 	@Override
 	public void x(String n, ActionListener l) {
 		p_center_neue_lieferung.removeAll();
+		buildNeueLieferung();
 		Tools.addComponent(p_center_neue_lieferung, gbl, new JLabel(n), 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		Tools.addComponent(p_center_neue_lieferung, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		prozentAnteil.addActionListener(l);
@@ -356,7 +358,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		}
 
 		tbl_lieferungsUebersicht = new JTable(daten, spalten) {
-			private static final long serialVersionUID = 1L;
+			private static final long serialVersionUID = -6588102605213723085L;
 
 			@Override
 			public boolean isCellEditable(int arg0, int arg1) {
@@ -373,37 +375,38 @@ public class OberflaecheImpl implements Oberflaeche {
 	
 	@Override
 	public void zeigeLagerbuchungen(List<Buchung> b) {
-		if (b.isEmpty()) {
-			p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
-			return;
-		}
 		p_center_lagerbuchungen.removeAll();
-		p_center_lagerbuchungen.setLayout(new BorderLayout());
-
-		int i = 0;
-
-		String[] spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
-		String[][] daten = new String[b.size()][3];
-
-		for (Buchung bu : b) {
-			daten[i][0] = ((Integer)bu.getBuchungID()).toString();
-			daten[i][1] = sdf.format(bu.getDatum());
-			daten[i++][2] = ((Integer)bu.getMenge()).toString();
+		if (null == b || b.isEmpty()) {
+			p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
 		}
-
-		tbl_lagerbuchungen = new JTable(daten, spalten) {
-
-			private static final long serialVersionUID = 6620092595652821138L;
-
-			@Override
-			public boolean isCellEditable(int arg0, int arg1) {
-				return false;
+		else {
+			p_center_lagerbuchungen.setLayout(new BorderLayout());
+	
+			int i = 0;
+	
+			String[] spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
+			String[][] daten = new String[b.size()][3];
+	
+			for (Buchung bu : b) {
+				daten[i][0] = ((Integer)bu.getBuchungID()).toString();
+				daten[i][1] = sdf.format(bu.getDatum());
+				daten[i++][2] = ((Integer)bu.getMenge()).toString();
 			}
-		};
-
-		tbl_lagerbuchungen.setFillsViewportHeight(true);
-		p_center_lagerbuchungen.add(new JLabel("Buchungen von Lager \""+ getAusgewaehlterKnoten() +"\": "), BorderLayout.NORTH);
-		p_center_lagerbuchungen.add(new JScrollPane(tbl_lagerbuchungen), BorderLayout.CENTER);
+	
+			tbl_lagerbuchungen = new JTable(daten, spalten) {
+	
+				private static final long serialVersionUID = 6620092595652821138L;
+	
+				@Override
+				public boolean isCellEditable(int arg0, int arg1) {
+					return false;
+				}
+			};
+	
+			tbl_lagerbuchungen.setFillsViewportHeight(true);
+			p_center_lagerbuchungen.add(new JLabel("Buchungen von Lager \""+ getAusgewaehlterKnoten() +"\": "), BorderLayout.NORTH);
+			p_center_lagerbuchungen.add(new JScrollPane(tbl_lagerbuchungen), BorderLayout.CENTER);
+		}
 		p_center_lagerbuchungen.updateUI();
 	}
 
