@@ -23,7 +23,6 @@ import controller.befehle.IBuchungBefehl;
 import controller.befehle.ILieferungBefehl;
 import controller.befehle.impl.BuchungBefehlImpl;
 import controller.befehle.impl.LieferungBefehlImpl;
-import exception.LagerverwaltungsException;
 
 public class Einbuchungsassistent_handler implements ActionListener, TreeSelectionListener, MouseListener {
 
@@ -58,6 +57,7 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 				lager = element.getKey();
 				if (!lager.checkBestandsaenderung(menge)) {
 					Tools.showMsg("Bestand vom gewählten Lager kann nicht geändert werden!");
+					befehlBuchung.undoAll();						//Zurückrollen aller Buchungen
 					return;
 				}
 				else
@@ -68,31 +68,7 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 				
 			}
 			
-			// FIXME TODO COMMAND PATTERN ANWENDEN!
-			for (Map.Entry<Lager, JTextField> elem : lagerListe.entrySet()) {
-				
-				// bbi = new BuchungBefehlImpl();
-				// for (bla) {
-				// 		bbi.execute(Buchung);
-				// }
-				
-//				try {
-//					menge = Integer.parseInt(elem.getValue().getText());
-//					gesamtMenge += menge;
-//					lager = elem.getKey();
-//					lager.veraenderBestand(menge);
-//					lager.addBuchung(buchung = new Buchung(menge, d));
-//					buchungen.add(buchung);
-//				}catch (LagerverwaltungsException ex) {
-//					Tools.showMsg(ex.getMessage());
-//					// bbi.undoAll();
-//					return;
-//				}
-			}
-			
 			Lieferung.addLieferungen(befehlLieferung.execute(d, gesamtMenge, buchungen));
-			//Lieferung.addLieferungen(new Lieferung(d, gesamtMenge, buchungen));
-
 			
 			Tools.showMsg("Buchungen ausgeführt!");
 			OberflaecheImpl.getInstance().hideEinbuchungsAssi();
