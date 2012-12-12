@@ -114,12 +114,10 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			OberflaecheImpl.getInstance().zeigeBuchungsdetails(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
 	}
 
+	//FIXME: Lieferungsübersicht wird nicht immer angezeigt. Manchmal muss erst ein Element
+	//des Baums ausgewählt werden, damit es funktioniert
 	@Override
 	public void mouseClicked(MouseEvent e) {
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
 		int selectedRow;
 		String value;
 		JTable tbl_lieferungsUebersicht = (JTable) e.getSource();
@@ -133,6 +131,11 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		
 		List<Buchung> buchungen = lieferung.getBuchungen();
 		OberflaecheImpl.getInstance().zeigeLieferungsBuchungen(buchungen);
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		
 	}
 
 	@Override

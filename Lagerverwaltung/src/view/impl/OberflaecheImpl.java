@@ -66,6 +66,8 @@ public class OberflaecheImpl implements Oberflaeche {
 	private final HashMap<Lager, JTextField> hinzugefuegteLager = new HashMap<Lager, JTextField>();
 
 
+	SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
+	
 	// ### privater Konstruktor (Singelton) ###
 	private OberflaecheImpl() {
 		
@@ -239,7 +241,6 @@ public class OberflaecheImpl implements Oberflaeche {
 	{
 		Lager lager = getAusgewaehlterKnoten();
 		JLabel lagerSaldo;
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
 		
 		p_center.setLayout(new BorderLayout());
 		
@@ -335,7 +336,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		String[][] daten = new String[lieferungen.size()][3];
 		
 		for (Lieferung l : lieferungen) {
-			daten[i][0] = l.getLieferungsDatum().toString(); 
+			daten[i][0] = sdf.format(l.getLieferungsDatum()); 
 			daten[i][1] = ((Integer)l.getBuchungen().size()).toString();
 			daten[i][2] = "asdf";
 			i++;

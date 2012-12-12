@@ -26,6 +26,9 @@ public class Lager extends DefaultMutableTreeNode {
 		this.name = bez;
 	}
 
+	//FIXME: Der Anfangsbestand muss per Buchung hinzugefügt werden
+	//dazu muss das Befehlsobject der Methode addBuchung hier ankommen... 
+	//setter bzw. getter in den klassen, um den Befehl an den benötigten stellen zu setzen??
 	public Lager(String bez, int bestand) {
 		super(bez + " " + bestand);
 		Date d = new Date();
