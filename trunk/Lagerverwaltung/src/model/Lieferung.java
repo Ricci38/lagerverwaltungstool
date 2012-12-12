@@ -10,7 +10,7 @@ public class Lieferung {
 	private final int gesamtMenge;
 	private static List<Lieferung> lieferungen = new ArrayList<Lieferung>();
 
-	public Lieferung(Date d, int gesamtMenge, ArrayList<Buchung> b) {
+	public Lieferung(Date d, int gesamtMenge, List<Buchung> b) {
 		this.lieferungsDatum = d;
 		this.gesamtMenge = gesamtMenge;
 		this.buchungen = new ArrayList<Buchung>(b);

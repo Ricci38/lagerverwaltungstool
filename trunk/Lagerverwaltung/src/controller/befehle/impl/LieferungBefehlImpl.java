@@ -1,7 +1,11 @@
 package controller.befehle.impl;
 
-import controller.befehle.ILieferungBefehl;
+import java.util.Date;
+import java.util.List;
+
+import model.Buchung;
 import model.Lieferung;
+import controller.befehle.ILieferungBefehl;
 
 public class LieferungBefehlImpl implements ILieferungBefehl {
 	
@@ -9,8 +13,10 @@ public class LieferungBefehlImpl implements ILieferungBefehl {
 	 * @see controller.ILieferungBefehl#execute(model.Lieferung)
 	 */
 	@Override
-	public void execute(Lieferung b) {
+	public Lieferung execute(Date d, int menge, List<Buchung> buchungen) {
 		// TODO Neue Lieferung anlegen
+		Lieferung l = new Lieferung(d, menge, buchungen);
 		
+		return l;
 	}
 }
