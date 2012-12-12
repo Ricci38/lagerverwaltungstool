@@ -54,7 +54,8 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 				menge = Integer.parseInt(element.getValue().getText());
 				lager = element.getKey();
 				if (!lager.checkBestandsaenderung(menge)) {
-					Tools.showMsg("Bestand kann nicht geändert werden!");
+					Tools.showMsg("Bestand vom gewählten Lager kann nicht geändert werden!");
+					return;
 				}
 				else
 					befehl.execute(lager, menge, d);
@@ -84,7 +85,7 @@ public class Einbuchungsassistent_handler implements ActionListener, TreeSelecti
 			Lieferung.addLieferungen(new Lieferung(d, gesamtMenge, buchungen));
 
 			
-			Tools.showMsg("Buchung ausgeführt!");
+			Tools.showMsg("Buchungen ausgeführt!");
 			OberflaecheImpl.getInstance().hideEinbuchungsAssi();
 			OberflaecheImpl.getInstance().refreshTree();
 
