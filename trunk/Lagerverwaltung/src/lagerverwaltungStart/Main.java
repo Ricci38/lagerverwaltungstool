@@ -9,7 +9,7 @@ import controller.Lagerverwaltung_handler;
 
 public class Main {
 	
-	public static final String VERSION = "0.5a";
+	public static final String VERSION = "0.6a";
 
 	/**
 	 * @param args
@@ -19,7 +19,7 @@ public class Main {
 		
 		Lager wurzel = Lager.addWurzel("Lagerverwaltung");
 		pane_value = JOptionPane.showConfirmDialog(null,
-				"Willkommen im Lagerverwaltungstool!\nSoll eine Beispielhierarchie für die Lagerverwaltung geladen werden?", "Lagerhierarchie laden",
+				"Willkommen im Lagerverwaltungstool v"+VERSION+"!\nSoll eine Beispielhierarchie für die Lagerverwaltung geladen werden?", "Lagerhierarchie laden",
 				JOptionPane.YES_NO_OPTION);
 
 		if (pane_value == JOptionPane.YES_OPTION) {

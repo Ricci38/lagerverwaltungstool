@@ -243,18 +243,26 @@ public class OberflaecheImpl implements Oberflaeche {
 		
 		p_center.setLayout(new BorderLayout());
 		
-		// Aufbau einer 3 x X Matrix
+		// Aufbau einer 4 x X Matrix
 		List<ArrayList<String>> daten = new ArrayList<ArrayList<String>>();
 		daten.add(new ArrayList<String>());
 		daten.add(new ArrayList<String>());
 		daten.add(new ArrayList<String>());
+		daten.add(new ArrayList<String>());
 		
-		if (lager == null && buchungsListe.isEmpty()) return;
-		String[] spalten = new String[]{"ID","Datum","Menge"};		//XXX: Lagername hinzufügen
+		if (lager != null) {
+			lagerSaldo = new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand());
+			lagerSaldo.setFont(new Font("Helvetica", Font.BOLD, 13));
+			p_center.add(lagerSaldo, BorderLayout.NORTH);
+		}
+		else if (lager == null || buchungsListe.isEmpty())
+			return;
+		
+		String[] spalten = new String[]{"ID","Lager","Datum","Menge"};
 		int i = 0;
 		
 		p_center.removeAll();
-		if(!(lager == null))
+		if(lager != null)
 		{
 			lagerSaldo = new JLabel("Saldo von " + lager.getName() + ": " + lager.getBestand());
 			lagerSaldo.setFont(new Font("Helvetica", Font.BOLD, 13));
@@ -268,7 +276,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		 *  Dann müsste auch die Matrix oben um eine ArrayList<String> erweitert werden, um den Lagernamen aufnehmen zu können.
 		 *  Das ist denke ich mal einfacher, als wenn wir das dann noch einmal anders machen für die "Oberlager".
 		 */
-		if ((!(lager == null) && lager.isLeaf()) || !(buchungsListe.isEmpty())) {
+		if ((lager != null && lager.isLeaf()) || !(buchungsListe.isEmpty())) {
 			for (Buchung b : buchungsListe) {
 				
 				daten.get(0).add(((Integer)b.getLieferungID()).toString());
