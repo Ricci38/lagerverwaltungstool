@@ -10,6 +10,9 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.EventListener;
@@ -19,6 +22,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -81,10 +85,27 @@ public class OberflaecheImpl implements Oberflaeche {
 	private void buildLagerverwaltung() {
 		if (lagerverwaltung != null) return;
 		lagerverwaltung = new JFrame("Lagerverwaltung");
-		lagerverwaltung.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		lagerverwaltung.setSize(1000, 700);
 		lagerverwaltung.setMinimumSize(new Dimension(900, 500));
 		lagerverwaltung.setLocation(30, 10);
+		
+		lagerverwaltung.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int confirm = JOptionPane.showOptionDialog(lagerverwaltung,
+						"Möchten Sie die Lagerverwaltung wirklich beenden?\n" +
+						"Einstellungen werden nicht gespeichert.",
+						"Wirklich beenden?", JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, null, null);
+				if (confirm == JOptionPane.YES_OPTION) {
+					hideLagerverwaltung();
+					einbuchungsAssi.dispose();
+					lagerverwaltung.dispose();
+					System.exit(0);
+				}
+			}
+		});
+		
 
 		Container c = lagerverwaltung.getContentPane();
 		c.setLayout(new BorderLayout(10, 10)); // in Klammer kann der Freiraum zwischen den einzelnen Elementen angegeben werden
