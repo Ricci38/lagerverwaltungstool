@@ -88,9 +88,8 @@ public class OberflaecheImpl implements Oberflaeche {
 		lagerverwaltung.setSize(1000, 700);
 		lagerverwaltung.setMinimumSize(new Dimension(900, 500));
 		lagerverwaltung.setLocation(30, 10);
+		lagerverwaltung.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		
-		//FIXME: Programm schließt auch wenn man auf Nein klickt
-		//vielleicht nicht den WindowClosing, sondern ein anderes Event überschreiben
 		lagerverwaltung.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
