@@ -107,17 +107,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			//sobald man ein Lager anklickt...
 			Tools.showMsg("Lagerübersicht");
 		} 
-		
-		//XXX:Funktion wird nicht mehr benötigt
-		/*
-		else if (e.getActionCommand().toLowerCase().equals(("Lagersaldo").toLowerCase())) {
-			//FIXME: Überprüfung ob ein Lager ausgewählt wurde muss noch hinzugefügt werden!
-			Lager pre_knoten;
-			pre_knoten = OberflaecheImpl.getInstance().getAusgewaehlterKnoten();
-
-			Tools.showMsg(pre_knoten.getBestand());
-		}
-		*/
 	}
 
 	@Override
