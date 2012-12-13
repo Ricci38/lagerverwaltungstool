@@ -105,7 +105,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			//TODO: Nach abgeschlossener Lieferung die Lieferungsdetails in dem Tab anzeigen (aktualisieren und anzeigen)
 			//TODO: Der ausgewählte Knoten im Tree muss deselektiert werden! Ansonsten kann man keine 2 Lieferungen hintereinander auf das selbe Lager buchen, ohne vorher ein anderes angeklickt zu haben
 
-			//TODO: Nach Abschluss der Lieferung:
+			//TODO: Funktioniert nicht
 						GUI_lager.enableLagerUebersicht();
 		} else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
 			befehlBuchung.undo();
