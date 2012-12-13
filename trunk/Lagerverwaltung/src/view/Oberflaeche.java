@@ -16,7 +16,7 @@ public interface Oberflaeche {
 
 	public void zeigeLieferungen(List<Lieferung> list);
 	
-	public void zeigeLieferungsBuchungen(List<Buchung> buchungen);
+	public void showTabLieferungsBuchungen(List<Buchung> buchungen);
 
 	public HashMap<Lager, JTextField> getHinzugefuegteLager();
 
@@ -49,5 +49,9 @@ public interface Oberflaeche {
 	public void showTabLagerbuchung();
 
 	public void zeigeLagerbuchungen(List<Buchung> buchungen);
+
+	boolean isCardNeueLieferungAktiv();
+
+	boolean isCardUebersichtAktiv();
 
 }

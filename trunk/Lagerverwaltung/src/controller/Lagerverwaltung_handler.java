@@ -125,7 +125,10 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
-		GUI_lager.zeigeLagerbuchungen(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
+		if (GUI_lager.isCardUebersichtAktiv())
+			GUI_lager.zeigeLagerbuchungen(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
+		else if (GUI_lager.isCardNeueLieferungAktiv())
+			GUI_lager.x(GUI_lager.getAusgewaehlterKnoten().getName(), this);
 	}
 
 	// XXX Bedarf einer gründlichen Überprüfung :)
@@ -144,7 +147,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			Lieferung lieferung = Lieferung.getLieferung(value);
 
 			List<Buchung> buchungen = lieferung.getBuchungen();
-			GUI_lager.zeigeLieferungsBuchungen(buchungen);
+			GUI_lager.showTabLieferungsBuchungen(buchungen);
 		} catch (ClassCastException cce) {
 			//Unterscheidung zwischen Zahl und Text in dem Textfeld 
 			//Bei Zahl: Textfeld wird nicht geleert
