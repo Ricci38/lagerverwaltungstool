@@ -55,4 +55,10 @@ public interface Oberflaeche {
 
 	String getProzentualerAnteil();
 
+	void setVerbleibendeMenge(int menge);
+
+	int getVerbleibendeMenge();
+
+	void showVerbleibendeMenge();
+
 }
