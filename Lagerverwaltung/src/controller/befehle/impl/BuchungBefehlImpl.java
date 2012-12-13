@@ -61,6 +61,7 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 		buchungsStackRedo.clear();
 		lagerStackUndo.clear();
 		lagerStackRedo.clear();
+		Buchung.clearNeueBuchungen();
 	}
 
 }

@@ -9,6 +9,7 @@ import model.Lager;
 import model.Lieferung;
 import view.impl.OberflaecheImpl;
 import controller.Lagerverwaltung_handler;
+import controller.befehle.IBuchungBefehl;
 
 public class Main {
 
@@ -43,12 +44,13 @@ public class Main {
 
 	private static void beispielHierarchieLaden(Lager root) {
 		Lager knoten, blatt1, blatt2;
+		IBuchungBefehl befehlBuchung = Lagerverwaltung_handler.getBefehlBuchung();
 		knoten = root.addTreeElement("Deutschland");
 		blatt1 = knoten.addTreeElement("Niedersachsen");
 		blatt2 = blatt1.addTreeElement("Hannover-Misburg");
-		Lagerverwaltung_handler.getBefehlBuchung().execute(blatt2, 200, new Date());
+		befehlBuchung.execute(blatt2, 200, new Date());
 		blatt2 = blatt1.addTreeElement("Nienburg");
-		Lagerverwaltung_handler.getBefehlBuchung().execute(blatt2, 1200, new Date());
+		befehlBuchung.execute(blatt2, 1200, new Date());
 		blatt1 = knoten.addTreeElement("NRW");
 		blatt1 = knoten.addTreeElement("Bremen");
 		blatt1 = knoten.addTreeElement("Hessen");

@@ -98,7 +98,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			GUI_lager.disableLagerUebersicht();
 			GUI_lager.showCardNeueLieferung();
 			GUI_lager.showUndoRedo();
-			//			GUI_lager.x(GUI_lager.getAusgewaehlterKnoten().getName(), this);
+//			GUI_lager.x(GUI_lager.getAusgewaehlterKnoten().getName(), this);
 
 			//TODO: Nach Abschluss der Lieferung:
 			//			GUI_lager.enableLagerUebersicht();
@@ -110,6 +110,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			Tools.showMsg(Lieferung.getAllLieferungen().size());
 
 		} else if (e.getActionCommand().toLowerCase().equals(("Bestätigen").toLowerCase())) {
+			befehlBuchung.execute(GUI_lager.getAusgewaehlterKnoten(), getBuchungsMenge(), new Date());
 			GUI_lager.enableLagerUebersicht();
 			GUI_lager.hideUndoRedo();
 			GUI_lager.showCardUebersicht();
@@ -123,17 +124,26 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		}
 	}
 
+	private int getBuchungsMenge() {
+		// TODO Auto-generated method stub
+		// TODO Anteilsmenge ausrechnen
+		// TODO Überprüfe ob int mit isItANumber(s)
+		GUI_lager.getGesamtmenge(); 
+		GUI_lager.getProzentualerAnteil();
+		return 0;
+	}
+
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		if (GUI_lager.isCardUebersichtAktiv())
 			GUI_lager.zeigeLagerbuchungen(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
-		else if (GUI_lager.isCardNeueLieferungAktiv())
-			GUI_lager.x(GUI_lager.getAusgewaehlterKnoten().getName(), this);
+		else if (GUI_lager.isCardNeueLieferungAktiv() && GUI_lager.getAusgewaehlterKnoten().isLeaf())
+			GUI_lager.x(GUI_lager.getAusgewaehlterKnoten().getName());
 	}
 
 	// XXX Bedarf einer gründlichen Überprüfung :)
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mousePressed(MouseEvent e) {
 		try {
 			int selectedRow;
 			String value;
@@ -164,7 +174,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
+	public void mouseClicked(MouseEvent e) {
 
 	}
 
@@ -187,5 +197,13 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	public static ILieferungBefehl getBefehlLieferung() {
 		return befehlLieferung;
 	}
-
+	
+	private boolean isItANumber(String s) {
+	try {
+		Integer.parseInt(s);
+		return true;
+	} catch (Exception e) {
+		return false;
+	}
+}
 }

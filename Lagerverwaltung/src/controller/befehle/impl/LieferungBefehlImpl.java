@@ -6,6 +6,7 @@ import java.util.List;
 import model.Buchung;
 import model.Lieferung;
 import view.impl.OberflaecheImpl;
+import controller.Lagerverwaltung_handler;
 import controller.befehle.ILieferungBefehl;
 
 public class LieferungBefehlImpl implements ILieferungBefehl {
@@ -19,6 +20,7 @@ public class LieferungBefehlImpl implements ILieferungBefehl {
 			b.updateDate(d);
 		}
 		Lieferung l = new Lieferung(d, menge, buchungen);
+		Lagerverwaltung_handler.getBefehlBuchung().clearAll();
 		OberflaecheImpl.getInstance().zeigeLieferungen(Lieferung.getAllLieferungen());
 		return l;
 	}
