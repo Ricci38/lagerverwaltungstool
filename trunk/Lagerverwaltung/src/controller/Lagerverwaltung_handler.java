@@ -102,11 +102,8 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			GUI_lager.showCardNeueLieferung();
 			GUI_lager.showUndoRedo();
 			
-			//TODO: Nach abgeschlossener Lieferung die Lieferungsdetails in dem Tab anzeigen (aktualisieren und anzeigen)
-			//TODO: Der ausgewählte Knoten im Tree muss deselektiert werden! Ansonsten kann man keine 2 Lieferungen hintereinander auf das selbe Lager buchen, ohne vorher ein anderes angeklickt zu haben
-
-			//TODO: Funktioniert nicht
-						GUI_lager.enableLagerUebersicht();
+			
+			GUI_lager.disableLagerUebersicht();
 		} else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
 			befehlBuchung.undo();
 			
@@ -126,6 +123,10 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 					befehlBuchung.execute(GUI_lager.getAusgewaehlterKnoten(), menge, new Date());
 					GUI_lager.setVerbleibendeMenge(restMenge);
 					GUI_lager.showVerbleibendeMenge();
+					
+
+					//Lagerbuchungen aktualisieren, sodass die Tabelle die soeben getätigte Buchung aufführt
+					GUI_lager.zeigeLagerbuchungen(((Lager) GUI_lager.getAusgewaehlterKnoten()).getBuchungen());
 				}
 				else
 					Tools.showMsg("Der prozentuale Anteil ist zu hoch! Der größte mögliche Wert wäre: " + (GUI_lager.getVerbleibendeMenge()*100 / Integer.parseInt(GUI_lager.getGesamtmenge())));
@@ -150,6 +151,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			GUI_lager.enableLagerUebersicht();
 			GUI_lager.hideUndoRedo();
 			GUI_lager.showCardUebersicht();
+			GUI_lager.setVerbleibendeMenge(-1);
 		}
 	}
 
@@ -226,8 +228,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			} catch (NumberFormatException ex) {
 				((JTextField) e.getSource()).setText("");
 			}
-//		} finally {
-//			Tools.showMsg("finally block");
 		}
 	}
 

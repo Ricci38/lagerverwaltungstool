@@ -130,6 +130,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		redo = new JButton("redo");
 		buchen = new JButton("Neue Lieferung");
 		neuesLager = new JButton("Neues Lager");
+		
 		//FIXME: Diesen Button kann man nicht nutzen
 		/*
 		 * Wenn man eine neue Lieferung ausführt wird dieser Button disabled und erst wieder enabled wenn man die Lieferung
@@ -214,7 +215,7 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel("Gesamtmenge :"), 0, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, restMenge = new JLabel("Verbleibende Menge: " + verbleibendeMenge), 0, 1, 2, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, restMenge = new JLabel("Verbleibende Menge: " + verbleibendeMenge), 0, 1, 3, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		gesamtmenge.addMouseListener(listener_LieferungsUebersicht);
 		gesamtmenge.setPreferredSize(new Dimension(100,20));
 		
@@ -234,7 +235,15 @@ public class OberflaecheImpl implements Oberflaeche {
 	@Override
 	public void x(String n) {
 		resetCardNeueLieferung();
-		restMenge.setText("Verbleibende Menge: " + verbleibendeMenge);
+		try
+		{
+			//FIXME Prozentuele Berechnung ist falsch. Bei großen Zahlen bleiben bei 0% Reste über
+			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge + " entspricht " + (verbleibendeMenge * 100 / Integer.parseInt(gesamtmenge.getText())) + "% der Gesamtmenge");
+		}
+		catch (Exception e)
+		{
+			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge);
+		}
 		lagerBezeichnung.setText(n);
 		lagerBezeichnung.setVisible(true);
 		prozentAnteil.setVisible(true);
@@ -258,9 +267,11 @@ public class OberflaecheImpl implements Oberflaeche {
 	@Override
 	public void showCardNeueLieferung() {
 		((CardLayout) p_center.getLayout()).show(p_center, "NeueLieferung");
+		restMenge.setVisible(false);
 		isCardUebersichtAktiv = false;
 		isCardNeueLieferungAktiv = true;
 		verbleibendeMenge = -1;
+		gesamtmenge.setText("Gesamtmenge");
 	}
 
 	@Override
@@ -306,6 +317,7 @@ public class OberflaecheImpl implements Oberflaeche {
 	@Override
 	public void selectTreeRoot() {
 		lagerTree.setSelectionRow(0);
+		lagerTree.expandRow(0);
 	}
 	
 	@Override
@@ -418,13 +430,13 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		int i = 0;
 
-		String[] spalten = new String[] { "Datum", "Anzahl Buchungen", "BlaBla" };
+		String[] spalten = new String[] { "Datum", "Anzahl Buchungen", "Gesamtmenge" };
 		String[][] daten = new String[lieferungen.size()][3];
 
 		for (Lieferung l : lieferungen) {
 			daten[i][0] = sdf.format(l.getLieferungsDatum());
 			daten[i][1] = ((Integer) l.getBuchungen().size()).toString();
-			daten[i][2] = "asdf";
+			daten[i][2] = ((Integer) l.getGesamtMenge()).toString();
 			i++;
 		}
 
@@ -493,10 +505,9 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center_tabbs.setSelectedComponent(p_center_lieferungdetails);
 	}
 
-	//TODO: Wird nicht genutzt und funzt trotzdem alles :D
+	//TODO: Wird nicht genutzt, da auch der Button Lieferungs-/ Lagerübersicht nichts bringt...
 	@Override
 	public void showTabLagerbuchung() {
-		// TODO do sth
 		p_center_tabbs.setSelectedComponent(p_center_lagerbuchungen);
 	}
 
