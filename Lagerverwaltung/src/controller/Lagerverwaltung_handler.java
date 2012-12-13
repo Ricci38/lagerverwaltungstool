@@ -84,6 +84,9 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 					if (pane_value == JOptionPane.OK_OPTION) {
 						pre_knoten.addTreeElement(name).veraenderBestand(menge);
+						
+						//FIXME: NullPointerException! Sobald der Tree aktualisiert wird springt der in den ValueChanged Handler und versucht in der Methode
+						//zeigeLagerbuchungen auf den aktuell ausgewählten Knoten zu zu greifen. Dann kommt der Fehler.
 						GUI_lager.refreshTree(); // Anzeige des Trees aktualisieren
 					}
 				} else {
@@ -98,24 +101,50 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			GUI_lager.disableLagerUebersicht();
 			GUI_lager.showCardNeueLieferung();
 			GUI_lager.showUndoRedo();
-//			GUI_lager.x(GUI_lager.getAusgewaehlterKnoten().getName(), this);
+			
+			//TODO: Nach abgeschlossener Lieferung die Lieferungsdetails in dem Tab anzeigen (aktualisieren und anzeigen)
+			//TODO: Der ausgewählte Knoten im Tree muss deselektiert werden! Ansonsten kann man keine 2 Lieferungen hintereinander auf das selbe Lager buchen, ohne vorher ein anderes angeklickt zu haben
 
 			//TODO: Nach Abschluss der Lieferung:
-			//			GUI_lager.enableLagerUebersicht();
+						GUI_lager.enableLagerUebersicht();
 		} else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
 			befehlBuchung.undo();
+			
 		} else if (e.getActionCommand().toLowerCase().equals(("redo").toLowerCase())) {
-			//			Tools.showMsg("redo");
+			befehlBuchung.redo();
 
-			Tools.showMsg(Lieferung.getAllLieferungen().size());
-
+		} else if (e.getActionCommand().toLowerCase().equals(("Nächste Buchung").toLowerCase())) {
+			int restMenge;
+			int menge = getBuchungsMenge();
+			if (menge!= -1)
+			{
+				if (GUI_lager.getVerbleibendeMenge() == -1)
+					GUI_lager.setVerbleibendeMenge(Integer.parseInt(GUI_lager.getGesamtmenge()));
+				restMenge = GUI_lager.getVerbleibendeMenge() - menge;
+				if (restMenge >= 0)
+				{
+					befehlBuchung.execute(GUI_lager.getAusgewaehlterKnoten(), menge, new Date());
+					GUI_lager.setVerbleibendeMenge(restMenge);
+					GUI_lager.showVerbleibendeMenge();
+				}
+				else
+					Tools.showMsg("Der prozentuale Anteil ist zu hoch! Der größte mögliche Wert wäre: " + (GUI_lager.getVerbleibendeMenge()*100 / Integer.parseInt(GUI_lager.getGesamtmenge())));
+			}
+			GUI_lager.x(GUI_lager.getAusgewaehlterKnoten().getName());
+			
 		} else if (e.getActionCommand().toLowerCase().equals(("Bestätigen").toLowerCase())) {
-			befehlBuchung.execute(GUI_lager.getAusgewaehlterKnoten(), getBuchungsMenge(), new Date());
-			GUI_lager.enableLagerUebersicht();
-			GUI_lager.hideUndoRedo();
-			GUI_lager.showCardUebersicht();
-			befehlLieferung.execute(new Date(), Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
-			befehlBuchung.clearAll();
+			if (!Buchung.getNeueBuchungen().isEmpty())
+			{	
+				GUI_lager.enableLagerUebersicht();
+				GUI_lager.hideUndoRedo();
+				GUI_lager.showCardUebersicht();
+				befehlLieferung.execute(new Date(), Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+				befehlBuchung.clearAll();
+				GUI_lager.setVerbleibendeMenge(-1);
+			}
+			else
+				Tools.showMsg("Bitte zuerst auf Nächste Buchung klicken");
+			
 		} else if (e.getActionCommand().toLowerCase().equals(("Abbrechen").toLowerCase())) {
 			befehlBuchung.undoAll();
 			GUI_lager.enableLagerUebersicht();
@@ -125,14 +154,40 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	}
 
 	private int getBuchungsMenge() {
-		// TODO Auto-generated method stub
-		// TODO Anteilsmenge ausrechnen
-		// TODO Überprüfe ob int mit isItANumber(s)
-		GUI_lager.getGesamtmenge(); 
-		GUI_lager.getProzentualerAnteil();
-		return 0;
+		String gesamtmenge_str, prozentualerAnteil_str;
+		int gesamtmenge, prozentualerAnteil, anteil;
+		gesamtmenge_str = GUI_lager.getGesamtmenge(); 
+		prozentualerAnteil_str = GUI_lager.getProzentualerAnteil();
+		if (isItANumber(gesamtmenge_str) && isItANumber(prozentualerAnteil_str))
+		{
+			gesamtmenge = Integer.parseInt(gesamtmenge_str);
+			prozentualerAnteil = Integer.parseInt(prozentualerAnteil_str);
+			
+			if (gesamtmenge > 0)
+			{
+				if ((prozentualerAnteil < 1) ||(prozentualerAnteil > 100))
+					Tools.showMsg("Ungültiger prozentueler Anteil! Nur ganzzahlige Werte von 1 bis 100.");
+				else
+				{
+					anteil = (gesamtmenge * prozentualerAnteil)/100;
+					if(((gesamtmenge * prozentualerAnteil) % 100) > 0)
+						anteil++;
+					
+					return anteil;
+				}
+			}
+			else
+				Tools.showMsg("Die Gesamtmenge kann nicht kleiner als 1 sein!");
+		}
+		else
+			Tools.showMsg("Es sind nur ganzzahlige Werte erlaubt!");
+		
+		return -1;		//Ungültige Eingabe
 	}
 
+	
+	
+	
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		if (GUI_lager.isCardUebersichtAktiv())
@@ -141,6 +196,9 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			GUI_lager.x(GUI_lager.getAusgewaehlterKnoten().getName());
 	}
 
+	
+	
+	
 	// XXX Bedarf einer gründlichen Überprüfung :)
 	@Override
 	public void mousePressed(MouseEvent e) {

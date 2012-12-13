@@ -6,6 +6,7 @@ import java.util.Stack;
 import model.Buchung;
 import model.Lager;
 import view.Tools;
+import view.impl.OberflaecheImpl;
 import controller.befehle.IBuchungBefehl;
 
 public class BuchungBefehlImpl implements IBuchungBefehl {
@@ -32,6 +33,8 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 			Lager l = lagerStackRedo.push(lagerStackUndo.pop());
 			l.removeBuchung(b);
 			l.veraenderBestand(-b.getMenge());
+			OberflaecheImpl.getInstance().x(l.getName());
+			OberflaecheImpl.getInstance().setVerbleibendeMenge(OberflaecheImpl.getInstance().getVerbleibendeMenge() + b.getMenge());
 		} catch (Exception e) {
 			Tools.showMsg("Ich nix rückgängig machen können.");
 			return;
@@ -40,11 +43,18 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 
 	@Override
 	public void redo() {
-
-		Buchung b = buchungsStackUndo.push(buchungsStackRedo.pop());
-		Lager l = lagerStackUndo.push(lagerStackRedo.pop());
-		l.veraenderBestand(b.getMenge());
-		l.addBuchung(b);
+		try
+		{
+			Buchung b = buchungsStackUndo.push(buchungsStackRedo.pop());
+			Lager l = lagerStackUndo.push(lagerStackRedo.pop());
+			l.veraenderBestand(b.getMenge());
+			l.addBuchung(b);
+			OberflaecheImpl.getInstance().setVerbleibendeMenge(OberflaecheImpl.getInstance().getVerbleibendeMenge() - b.getMenge());
+		}
+		catch(Exception e)
+		{
+			Tools.showMsg("Ich kann nichts wiederholen.");
+		}
 	}
 
 	@Override
