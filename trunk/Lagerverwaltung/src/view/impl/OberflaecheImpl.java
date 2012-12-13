@@ -72,7 +72,7 @@ public class OberflaecheImpl implements Oberflaeche {
 	
 	private boolean isCardUebersichtAktiv = false;
 	private boolean isCardNeueLieferungAktiv = false;
-
+	
 	// ### privater Konstruktor (Singelton) ###
 	private OberflaecheImpl() {
 
@@ -190,6 +190,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center_neue_lieferung = new JPanel();
 		p_center_neue_lieferung_north = new JPanel();
 		p_center_neue_lieferung_center = new JPanel();
+		p_center_neue_lieferung_center.setLayout(gbl);
 		p_center_neue_lieferung_south = new JPanel();
 		p_center_neue_lieferung_south.setLayout(gbl);
 		p_center_neue_lieferung_south.setPreferredSize(new Dimension(1, 100));
@@ -203,20 +204,33 @@ public class OberflaecheImpl implements Oberflaeche {
 		btn_best.addActionListener(listener_Lagerverwaltung);
 		btn_abbr.addActionListener(listener_Lagerverwaltung);
 
-		p_center_neue_lieferung_north.add(new JLabel("Gesamtmenge: "));
-		p_center_neue_lieferung_north.add(gesamtmenge = new JTextField("Gesamtmenge"));
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel("Gesamtmenge :"), 0, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		gesamtmenge.addMouseListener(listener_LieferungsUebersicht);
+		gesamtmenge.setPreferredSize(new Dimension(100,20));
+		
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, lagerBezeichnung = new JLabel(), 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		prozentAnteil.addMouseListener(listener_LieferungsUebersicht);
+		prozentAnteil.setPreferredSize(new Dimension(150,20));
+		lagerBezeichnung.setVisible(false);
+		prozentAnteil.setVisible(false);
 	}
 
 	@Override
-	public void x(String n, ActionListener l) {
-		p_center_neue_lieferung_center.removeAll();
-		buildNeueLieferung();
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel(n), 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		prozentAnteil.addActionListener(l);
+	public void x(String n) {
+		resetCardNeueLieferung();
+		lagerBezeichnung.setText(n);
+		lagerBezeichnung.setVisible(true);
+		prozentAnteil.setVisible(true);
 		p_center_neue_lieferung_center.updateUI();
-		p_center.updateUI();
+//		p_center.updateUI();
+	}
+
+	private void resetCardNeueLieferung() {
+		lagerBezeichnung.setVisible(false);
+		prozentAnteil.setVisible(false);
+		prozentAnteil.setText("prozentualer Anteil");
 	}
 
 	//gibt das CardLayout zurück, um die Cards ansprechen zu können
@@ -232,6 +246,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		((CardLayout) p_center.getLayout()).show(p_center, "Übersicht");
 		isCardUebersichtAktiv = true;
 		isCardNeueLieferungAktiv = false;
+		resetCardNeueLieferung();
 	}
 	
 	@Override
@@ -270,6 +285,16 @@ public class OberflaecheImpl implements Oberflaeche {
 	public void selectTreeRoot() {
 		lagerTree.setSelectionRow(0);
 	}
+	
+	@Override
+	public String getGesamtmenge() {
+		return gesamtmenge.getText();
+	}
+	
+	@Override
+	public String getProzentualerAnteil() {
+		return prozentAnteil.getText();
+	}
 
 	/**
 	 * Erstellt die Oberfläche für den Einbuchungsassistenten
@@ -290,7 +315,6 @@ public class OberflaecheImpl implements Oberflaeche {
 	@Override
 	public void zeigeLieferungsdetails(List<Buchung> buchungsListe) {
 		Lager lager = getAusgewaehlterKnoten();
-		JLabel lagerSaldo;
 
 		p_center_lieferungdetails.setLayout(new BorderLayout());
 

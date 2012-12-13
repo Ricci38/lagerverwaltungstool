@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,7 +19,6 @@ public interface Oberflaeche {
 
 	public HashMap<Lager, JTextField> getHinzugefuegteLager();
 
-	// ### Show & Hide Frames ###
 	public void showLagerverwaltung();
 
 	public void hideLagerverwaltung();
@@ -39,9 +37,6 @@ public interface Oberflaeche {
 	
 	public void selectTreeRoot();
 	
-	public void x(String n, ActionListener l);
-	
-	// ### JTree neu aufbauen ###
 	public void refreshTree();
 
 	public Lager getAusgewaehlterKnoten();
@@ -53,5 +48,11 @@ public interface Oberflaeche {
 	boolean isCardNeueLieferungAktiv();
 
 	boolean isCardUebersichtAktiv();
+
+	void x(String n);
+
+	String getGesamtmenge();
+
+	String getProzentualerAnteil();
 
 }
