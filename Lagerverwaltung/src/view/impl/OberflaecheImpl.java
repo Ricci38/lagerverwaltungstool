@@ -52,7 +52,8 @@ public class OberflaecheImpl implements Oberflaeche {
 
 	// ### Variablen für das Hauptfenster ###
 	private JPanel p_top, p_top_sub_top, p_top_sub_bottom, p_tree, p_center, p_platzhalter1, p_platzhalter2;
-	private JPanel p_center_lieferungen, p_center_lieferungdetails, p_center_neue_lieferung, p_center_neue_lieferung_north, p_center_neue_lieferung_south, p_center_neue_lieferung_center, p_center_lagerbuchungen;
+	private JPanel p_center_lieferungen, p_center_lieferungdetails, p_center_neue_lieferung, p_center_neue_lieferung_north, p_center_neue_lieferung_south,
+			p_center_neue_lieferung_center, p_center_lagerbuchungen;
 	private JButton redo, undo, buchen, lageruebersicht, neuesLager;
 	private JLabel l_titel;
 	private JTree lagerTree;
@@ -60,20 +61,24 @@ public class OberflaecheImpl implements Oberflaeche {
 	private JTabbedPane p_center_tabbs = new JTabbedPane();
 
 	// ### Variablen für den EinbuchungsAssistent ###
-	private JTextField gesamtmenge, prozentAnteil;
+	private JTextField gesamtmenge, prozentAnteil, saldo;
 	private JLabel lagerBezeichnung, anteilsMenge;
 	private JButton btn_best, btn_abbr;
 	private GridBagLayout gbl;
 	private static int anz_hinzugefuegterLager = 0;
 	private final HashMap<Lager, JTextField> hinzugefuegteLager = new HashMap<Lager, JTextField>();
 
-	SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
+	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
+	
+	private boolean isCardUebersichtAktiv = false;
+	private boolean isCardNeueLieferungAktiv = false;
 
 	// ### privater Konstruktor (Singelton) ###
 	private OberflaecheImpl() {
 
 		buildLagerverwaltung();
 		hideUndoRedo();
+		showCardUebersicht();
 	}
 
 	/**
@@ -99,7 +104,7 @@ public class OberflaecheImpl implements Oberflaeche {
 				}
 			}
 		});
-		
+
 		Container c = lagerverwaltung.getContentPane();
 		c.setLayout(new BorderLayout(10, 10)); // in Klammer kann der Freiraum zwischen den einzelnen Elementen angegeben werden
 
@@ -166,10 +171,10 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center_tabbs.addTab("Lieferungen", p_center_lieferungen = new JPanel());
 		p_center_tabbs.addTab("Lieferungdetails", p_center_lieferungdetails = new JPanel());
 		p_center_tabbs.addTab("Lagerbuchungen", p_center_lagerbuchungen = new JPanel());
+
+		gbl = new GridBagLayout();
 		
 		buildNeueLieferung();
-		
-		gbl = new GridBagLayout();
 		
 		//TODO: Scheiß Version des Einbuchungsassistenten
 		p_center = new JPanel();
@@ -182,49 +187,61 @@ public class OberflaecheImpl implements Oberflaeche {
 	}
 
 	private void buildNeueLieferung() {
-		GridBagLayout gbl_lieferung = new GridBagLayout();
-		
 		p_center_neue_lieferung = new JPanel();
 		p_center_neue_lieferung_north = new JPanel();
 		p_center_neue_lieferung_center = new JPanel();
 		p_center_neue_lieferung_south = new JPanel();
-		p_center_neue_lieferung_south.setLayout(gbl_lieferung);
-		p_center_neue_lieferung_south.setPreferredSize(new Dimension(1,100));
-		Tools.addComponent(p_center_neue_lieferung_south, gbl_lieferung,btn_best = new JButton("Bestätigen"), 1, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		Tools.addComponent(p_center_neue_lieferung_south, gbl_lieferung,btn_abbr = new JButton("Abbrechen"), 3, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		p_center_neue_lieferung_south.setLayout(gbl);
+		p_center_neue_lieferung_south.setPreferredSize(new Dimension(1, 100));
+		Tools.addComponent(p_center_neue_lieferung_south, gbl, btn_best = new JButton("Bestätigen"), 1, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_center_neue_lieferung_south, gbl, btn_abbr = new JButton("Abbrechen"), 3, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		p_center_neue_lieferung.setLayout(new BorderLayout());
 		p_center_neue_lieferung.add(p_center_neue_lieferung_north, BorderLayout.NORTH);
 		p_center_neue_lieferung.add(p_center_neue_lieferung_center, BorderLayout.CENTER);
 		p_center_neue_lieferung.add(p_center_neue_lieferung_south, BorderLayout.SOUTH);
-		
+
 		btn_best.addActionListener(listener_Lagerverwaltung);
 		btn_abbr.addActionListener(listener_Lagerverwaltung);
-		
+
 		p_center_neue_lieferung_north.add(new JLabel("Gesamtmenge: "));
 		p_center_neue_lieferung_north.add(gesamtmenge = new JTextField("Gesamtmenge"));
 		gesamtmenge.addMouseListener(listener_LieferungsUebersicht);
 	}
-	
+
 	@Override
 	public void x(String n, ActionListener l) {
-		p_center_neue_lieferung.removeAll();
+		p_center_neue_lieferung_center.removeAll();
 		buildNeueLieferung();
-		Tools.addComponent(p_center_neue_lieferung, gbl, new JLabel(n), 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		Tools.addComponent(p_center_neue_lieferung, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel(n), 0, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 1, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		prozentAnteil.addActionListener(l);
-		p_center_neue_lieferung.updateUI();
+		p_center_neue_lieferung_center.updateUI();
+		p_center.updateUI();
 	}
-	
-	
+
 	//gibt das CardLayout zurück, um die Cards ansprechen zu können
 	@Override
 	public void showCardNeueLieferung() {
 		((CardLayout) p_center.getLayout()).show(p_center, "NeueLieferung");
+		isCardUebersichtAktiv = false;
+		isCardNeueLieferungAktiv = true;
 	}
 
 	@Override
 	public void showCardUebersicht() {
 		((CardLayout) p_center.getLayout()).show(p_center, "Übersicht");
+		isCardUebersichtAktiv = true;
+		isCardNeueLieferungAktiv = false;
+	}
+	
+	@Override
+	public boolean isCardNeueLieferungAktiv() {
+		return isCardNeueLieferungAktiv;
+	}
+	
+	@Override
+	public boolean isCardUebersichtAktiv() {
+		return isCardUebersichtAktiv;
 	}
 
 	@Override
@@ -289,7 +306,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		String[] spalten = new String[] { "Buchungs ID", "Lager", "Datum", "Menge" };
 
 		p_center_lieferungdetails.removeAll();
-		
+
 		int i = buchungsListe.size();
 
 		/*
@@ -372,50 +389,56 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center_lieferungen.add(new JScrollPane(tbl_lieferungsUebersicht), BorderLayout.CENTER);
 		p_center_lieferungen.updateUI();
 	}
-	
+
 	@Override
 	public void zeigeLagerbuchungen(List<Buchung> b) {
 		p_center_lagerbuchungen.removeAll();
 		if (null == b || b.isEmpty()) {
-			p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
-		}
-		else {
+			if (!getAusgewaehlterKnoten().isLeaf() && getAusgewaehlterKnoten().getBestand() > 0) {
+				p_center_lagerbuchungen.add(new JLabel("Gesamtsaldo des Oberlagers \"" + getAusgewaehlterKnoten() + "\": "
+						+ getAusgewaehlterKnoten().getBestand()));
+			} else
+				p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
+		} else {
 			p_center_lagerbuchungen.setLayout(new BorderLayout());
-	
+
 			int i = 0;
-	
+
 			String[] spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
 			String[][] daten = new String[b.size()][3];
-	
+
 			for (Buchung bu : b) {
-				daten[i][0] = ((Integer)bu.getBuchungID()).toString();
+				daten[i][0] = ((Integer) bu.getBuchungID()).toString();
 				daten[i][1] = sdf.format(bu.getDatum());
-				daten[i++][2] = ((Integer)bu.getMenge()).toString();
+				daten[i++][2] = ((Integer) bu.getMenge()).toString();
 			}
-	
+
 			tbl_lagerbuchungen = new JTable(daten, spalten) {
-	
+
 				private static final long serialVersionUID = 6620092595652821138L;
-	
+
 				@Override
 				public boolean isCellEditable(int arg0, int arg1) {
 					return false;
 				}
 			};
-	
+
 			tbl_lagerbuchungen.setFillsViewportHeight(true);
-			p_center_lagerbuchungen.add(new JLabel("Buchungen von Lager \""+ getAusgewaehlterKnoten() +"\": "), BorderLayout.NORTH);
+			p_center_lagerbuchungen.add(saldo = new JTextField("Buchungen von Lager \"" + getAusgewaehlterKnoten().getName() + "\" mit Saldo "
+					+ getAusgewaehlterKnoten().getBestand() + ":"), BorderLayout.NORTH);
 			p_center_lagerbuchungen.add(new JScrollPane(tbl_lagerbuchungen), BorderLayout.CENTER);
+			saldo.setEditable(false);
+			saldo.setFocusable(false);
 		}
 		p_center_lagerbuchungen.updateUI();
 	}
 
 	@Override
-	public void zeigeLieferungsBuchungen(List<Buchung> buchungen) {
+	public void showTabLieferungsBuchungen(List<Buchung> buchungen) {
 		theInstance.zeigeLieferungsdetails(buchungen);
 		// TODO zeige richtigen Tab an^^
 	}
-	
+
 	@Override
 	public void showTabLagerbuchung() {
 		// TODO do sth
@@ -457,9 +480,7 @@ public class OberflaecheImpl implements Oberflaeche {
 
 	@Override
 	public Lager getAusgewaehlterKnoten() {
-		Lager pfad = (Lager) lagerTree.getLastSelectedPathComponent();
-
-		return pfad;
+		return (Lager) lagerTree.getLastSelectedPathComponent();
 	}
 
 	// ### Disabling clone() by throwing CloneNotSupportedException ###
