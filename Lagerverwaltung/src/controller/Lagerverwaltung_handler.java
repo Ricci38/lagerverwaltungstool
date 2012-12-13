@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
@@ -22,6 +23,8 @@ import controller.befehle.IBuchungBefehl;
 import controller.befehle.ILieferungBefehl;
 import controller.befehle.impl.BuchungBefehlImpl;
 import controller.befehle.impl.LieferungBefehlImpl;
+
+//FIXME Lagernamen müssen änderbar sein. lagerTree in der Oberfläche vllt auf setEditable(true) und hier einen Listener dazu implementieren
 
 public class Lagerverwaltung_handler implements ActionListener, TreeSelectionListener, MouseListener {
 
@@ -45,7 +48,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			pre_knoten = GUI_lager.getAusgewaehlterKnoten();
 
 			// Falls ein Knoten ausgewählt wurde
-			if (pre_knoten != null) {
+			if (null != pre_knoten) {
 				//Lagererstellung ist nur bei einem Bestand von 0 zulässig!
 				if (pre_knoten.getEinzelBestand() == 0) {
 					String name = null, menge_str = null;
@@ -85,8 +88,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 					if (pane_value == JOptionPane.OK_OPTION) {
 						pre_knoten.addTreeElement(name).veraenderBestand(menge);
 						
-						//FIXME: NullPointerException! Sobald der Tree aktualisiert wird springt der in den ValueChanged Handler und versucht in der Methode
-						//zeigeLagerbuchungen auf den aktuell ausgewählten Knoten zu zu greifen. Dann kommt der Fehler.
 						GUI_lager.refreshTree(); // Anzeige des Trees aktualisieren
 					}
 				} else {
@@ -98,6 +99,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			else
 				Tools.showMsg("Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
 		} else if (e.getActionCommand().toLowerCase().equals(("Neue Lieferung").toLowerCase())) {
+			//TODO Ausbuchungen = negative Lieferungen...   evtl. schon behoben. Aber testen!
 			GUI_lager.disableLagerUebersicht();
 			GUI_lager.showCardNeueLieferung();
 			GUI_lager.showUndoRedo();
@@ -111,12 +113,14 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			befehlBuchung.redo();
 
 		} else if (e.getActionCommand().toLowerCase().equals(("Nächste Buchung").toLowerCase())) {
+			//FIXME Wenn nach einer Buchung der verbleibende Bestand 0 ist muss der Button Nächste Buchung ausgegraut werden
 			int restMenge;
 			int menge = getBuchungsMenge();
 			if (menge!= -1)
 			{
 				if (GUI_lager.getVerbleibendeMenge() == -1)
 					GUI_lager.setVerbleibendeMenge(Integer.parseInt(GUI_lager.getGesamtmenge()));
+				
 				restMenge = GUI_lager.getVerbleibendeMenge() - menge;
 				if (restMenge >= 0)
 				{
@@ -129,7 +133,11 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 					GUI_lager.zeigeLagerbuchungen(((Lager) GUI_lager.getAusgewaehlterKnoten()).getBuchungen());
 				}
 				else
-					Tools.showMsg("Der prozentuale Anteil ist zu hoch! Der größte mögliche Wert wäre: " + (GUI_lager.getVerbleibendeMenge()*100 / Integer.parseInt(GUI_lager.getGesamtmenge())));
+				{
+					//FIXME Prozentuele Berechnung ist falsch. Bei großen Zahlen bleiben bei 0% Reste über
+					int prozentsatz = Math.round(((float)(GUI_lager.getVerbleibendeMenge()*100 / Integer.parseInt(GUI_lager.getGesamtmenge()))));
+					Tools.showMsg("Der prozentuale Anteil ist zu hoch! Der größte mögliche Wert wäre: " + prozentsatz);
+				}
 			}
 			GUI_lager.x(GUI_lager.getAusgewaehlterKnoten().getName());
 			
@@ -142,6 +150,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				befehlLieferung.execute(new Date(), Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
 				befehlBuchung.clearAll();
 				GUI_lager.setVerbleibendeMenge(-1);
+				GUI_lager.refreshTree();		//Anzeige des Trees aktualisieren
 			}
 			else
 				Tools.showMsg("Bitte zuerst auf Nächste Buchung klicken");
@@ -160,26 +169,26 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		int gesamtmenge, prozentualerAnteil, anteil;
 		gesamtmenge_str = GUI_lager.getGesamtmenge(); 
 		prozentualerAnteil_str = GUI_lager.getProzentualerAnteil();
+		
 		if (isItANumber(gesamtmenge_str) && isItANumber(prozentualerAnteil_str))
 		{
 			gesamtmenge = Integer.parseInt(gesamtmenge_str);
 			prozentualerAnteil = Integer.parseInt(prozentualerAnteil_str);
 			
-			if (gesamtmenge > 0)
-			{
+			//XXX Durch das Auskommentierte sind Ausbuchungen möglich geworden
+//			if (gesamtmenge > 0)
+//			{
 				if ((prozentualerAnteil < 1) ||(prozentualerAnteil > 100))
 					Tools.showMsg("Ungültiger prozentueler Anteil! Nur ganzzahlige Werte von 1 bis 100.");
 				else
 				{
-					anteil = (gesamtmenge * prozentualerAnteil)/100;
-					if(((gesamtmenge * prozentualerAnteil) % 100) > 0)
-						anteil++;
-					
+					//Kaufmännisch runden
+					anteil = Math.round((float)(gesamtmenge * prozentualerAnteil)/100);
 					return anteil;
 				}
-			}
-			else
-				Tools.showMsg("Die Gesamtmenge kann nicht kleiner als 1 sein!");
+//			}
+//			else
+//				Tools.showMsg("Die Gesamtmenge kann nicht kleiner als 1 sein!");
 		}
 		else
 			Tools.showMsg("Es sind nur ganzzahlige Werte erlaubt!");

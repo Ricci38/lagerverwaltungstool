@@ -238,7 +238,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		try
 		{
 			//FIXME Prozentuele Berechnung ist falsch. Bei großen Zahlen bleiben bei 0% Reste über
-			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge + " entspricht " + (verbleibendeMenge * 100 / Integer.parseInt(gesamtmenge.getText())) + "% der Gesamtmenge");
+			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge + " entspricht " + Math.round(((float)(verbleibendeMenge*100 / Integer.parseInt(gesamtmenge.getText()))))+ "% der Gesamtmenge");
 		}
 		catch (Exception e)
 		{
@@ -295,11 +295,13 @@ public class OberflaecheImpl implements Oberflaeche {
 	@Override
 	public void disableLagerUebersicht() {
 		lageruebersicht.setEnabled(false);
+		buchen.setEnabled(false);
 	}
 
 	@Override
 	public void enableLagerUebersicht() {
 		lageruebersicht.setEnabled(true);
+		buchen.setEnabled(true);
 	}
 
 	@Override
@@ -356,7 +358,6 @@ public class OberflaecheImpl implements Oberflaeche {
 
 	@Override
 	public void zeigeLieferungsdetails(List<Buchung> buchungsListe) {
-		Lager lager = getAusgewaehlterKnoten();
 
 		p_center_lieferungdetails.setLayout(new BorderLayout());
 
@@ -367,7 +368,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		daten.add(new ArrayList<String>());
 		daten.add(new ArrayList<String>());
 
-		if (lager == null || buchungsListe.isEmpty()) return;
+		if (buchungsListe.isEmpty()) return;
 
 		String[] spalten = new String[] { "Buchungs ID", "Lager", "Datum", "Menge" };
 
@@ -383,7 +384,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		 * können. Das ist denke ich mal einfacher, als wenn wir das dann noch
 		 * einmal anders machen für die "Oberlager".
 		 */
-		if ((lager != null && lager.isLeaf()) || !(buchungsListe.isEmpty())) {
+		if ( !(buchungsListe.isEmpty())) {
 			for (Buchung b : buchungsListe) {
 
 				daten.get(0).add(((Integer) b.getBuchungID()).toString());
@@ -458,45 +459,52 @@ public class OberflaecheImpl implements Oberflaeche {
 
 	@Override
 	public void zeigeLagerbuchungen(List<Buchung> b) {
-		p_center_lagerbuchungen.removeAll();
-		if (null == b || b.isEmpty()) {
-			if (!getAusgewaehlterKnoten().isLeaf() && getAusgewaehlterKnoten().getBestand() > 0) {
-				p_center_lagerbuchungen.add(new JLabel("Gesamtsaldo des Oberlagers \"" + getAusgewaehlterKnoten() + "\": "
-						+ getAusgewaehlterKnoten().getBestand()));
-			} else
-				p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
-		} else {
-			p_center_lagerbuchungen.setLayout(new BorderLayout());
-
-			int i = 0;
-
-			String[] spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
-			String[][] daten = new String[b.size()][3];
-
-			for (Buchung bu : b) {
-				daten[i][0] = ((Integer) bu.getBuchungID()).toString();
-				daten[i][1] = sdf.format(bu.getDatum());
-				daten[i++][2] = ((Integer) bu.getMenge()).toString();
-			}
-
-			tbl_lagerbuchungen = new JTable(daten, spalten) {
-
-				private static final long serialVersionUID = 6620092595652821138L;
-
-				@Override
-				public boolean isCellEditable(int arg0, int arg1) {
-					return false;
-				}
-			};
-
-			tbl_lagerbuchungen.setFillsViewportHeight(true);
-			p_center_lagerbuchungen.add(saldo = new JTextField("Buchungen von Lager \"" + getAusgewaehlterKnoten().getName() + "\" mit Saldo "
-					+ getAusgewaehlterKnoten().getBestand() + ":"), BorderLayout.NORTH);
-			p_center_lagerbuchungen.add(new JScrollPane(tbl_lagerbuchungen), BorderLayout.CENTER);
-			saldo.setEditable(false);
-			saldo.setFocusable(false);
+		if (null == getAusgewaehlterKnoten())
+		{
+			return;
 		}
-		p_center_lagerbuchungen.updateUI();
+		else
+		{
+			p_center_lagerbuchungen.removeAll();
+			if (null == b || b.isEmpty()) {
+				if (!getAusgewaehlterKnoten().isLeaf() && getAusgewaehlterKnoten().getBestand() > 0) {
+					p_center_lagerbuchungen.add(new JLabel("Gesamtsaldo des Oberlagers \"" + getAusgewaehlterKnoten() + "\": "
+							+ getAusgewaehlterKnoten().getBestand()));
+				} else
+					p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
+			} else {
+				p_center_lagerbuchungen.setLayout(new BorderLayout());
+	
+				int i = 0;
+	
+				String[] spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
+				String[][] daten = new String[b.size()][3];
+	
+				for (Buchung bu : b) {
+					daten[i][0] = ((Integer) bu.getBuchungID()).toString();
+					daten[i][1] = sdf.format(bu.getDatum());
+					daten[i++][2] = ((Integer) bu.getMenge()).toString();
+				}
+	
+				tbl_lagerbuchungen = new JTable(daten, spalten) {
+	
+					private static final long serialVersionUID = 6620092595652821138L;
+	
+					@Override
+					public boolean isCellEditable(int arg0, int arg1) {
+						return false;
+					}
+				};
+	
+				tbl_lagerbuchungen.setFillsViewportHeight(true);
+				p_center_lagerbuchungen.add(saldo = new JTextField("Buchungen von Lager \"" + getAusgewaehlterKnoten().getName() + "\" mit Saldo "
+						+ getAusgewaehlterKnoten().getBestand() + ":"), BorderLayout.NORTH);
+				p_center_lagerbuchungen.add(new JScrollPane(tbl_lagerbuchungen), BorderLayout.CENTER);
+				saldo.setEditable(false);
+				saldo.setFocusable(false);
+			}
+			p_center_lagerbuchungen.updateUI();
+		}
 	}
 
 	@Override
