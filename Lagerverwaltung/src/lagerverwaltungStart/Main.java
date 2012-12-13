@@ -70,6 +70,6 @@ public class Main {
 		knoten = root.addTreeElement("Groﬂbritannien");
 
 		Lagerverwaltung_handler.getBefehlLieferung().execute(new Date(), Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
-		Lagerverwaltung_handler.getBefehlBuchung().clearAll();
+		befehlBuchung.clearAll();
 	}
 }
