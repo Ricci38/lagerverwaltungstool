@@ -21,7 +21,7 @@ public class Lager extends DefaultMutableTreeNode {
 
 	// ### Konstruktor ###
 	public Lager(String bez) {
-		//XXX Soll die 0 jetzt doch angezeigt werden?
+		//XXX Soll die 0 jetzt doch angezeigt werden? Siehe unten in der Methode veraenderBestand da haben wir das extra so gemacht, das bei einem Bestand von 0 keiner angezeigt wird... fände ich auch besser
 		super(bez + " 0");
 		this.name = bez;
 		this.bestand = 0;
