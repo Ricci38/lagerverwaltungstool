@@ -40,22 +40,15 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		//TODO Zur besseren Übersicht für jedes Action Event eines Buttons eine Methode in dieser Klasse anlegen und in der if else Verzweigung nur den
-		//Methodenaufruf angeben... denn ich suche ständig Stunden bis ich in der if else finde was ich gesucht habe!
+		//XXX ist das nicht schön übersichtlich geworden? ;)
 		if (e.getActionCommand().toLowerCase().equals(("Neues Lager").toLowerCase())) {
 
 			neuesLager(e);
 			
 		} else if (e.getActionCommand().toLowerCase().equals(("Neue Lieferung").toLowerCase())) {
-			//TODO Ausbuchungen = negative Lieferungen...   evtl. schon behoben. Aber testen!
-			//TODO Klappt nicht ganz, da die Berechnung für den Prozentsatz (oder so!) nur auf positive Zahlen ausgelegt ist
-			GUI_lager.disableLagerUebersicht();
-			GUI_lager.disableAlleBuchungenBestaetigen();
-			GUI_lager.showCardNeueLieferung();
-			GUI_lager.showUndoRedo();
-			GUI_lager.enableJetztBuchen();
-
-			GUI_lager.disableLagerUebersicht();
+			
+			neueLieferung(e);
+			
 		} else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
 			GUI_lager.enableJetztBuchen();
 			befehlBuchung.undo();
@@ -67,60 +60,20 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			}
 
 		} else if (e.getActionCommand().toLowerCase().equals(("Jetzt buchen").toLowerCase())) {
-			int restMenge;
-			int menge = getBuchungsMenge();
-			if (menge != -1) {
-				// FIXME du hast diese funktion darauf ausgelegt, dass sie ausschließlich mit positiven Zahlen arbeiten kann :D
-				if (GUI_lager.getVerbleibendeMenge() == -1) GUI_lager.setVerbleibendeMenge(Integer.parseInt(GUI_lager.getGesamtmenge()));
-
-				restMenge = GUI_lager.getVerbleibendeMenge() - menge;
-				if (restMenge >= 0) {
-					befehlBuchung.execute(GUI_lager.getAusgewaehlterKnoten(), menge, new Date());
-					GUI_lager.setVerbleibendeMenge(restMenge);
-					GUI_lager.showVerbleibendeMenge();
-					if (restMenge <= 0) {
-						GUI_lager.disableJetztBuchen();
-						GUI_lager.enableAlleBuchungenBestaetigen();
-					}
-
-					//Lagerbuchungen aktualisieren, sodass die Tabelle die soeben getätigte Buchung aufführt
-					GUI_lager.zeigeLagerbuchungen(GUI_lager.getAusgewaehlterKnoten().getBuchungen());
-				} else {
-					//FIXME Prozentuele Berechnung ist falsch. Bei großen Zahlen bleiben bei 0% Reste über
-					//TODO Lsg: Bei der letzten Buchung, bei der "0%" übrig bleibt, einfach den Restbestand, der noch zu verteilen bliebe, mit zu der letzten Buchung packen und Benutzer informieren
-					int prozentsatz = Math.round((GUI_lager.getVerbleibendeMenge() * 100 / Integer.parseInt(GUI_lager.getGesamtmenge())));
-					Tools.showMsg("Der prozentuale Anteil ist zu hoch!\n\nDer größte mögliche Wert wäre: " + prozentsatz + "%");
-				}
-			}
-			GUI_lager.showLagerFuerBuchung(GUI_lager.getAusgewaehlterKnoten().getName());
-
+			
+			jetztBuchen(e);
+			
 		} else if (e.getActionCommand().toLowerCase().equals(("Bestätigen").toLowerCase())) {
-			if (!Buchung.getNeueBuchungen().isEmpty()) {
-				GUI_lager.enableLagerUebersicht();
-				GUI_lager.hideUndoRedo();
-				GUI_lager.showCardUebersicht();
-				befehlLieferung.execute(new Date(), Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
-				befehlBuchung.clearAll();
-				GUI_lager.setVerbleibendeMenge(-1);
-				GUI_lager.refreshTree();		//Anzeige des Trees aktualisieren
-			} else
-				Tools.showMsg("Bitte zuerst auf \"Jetzt buchen\" klicken");
+			
+			lieferungBestaetigen(e);
 
 		} else if (e.getActionCommand().toLowerCase().equals(("Abbrechen").toLowerCase())) {
-			befehlBuchung.undoAll();
-			GUI_lager.enableLagerUebersicht();
-			GUI_lager.hideUndoRedo();
-			GUI_lager.showCardUebersicht();
-			GUI_lager.setVerbleibendeMenge(-1);
+			
+			lieferungAbbrechen(e);
 		
 		} else if (e.getActionCommand().toLowerCase().equals(("Lieferungs-/ Lagerübersicht").toLowerCase())) {
 			
-			// TODO Aktion schreiben
-			/*
-			 * Falls gerade eine Lieferung durchgeführt wird muss ein Pop-Up aufgehen und frage: Wollen Sie diese ... wirklich abrechen...
-			 * Je nach Antwort nix machen oder die Card Übersicht zeigen und undoAll für die Buchungen ausführen
-			 */
-			
+			zeigeLieferungsLagerUebersicht(e);
 			
 		}
 	}
@@ -269,6 +222,83 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 					else
 						Tools.showMsg("Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
 	}
+
+	private void neueLieferung(ActionEvent e)
+	{
+		//TODO Ausbuchungen = negative Lieferungen...   evtl. schon behoben. Aber testen!
+		//TODO Klappt nicht ganz, da die Berechnung für den Prozentsatz (oder so!) nur auf positive Zahlen ausgelegt ist
+		GUI_lager.disableLagerUebersicht();
+		GUI_lager.disableAlleBuchungenBestaetigen();
+		GUI_lager.showCardNeueLieferung();
+		GUI_lager.showUndoRedo();
+		GUI_lager.enableJetztBuchen();
+
+		GUI_lager.disableLagerUebersicht();
+	}
+	
+	private void jetztBuchen(ActionEvent e)
+	{
+		int restMenge;
+		int menge = getBuchungsMenge();
+		if (menge != -1) {
+			// FIXME du hast diese funktion darauf ausgelegt, dass sie ausschließlich mit positiven Zahlen arbeiten kann :D
+			if (GUI_lager.getVerbleibendeMenge() == -1) GUI_lager.setVerbleibendeMenge(Integer.parseInt(GUI_lager.getGesamtmenge()));
+
+			restMenge = GUI_lager.getVerbleibendeMenge() - menge;
+			if (restMenge >= 0) {
+				befehlBuchung.execute(GUI_lager.getAusgewaehlterKnoten(), menge, new Date());
+				GUI_lager.setVerbleibendeMenge(restMenge);
+				GUI_lager.showVerbleibendeMenge();
+				if (restMenge <= 0) {
+					GUI_lager.disableJetztBuchen();
+					GUI_lager.enableAlleBuchungenBestaetigen();
+				}
+
+				//Lagerbuchungen aktualisieren, sodass die Tabelle die soeben getätigte Buchung aufführt
+				GUI_lager.zeigeLagerbuchungen(GUI_lager.getAusgewaehlterKnoten().getBuchungen());
+			} else {
+				//FIXME Prozentuele Berechnung ist falsch. Bei großen Zahlen bleiben bei 0% Reste über
+				//TODO Lsg: Bei der letzten Buchung, bei der "0%" übrig bleibt, einfach den Restbestand, der noch zu verteilen bliebe, mit zu der letzten Buchung packen und Benutzer informieren
+				int prozentsatz = Math.round((GUI_lager.getVerbleibendeMenge() * 100 / Integer.parseInt(GUI_lager.getGesamtmenge())));
+				Tools.showMsg("Der prozentuale Anteil ist zu hoch!\n\nDer größte mögliche Wert wäre: " + prozentsatz + "%");
+			}
+		}
+		GUI_lager.showLagerFuerBuchung(GUI_lager.getAusgewaehlterKnoten().getName());
+
+	}
+
+	private void lieferungBestaetigen(ActionEvent e)
+	{
+		if (!Buchung.getNeueBuchungen().isEmpty()) {
+			GUI_lager.enableLagerUebersicht();
+			GUI_lager.hideUndoRedo();
+			GUI_lager.showCardUebersicht();
+			befehlLieferung.execute(new Date(), Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+			befehlBuchung.clearAll();
+			GUI_lager.setVerbleibendeMenge(-1);
+			GUI_lager.refreshTree();		//Anzeige des Trees aktualisieren
+		} else
+			Tools.showMsg("Bitte zuerst auf \"Jetzt buchen\" klicken");
+	}
+	
+	private void lieferungAbbrechen(ActionEvent e)
+	{
+		befehlBuchung.undoAll();
+		GUI_lager.enableLagerUebersicht();
+		GUI_lager.hideUndoRedo();
+		GUI_lager.showCardUebersicht();
+		GUI_lager.setVerbleibendeMenge(-1);
+	}
+	
+	private void zeigeLieferungsLagerUebersicht(ActionEvent e)
+	{
+		// TODO Aktion schreiben
+					/*
+					 * Falls gerade eine Lieferung durchgeführt wird muss ein Pop-Up aufgehen und frage: Wollen Sie diese ... wirklich abrechen...
+					 * Je nach Antwort nix machen oder die Card Übersicht zeigen und undoAll für die Buchungen ausführen
+					 */
+	}
+	
 	
 	
 	public static IBuchungBefehl getBefehlBuchung() {
