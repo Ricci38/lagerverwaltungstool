@@ -43,16 +43,16 @@ public class OberflaecheImpl implements Oberflaeche {
 	private static Oberflaeche theInstance;
 
 	// ### ActionListener für die Oberflächen ###
-	static ActionListener listener_Lagerverwaltung, listener_EinbuchungsAssi;
-	static MouseListener listener_LieferungsUebersicht;
+	private static ActionListener listener_Lagerverwaltung;
+	private static MouseListener listener_LieferungsUebersicht;
 
 	// ### Variablen für die einzelnen Oberflächen ###
 	private JFrame lagerverwaltung;
 
 	// ### Variablen für das Hauptfenster ###
 	private JPanel p_top, p_top_sub_top, p_top_sub_bottom, p_tree, p_center, p_platzhalter1, p_platzhalter2;
-	private JPanel p_center_lieferungen, p_center_lieferungdetails, p_center_neue_lieferung, p_center_neue_lieferung_north, p_center_neue_lieferung_south,
-			p_center_neue_lieferung_center, p_center_lagerbuchungen;
+	private JPanel p_center_lieferungen, p_center_lieferungdetails, p_center_lagerbuchungen;
+	private JPanel p_center_neue_lieferung, p_center_neue_lieferung_north, p_center_neue_lieferung_south, p_center_neue_lieferung_center;
 	private JButton redo, undo, neueLieferung, lageruebersicht, neuesLager;
 	private JLabel l_titel;
 	private JTree lagerTree;
@@ -545,10 +545,6 @@ public class OberflaecheImpl implements Oberflaeche {
 
 	public static void setLagerListener(ActionListener l) {
 		listener_Lagerverwaltung = l;
-	}
-
-	public static void setEinbuchungListener(ActionListener l) {
-		listener_EinbuchungsAssi = l;
 	}
 
 	public static void setLieferungListener(MouseListener l) {
