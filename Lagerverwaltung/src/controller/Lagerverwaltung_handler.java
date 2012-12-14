@@ -40,63 +40,12 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
+		//TODO Zur besseren Übersicht für jedes Action Event eines Buttons eine Methode in dieser Klasse anlegen und in der if else Verzweigung nur den
+		//Methodenaufruf angeben... denn ich suche ständig Stunden bis ich in der if else finde was ich gesucht habe!
 		if (e.getActionCommand().toLowerCase().equals(("Neues Lager").toLowerCase())) {
 
-			// Neuen Knoten hinzufügen
-			Lager pre_knoten;
-			pre_knoten = GUI_lager.getAusgewaehlterKnoten();
-
-			// Falls ein Knoten ausgewählt wurde
-			if (null != pre_knoten) {
-				//Lagererstellung ist nur bei einem Bestand von 0 zulässig!
-				if (pre_knoten.getEinzelBestand() == 0) {
-					String name = null, menge_str = null;
-					int menge = 0, pane_value;
-					JTextField lagername = new JTextField();
-					JTextField bestand = new JTextField();
-					Object message[] = { "Lagername: ", lagername, "Anfangs Bestand: ", bestand };
-					JOptionPane pane = new JOptionPane(message, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-
-					// Dialog erstellen und Eingabeparameter einlesen
-					do {
-						pane.createDialog("Neues Lager erstellen").setVisible(true); // Eingabemaske für den Knotennamen
-						pane_value = ((Integer) pane.getValue()).intValue(); // Button Benutzung des Benutzers einlesen (Ok oder Abbruch)
-						name = lagername.getText().trim();
-						menge_str = bestand.getText().trim();
-
-						if (pane_value == JOptionPane.OK_OPTION) {
-
-							if (name.isEmpty()) {
-								JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!", "Ungültige Bezeichnung",
-										JOptionPane.ERROR_MESSAGE);
-							} else if (!(null == menge_str || menge_str.isEmpty())) {
-								try {
-									menge = Integer.parseInt(menge_str);
-								} catch (NumberFormatException ex) {
-									Tools.showMsg("Es sind nur Werte gleich oder größer 0 erlaubt!: ");
-									menge_str = "";			//Zuweisung eines leeren Strings, damit die do while Schleife erneut durchläuft
-								}
-
-							}
-							// Falls kein Bestand eingegeben wurde wird ein Fehler ausgegeben
-							else
-								Tools.showMsg("Die eingegebene Bestandsmenge ist ungültig!");
-						}
-					} while ((pane_value == JOptionPane.OK_OPTION) && ((name.isEmpty() || name == null) || (menge_str.isEmpty() || menge_str == null))); // falls auf OK geklickt wurde und...
-
-					if (pane_value == JOptionPane.OK_OPTION) {
-						pre_knoten.addTreeElement(name).veraenderBestand(menge);
-
-						GUI_lager.refreshTree(); // Anzeige des Trees aktualisieren
-					}
-				} else {
-					Tools.showMsg("Das ausgewählte Lager besitzt einen Bestand. Lagererstellung nicht möglich!");
-				}
-
-			}
-			// Falls kein Lager ausgewählt wurde wird ein Fehler ausgegeben
-			else
-				Tools.showMsg("Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
+			neuesLager(e);
+			
 		} else if (e.getActionCommand().toLowerCase().equals(("Neue Lieferung").toLowerCase())) {
 			//TODO Ausbuchungen = negative Lieferungen...   evtl. schon behoben. Aber testen!
 			//TODO Klappt nicht ganz, da die Berechnung für den Prozentsatz (oder so!) nur auf positive Zahlen ausgelegt ist
@@ -163,6 +112,16 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			GUI_lager.hideUndoRedo();
 			GUI_lager.showCardUebersicht();
 			GUI_lager.setVerbleibendeMenge(-1);
+		
+		} else if (e.getActionCommand().toLowerCase().equals(("Lieferungs-/ Lagerübersicht").toLowerCase())) {
+			
+			// TODO Aktion schreiben
+			/*
+			 * Falls gerade eine Lieferung durchgeführt wird muss ein Pop-Up aufgehen und frage: Wollen Sie diese ... wirklich abrechen...
+			 * Je nach Antwort nix machen oder die Card Übersicht zeigen und undoAll für die Buchungen ausführen
+			 */
+			
+			
 		}
 	}
 
@@ -250,6 +209,68 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	public void mouseExited(MouseEvent e) {
 	}
 
+
+	private void neuesLager(ActionEvent e)
+	{
+		// Neuen Knoten hinzufügen
+					Lager pre_knoten;
+					pre_knoten = GUI_lager.getAusgewaehlterKnoten();
+
+					// Falls ein Knoten ausgewählt wurde
+					if (null != pre_knoten) {
+						//Lagererstellung ist nur bei einem Bestand von 0 zulässig!
+						if (pre_knoten.getEinzelBestand() == 0) {
+							String name = null, menge_str = null;
+							int menge = 0, pane_value;
+							JTextField lagername = new JTextField();
+							JTextField bestand = new JTextField();
+							Object message[] = { "Lagername: ", lagername, "Anfangs Bestand: ", bestand };
+							JOptionPane pane = new JOptionPane(message, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+
+							// Dialog erstellen und Eingabeparameter einlesen
+							do {
+								pane.createDialog("Neues Lager erstellen").setVisible(true); // Eingabemaske für den Knotennamen
+								pane_value = ((Integer) pane.getValue()).intValue(); // Button Benutzung des Benutzers einlesen (Ok oder Abbruch)
+								name = lagername.getText().trim();
+								menge_str = bestand.getText().trim();
+
+								if (pane_value == JOptionPane.OK_OPTION) {
+
+									if (name.isEmpty()) {
+										JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!", "Ungültige Bezeichnung",
+												JOptionPane.ERROR_MESSAGE);
+									} else if (!(null == menge_str || menge_str.isEmpty())) {
+										try {
+											//XXX vllt nur Mengen >= 0 zulassen? Ansonsten wird in veraendereBestand in der Lager Klasse die selbstgeschriebene Exception geworfen
+											menge = Integer.parseInt(menge_str);
+										} catch (NumberFormatException ex) {
+											Tools.showMsg("Es sind nur Werte gleich oder größer 0 erlaubt!: ");
+											menge_str = "";			//Zuweisung eines leeren Strings, damit die do while Schleife erneut durchläuft
+										}
+
+									}
+									// Falls kein Bestand eingegeben wurde wird ein Fehler ausgegeben
+									else
+										Tools.showMsg("Die eingegebene Bestandsmenge ist ungültig!");
+								}
+							} while ((pane_value == JOptionPane.OK_OPTION) && ((name.isEmpty() || name == null) || (menge_str.isEmpty() || menge_str == null))); // falls auf OK geklickt wurde und...
+
+							if (pane_value == JOptionPane.OK_OPTION) {
+								pre_knoten.addTreeElement(name).veraenderBestand(menge);
+
+								GUI_lager.refreshTree(); // Anzeige des Trees aktualisieren
+							}
+						} else {
+							Tools.showMsg("Das ausgewählte Lager besitzt einen Bestand. Lagererstellung nicht möglich!");
+						}
+
+					}
+					// Falls kein Lager ausgewählt wurde wird ein Fehler ausgegeben
+					else
+						Tools.showMsg("Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
+	}
+	
+	
 	public static IBuchungBefehl getBefehlBuchung() {
 		return befehlBuchung;
 	}
