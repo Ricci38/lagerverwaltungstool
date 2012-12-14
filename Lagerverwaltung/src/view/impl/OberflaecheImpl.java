@@ -165,6 +165,8 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_tree.setPreferredSize(new Dimension(250, 50)); // Breite des Trees festlegen. Höhe wird aufgrund des BorderLayouts ignoriert!
 		JScrollPane scrollBar = new JScrollPane(lagerTree);
 		lagerTree.addTreeSelectionListener((TreeSelectionListener) listener_Lagerverwaltung);
+		//FIXME Hierdurch kann man die Namen im Tree verändern. Muss nur noch ein Listener im Handler zu angepasst und erstellt werden
+		lagerTree.setEditable(true);
 		p_tree.add(scrollBar);
 
 		// ### Menüauswahl im CENTER ###

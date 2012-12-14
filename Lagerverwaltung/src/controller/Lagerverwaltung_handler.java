@@ -23,7 +23,6 @@ import controller.befehle.ILieferungBefehl;
 import controller.befehle.impl.BuchungBefehlImpl;
 import controller.befehle.impl.LieferungBefehlImpl;
 
-//FIXME Lagernamen müssen änderbar sein. lagerTree in der Oberfläche vllt auf setEditable(true) und hier einen Listener dazu implementieren
 
 public class Lagerverwaltung_handler implements ActionListener, TreeSelectionListener, MouseListener {
 
@@ -165,6 +164,8 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 	private void neuesLager(ActionEvent e)
 	{
+		//FIXME Wenn neue Lager mit einem Anfangsbestand von 0 angelegt werden, wird der Bestand 0 nicht im Namen angezeigt
+		//FIXME LLagernamen dürfen nur einmal vergeben werden!
 		// Neuen Knoten hinzufügen
 					Lager pre_knoten;
 					pre_knoten = GUI_lager.getAusgewaehlterKnoten();
@@ -193,18 +194,24 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 										JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!", "Ungültige Bezeichnung",
 												JOptionPane.ERROR_MESSAGE);
 									} else if (!(null == menge_str || menge_str.isEmpty())) {
-										try {
-											//XXX vllt nur Mengen >= 0 zulassen? Ansonsten wird in veraendereBestand in der Lager Klasse die selbstgeschriebene Exception geworfen
+										if (isItANumber(menge_str))
+										{
 											menge = Integer.parseInt(menge_str);
-										} catch (NumberFormatException ex) {
-											Tools.showMsg("Es sind nur Werte gleich oder größer 0 erlaubt!: ");
+											if (menge < 0)
+											{
+												Tools.showMsg("Es sind keine negativen Bestände möglich!");
+												menge_str = "";			//Zuweisung eines leeren Strings, damit die do while Schleife erneut durchläuft
+											}
+										}
+										else
+										{
+											Tools.showMsg("Als Menge sind nur Zahlen erlaubt!");
 											menge_str = "";			//Zuweisung eines leeren Strings, damit die do while Schleife erneut durchläuft
 										}
-
 									}
 									// Falls kein Bestand eingegeben wurde wird ein Fehler ausgegeben
 									else
-										Tools.showMsg("Die eingegebene Bestandsmenge ist ungültig!");
+										Tools.showMsg("Bitte geben Sie eine Bestandsmenge an!");
 								}
 							} while ((pane_value == JOptionPane.OK_OPTION) && ((name.isEmpty() || name == null) || (menge_str.isEmpty() || menge_str == null))); // falls auf OK geklickt wurde und...
 
