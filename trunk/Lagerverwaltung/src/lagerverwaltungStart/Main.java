@@ -32,14 +32,14 @@ public class Main {
 
 		myLagerverwaltungHandler.announceGUI_Lager(OberflaecheImpl.getInstance());
 		OberflaecheImpl.getInstance().showLagerverwaltung();
-		
+
 		if (pane_value == JOptionPane.YES_OPTION) {
 			beispielHierarchieLaden(wurzel);
 		}
 
 		OberflaecheImpl.getInstance().selectTreeRoot();
 		OberflaecheImpl.getInstance().zeigeLieferungen(Lieferung.getAllLieferungen());
-		
+
 	}
 
 	private static void beispielHierarchieLaden(Lager root) {

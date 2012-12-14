@@ -1,17 +1,15 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import controller.Lagerverwaltung_handler;
 import exception.LagerverwaltungsException;
 
 public class Lager extends DefaultMutableTreeNode {
 
-	static Lager wurzel;
+	static Lager wurzel; //XXX <<< Sichtbarkeit??
 	private Lager blatt;
 	private boolean isBestandHaltend;
 	private int bestand;
@@ -21,21 +19,19 @@ public class Lager extends DefaultMutableTreeNode {
 
 	private static final long serialVersionUID = -6664495404957376450L;
 
-	// ### Konstruktoren ###
+	// ### Konstruktor ###
 	public Lager(String bez) {
-		super(bez);
+		super(bez + " 0");
 		this.name = bez;
+		this.bestand = 0;
+		this.isBestandHaltend = true;
 	}
 
-	//XXX Darf man hier direkt eine Buchung ausführen???
-	public Lager(String bez, int bestand) {
-		super(bez + " " + bestand);
-		Date d = new Date();
-		this.name = bez;
-		Lagerverwaltung_handler.getBefehlBuchung().execute(this, bestand, d);
-	}
-
-	//Gibt den eigenen oder oder kumulierten Bestand aller Unterlager wieder
+	/**
+	 * 
+	 * @return Gibt den eigenen oder oder kumulierten Bestand aller Unterlager
+	 *         zurück
+	 */
 	public int getBestand() {
 		int bestand_summe = 0;
 
@@ -93,7 +89,7 @@ public class Lager extends DefaultMutableTreeNode {
 			throw new LagerverwaltungsException("Bestand vom Lager \"" + this.name + "\" kann nicht geändert werden.", result, null);
 		}
 	}
-	
+
 	public boolean checkBestandsaenderung(int menge) {
 		if ((this.bestand + menge) >= 0) {
 			return true;
@@ -117,8 +113,6 @@ public class Lager extends DefaultMutableTreeNode {
 										// an einem Blatt aufgerufen wurde ist
 										// dieses ebenfalls nicht mehr fähig
 										// einen Bestand anzuzeigen
-		blatt.isBestandHaltend = true;
-		blatt.name = bez;
 
 		this.setUserObject(this.name); // übergeordneten Knoten umbenennen,
 										// sodass der Bestand nicht mehr
@@ -127,7 +121,6 @@ public class Lager extends DefaultMutableTreeNode {
 		return blatt;
 	}
 
-	
 	public static Lager getTree() {
 		return wurzel;
 	}
@@ -139,7 +132,7 @@ public class Lager extends DefaultMutableTreeNode {
 	public boolean addBuchung(Buchung b) {
 		return buchungen.add(b);
 	}
-	
+
 	public boolean removeBuchung(Buchung b) {
 		return buchungen.remove(b);
 	}
@@ -147,7 +140,7 @@ public class Lager extends DefaultMutableTreeNode {
 	public List<Buchung> getBuchungen() {
 		return buchungen;
 	}
-	
+
 	public String getName() {
 		return name;
 	}

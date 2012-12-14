@@ -48,13 +48,12 @@ public class OberflaecheImpl implements Oberflaeche {
 
 	// ### Variablen für die einzelnen Oberflächen ###
 	private JFrame lagerverwaltung;
-	//	private JFrame einbuchungsAssi;
 
 	// ### Variablen für das Hauptfenster ###
 	private JPanel p_top, p_top_sub_top, p_top_sub_bottom, p_tree, p_center, p_platzhalter1, p_platzhalter2;
 	private JPanel p_center_lieferungen, p_center_lieferungdetails, p_center_neue_lieferung, p_center_neue_lieferung_north, p_center_neue_lieferung_south,
 			p_center_neue_lieferung_center, p_center_lagerbuchungen;
-	private JButton redo, undo, buchen, lageruebersicht, neuesLager;
+	private JButton redo, undo, neueLieferung, lageruebersicht, neuesLager;
 	private JLabel l_titel;
 	private JTree lagerTree;
 	private JTable tbl_buchungsUebersicht, tbl_lieferungsUebersicht, tbl_lagerbuchungen;
@@ -64,16 +63,16 @@ public class OberflaecheImpl implements Oberflaeche {
 	private JTextField gesamtmenge, prozentAnteil, saldo;
 	private int verbleibendeMenge = 0;
 	private JLabel lagerBezeichnung, anteilsMenge, restMenge;
-	private JButton btn_best, btn_abbr, btn_naechsteBuchung;
+	private JButton btn_best, btn_abbr, btn_jetztBuchen;
 	private GridBagLayout gbl;
 	private static int anz_hinzugefuegterLager = 0;
 	private final HashMap<Lager, JTextField> hinzugefuegteLager = new HashMap<Lager, JTextField>();
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
-	
+
 	private boolean isCardUebersichtAktiv = false;
 	private boolean isCardNeueLieferungAktiv = false;
-	
+
 	// ### privater Konstruktor (Singelton) ###
 	private OberflaecheImpl() {
 
@@ -128,23 +127,26 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		undo = new JButton("undo");
 		redo = new JButton("redo");
-		buchen = new JButton("Neue Lieferung");
+		neueLieferung = new JButton("Neue Lieferung");
 		neuesLager = new JButton("Neues Lager");
-		
-		//FIXME: Diesen Button kann man nicht nutzen
+
+		//FIXME Diesen Button kann man nicht nutzen
 		/*
-		 * Wenn man eine neue Lieferung ausführt wird dieser Button disabled und erst wieder enabled wenn man die Lieferung
-		 * bestätigt oder abbricht. Wenn man aber einen von den beiden Buttons betätigt kommt man automatisch wieder
-		 * auf die Lieferungs- und Lagerübersicht :D
-		 * Also entweder Button weg oder enablen und dann mit einem Popup fragen "Soll die akuelle Lieferung abgebrochen 
-		 * und verworfen werden?" ...
+		 * Wenn man eine neue Lieferung ausführt wird dieser Button disabled und
+		 * erst wieder enabled wenn man die Lieferung bestätigt oder abbricht.
+		 * Wenn man aber einen von den beiden Buttons betätigt kommt man
+		 * automatisch wieder auf die Lieferungs- und Lagerübersicht :D Also
+		 * entweder Button weg oder enablen und dann mit einem Popup fragen
+		 * "Soll die akuelle Lieferung abgebrochen und verworfen werden?" ...
+		 * 
+		 * TODO Aw: hast recht xD --- dann lieber die 2te variante mit dem popup^^
 		 */
 		lageruebersicht = new JButton("Lieferungs-/ Lagerübersicht");
 
 		// ### Actionlistener bekannt machen ###
 		undo.addActionListener(listener_Lagerverwaltung);
 		redo.addActionListener(listener_Lagerverwaltung);
-		buchen.addActionListener(listener_Lagerverwaltung);
+		neueLieferung.addActionListener(listener_Lagerverwaltung);
 		neuesLager.addActionListener(listener_Lagerverwaltung);
 		lageruebersicht.addActionListener(listener_Lagerverwaltung);
 
@@ -156,7 +158,7 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		// ### Komponenten dem unteren Unterpanel hinzufügen ###
 		Tools.addComponent(p_top_sub_bottom, gbl2, neuesLager, 0, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		Tools.addComponent(p_top_sub_bottom, gbl2, buchen, 1, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, neueLieferung, 1, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_top_sub_bottom, gbl2, p_platzhalter1, 2, 0, 1, 0, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_top_sub_bottom, gbl2, undo, 3, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_top_sub_bottom, gbl2, redo, 4, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
@@ -183,9 +185,9 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center_tabbs.addTab("Lagerbuchungen", p_center_lagerbuchungen = new JPanel());
 
 		gbl = new GridBagLayout();
-		
+
 		buildNeueLieferung();
-		
+
 		p_center = new JPanel();
 		p_center.setLayout(new CardLayout());
 		p_center.add(p_center_tabbs, "Übersicht");
@@ -215,52 +217,50 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel("Gesamtmenge :"), 0, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, restMenge = new JLabel("Verbleibende Menge: " + verbleibendeMenge), 0, 1, 3, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, restMenge = new JLabel("Verbleibende Menge: " + verbleibendeMenge), 0, 1, 3, 1, 0, 0,
+				GridBagConstraints.HORIZONTAL);
 		gesamtmenge.addMouseListener(listener_LieferungsUebersicht);
-		gesamtmenge.setPreferredSize(new Dimension(100,20));
-		
+		gesamtmenge.setPreferredSize(new Dimension(100, 20));
+
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, lagerBezeichnung = new JLabel(), 0, 2, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 2, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, btn_naechsteBuchung = new JButton("Nächste Buchung"), 2, 3, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 2, 1, 1, 0, 0,
+				GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, btn_jetztBuchen = new JButton("Jetzt buchen"), 2, 3, 1, 1, 0, 0, GridBagConstraints.NONE);
 		prozentAnteil.addMouseListener(listener_LieferungsUebersicht);
-		btn_naechsteBuchung.addActionListener(listener_Lagerverwaltung);
-		prozentAnteil.setPreferredSize(new Dimension(120,20));
+		btn_jetztBuchen.addActionListener(listener_Lagerverwaltung);
+		prozentAnteil.setPreferredSize(new Dimension(120, 20));
 		restMenge.setVisible(false);
 		lagerBezeichnung.setVisible(false);
 		prozentAnteil.setVisible(false);
-		btn_naechsteBuchung.setVisible(false);
+		btn_jetztBuchen.setVisible(false);
 	}
 
-	//TODO Umbenennen in zeigeLagerFuerLieferung?
 	@Override
-	public void x(String n) {
+	public void showLagerFuerBuchung(String n) {
 		resetCardNeueLieferung();
-		try
-		{
+		try {
 			//FIXME Prozentuele Berechnung ist falsch. Bei großen Zahlen bleiben bei 0% Reste über
-			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge + " entspricht " + Math.round(((float)(verbleibendeMenge*100 / Integer.parseInt(gesamtmenge.getText()))))+ "% der Gesamtmenge");
-		}
-		catch (Exception e)
-		{
+			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge + " entspricht "
+					+ Math.round((verbleibendeMenge * 100 / Integer.parseInt(gesamtmenge.getText()))) + "% der Gesamtmenge");
+		} catch (Exception e) {
 			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge);
 		}
 		lagerBezeichnung.setText(n);
 		lagerBezeichnung.setVisible(true);
 		prozentAnteil.setVisible(true);
-		btn_naechsteBuchung.setVisible(true);
+		btn_jetztBuchen.setVisible(true);
 		p_center_neue_lieferung_center.updateUI();
 	}
-	
+
 	@Override
-	public void showVerbleibendeMenge()
-	{
+	public void showVerbleibendeMenge() {
 		restMenge.setVisible(true);
 	}
 
 	private void resetCardNeueLieferung() {
 		lagerBezeichnung.setVisible(false);
 		prozentAnteil.setVisible(false);
-		btn_naechsteBuchung.setVisible(false);
+		btn_jetztBuchen.setVisible(false);
 		prozentAnteil.setText("prozentualer Anteil");
 	}
 
@@ -281,12 +281,12 @@ public class OberflaecheImpl implements Oberflaeche {
 		isCardNeueLieferungAktiv = false;
 		resetCardNeueLieferung();
 	}
-	
+
 	@Override
 	public boolean isCardNeueLieferungAktiv() {
 		return isCardNeueLieferungAktiv;
 	}
-	
+
 	@Override
 	public boolean isCardUebersichtAktiv() {
 		return isCardUebersichtAktiv;
@@ -295,13 +295,33 @@ public class OberflaecheImpl implements Oberflaeche {
 	@Override
 	public void disableLagerUebersicht() {
 		lageruebersicht.setEnabled(false);
-		buchen.setEnabled(false);
+		neueLieferung.setEnabled(false);
 	}
 
 	@Override
 	public void enableLagerUebersicht() {
 		lageruebersicht.setEnabled(true);
-		buchen.setEnabled(true);
+		neueLieferung.setEnabled(true);
+	}
+
+	@Override
+	public void enableJetztBuchen() {
+		btn_jetztBuchen.setEnabled(true);
+	}
+
+	@Override
+	public void disableJetztBuchen() {
+		btn_jetztBuchen.setEnabled(false);
+	}
+
+	@Override
+	public void enableAlleBuchungenBestaetigen() {
+		btn_best.setEnabled(true);
+	}
+
+	@Override
+	public void disableAlleBuchungenBestaetigen() {
+		btn_best.setEnabled(false);
 	}
 
 	@Override
@@ -321,26 +341,24 @@ public class OberflaecheImpl implements Oberflaeche {
 		lagerTree.setSelectionRow(0);
 		lagerTree.expandRow(0);
 	}
-	
+
 	@Override
 	public String getGesamtmenge() {
 		return gesamtmenge.getText();
 	}
-	
+
 	@Override
 	public String getProzentualerAnteil() {
 		return prozentAnteil.getText();
 	}
-	
+
 	@Override
-	public void setVerbleibendeMenge(int menge)
-	{
+	public void setVerbleibendeMenge(int menge) {
 		verbleibendeMenge = menge;
 	}
-	
+
 	@Override
-	public int getVerbleibendeMenge()
-	{
+	public int getVerbleibendeMenge() {
 		return verbleibendeMenge;
 	}
 
@@ -377,14 +395,17 @@ public class OberflaecheImpl implements Oberflaeche {
 		int i = buchungsListe.size();
 
 		/*
-		 * Hier vielleicht schon eine zweite for-Schleife drum herum legen, um
-		 * auch von einem Lager, das kein 'leaf' ist, alle darunter liegenden
+		 * TODO Hier vielleicht schon eine zweite for-Schleife drum herum legen,
+		 * um auch von einem Lager, das kein 'leaf' ist, alle darunter liegenden
 		 * Lager zu erfassen. Dann müsste auch die Matrix oben um eine
 		 * ArrayList<String> erweitert werden, um den Lagernamen aufnehmen zu
 		 * können. Das ist denke ich mal einfacher, als wenn wir das dann noch
 		 * einmal anders machen für die "Oberlager".
+		 * 
+		 * ODER: Methode schreiben, die alle Listen mit Buchungen zu einer
+		 * zusammenfügt und diese dann anzeigt...
 		 */
-		if ( !(buchungsListe.isEmpty())) {
+		if (!(buchungsListe.isEmpty())) {
 			for (Buchung b : buchungsListe) {
 
 				daten.get(0).add(((Integer) b.getBuchungID()).toString());
@@ -459,12 +480,9 @@ public class OberflaecheImpl implements Oberflaeche {
 
 	@Override
 	public void zeigeLagerbuchungen(List<Buchung> b) {
-		if (null == getAusgewaehlterKnoten())
-		{
+		if (null == getAusgewaehlterKnoten()) {
 			return;
-		}
-		else
-		{
+		} else {
 			p_center_lagerbuchungen.removeAll();
 			if (null == b || b.isEmpty()) {
 				if (!getAusgewaehlterKnoten().isLeaf() && getAusgewaehlterKnoten().getBestand() > 0) {
@@ -474,28 +492,28 @@ public class OberflaecheImpl implements Oberflaeche {
 					p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
 			} else {
 				p_center_lagerbuchungen.setLayout(new BorderLayout());
-	
+
 				int i = 0;
-	
+
 				String[] spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
 				String[][] daten = new String[b.size()][3];
-	
+
 				for (Buchung bu : b) {
 					daten[i][0] = ((Integer) bu.getBuchungID()).toString();
 					daten[i][1] = sdf.format(bu.getDatum());
 					daten[i++][2] = ((Integer) bu.getMenge()).toString();
 				}
-	
+
 				tbl_lagerbuchungen = new JTable(daten, spalten) {
-	
+
 					private static final long serialVersionUID = 6620092595652821138L;
-	
+
 					@Override
 					public boolean isCellEditable(int arg0, int arg1) {
 						return false;
 					}
 				};
-	
+
 				tbl_lagerbuchungen.setFillsViewportHeight(true);
 				p_center_lagerbuchungen.add(saldo = new JTextField("Buchungen von Lager \"" + getAusgewaehlterKnoten().getName() + "\" mit Saldo "
 						+ getAusgewaehlterKnoten().getBestand() + ":"), BorderLayout.NORTH);
@@ -514,6 +532,7 @@ public class OberflaecheImpl implements Oberflaeche {
 	}
 
 	//TODO: Wird nicht genutzt, da auch der Button Lieferungs-/ Lagerübersicht nichts bringt...
+	//TODO Dann halt entfernen?? xD
 	@Override
 	public void showTabLagerbuchung() {
 		p_center_tabbs.setSelectedComponent(p_center_lagerbuchungen);

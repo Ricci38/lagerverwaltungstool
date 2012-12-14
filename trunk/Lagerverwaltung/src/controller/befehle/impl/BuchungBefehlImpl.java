@@ -33,7 +33,7 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 			Lager l = lagerStackRedo.push(lagerStackUndo.pop());
 			l.removeBuchung(b);
 			l.veraenderBestand(-b.getMenge());
-			OberflaecheImpl.getInstance().x(l.getName());
+			OberflaecheImpl.getInstance().showLagerFuerBuchung(l.getName());
 			OberflaecheImpl.getInstance().setVerbleibendeMenge(OberflaecheImpl.getInstance().getVerbleibendeMenge() + b.getMenge());
 		} catch (Exception e) {
 			Tools.showMsg("Ich nix rückgängig machen können.");
@@ -43,16 +43,13 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 
 	@Override
 	public void redo() {
-		try
-		{
+		try {
 			Buchung b = buchungsStackUndo.push(buchungsStackRedo.pop());
 			Lager l = lagerStackUndo.push(lagerStackRedo.pop());
 			l.veraenderBestand(b.getMenge());
 			l.addBuchung(b);
 			OberflaecheImpl.getInstance().setVerbleibendeMenge(OberflaecheImpl.getInstance().getVerbleibendeMenge() - b.getMenge());
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			Tools.showMsg("Ich kann nichts wiederholen.");
 		}
 	}
