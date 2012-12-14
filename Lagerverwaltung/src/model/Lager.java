@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import exception.LagerverwaltungsException;
