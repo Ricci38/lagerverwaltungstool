@@ -130,17 +130,6 @@ public class OberflaecheImpl implements Oberflaeche {
 		neueLieferung = new JButton("Neue Lieferung");
 		neuesLager = new JButton("Neues Lager");
 
-		//FIXME Diesen Button kann man nicht nutzen
-		/*
-		 * Wenn man eine neue Lieferung ausführt wird dieser Button disabled und
-		 * erst wieder enabled wenn man die Lieferung bestätigt oder abbricht.
-		 * Wenn man aber einen von den beiden Buttons betätigt kommt man
-		 * automatisch wieder auf die Lieferungs- und Lagerübersicht :D Also
-		 * entweder Button weg oder enablen und dann mit einem Popup fragen
-		 * "Soll die akuelle Lieferung abgebrochen und verworfen werden?" ...
-		 * 
-		 * TODO Aw: hast recht xD --- dann lieber die 2te variante mit dem popup^^
-		 */
 		lageruebersicht = new JButton("Lieferungs-/ Lagerübersicht");
 
 		// ### Actionlistener bekannt machen ###
@@ -529,13 +518,6 @@ public class OberflaecheImpl implements Oberflaeche {
 	public void showTabLieferungsBuchungen(List<Buchung> buchungen) {
 		theInstance.zeigeLieferungsdetails(buchungen);
 		p_center_tabbs.setSelectedComponent(p_center_lieferungdetails);
-	}
-
-	//TODO: Wird nicht genutzt, da auch der Button Lieferungs-/ Lagerübersicht nichts bringt...
-	//TODO Dann halt entfernen?? xD
-	@Override
-	public void showTabLagerbuchung() {
-		p_center_tabbs.setSelectedComponent(p_center_lagerbuchungen);
 	}
 
 	@Override

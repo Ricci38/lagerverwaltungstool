@@ -9,7 +9,7 @@ import exception.LagerverwaltungsException;
 
 public class Lager extends DefaultMutableTreeNode {
 
-	static Lager wurzel; //XXX <<< Sichtbarkeit??
+	private static Lager wurzel; 
 	private Lager blatt;
 	private boolean isBestandHaltend;
 	private int bestand;
@@ -21,6 +21,7 @@ public class Lager extends DefaultMutableTreeNode {
 
 	// ### Konstruktor ###
 	public Lager(String bez) {
+		//XXX Soll die 0 jetzt doch angezeigt werden?
 		super(bez + " 0");
 		this.name = bez;
 		this.bestand = 0;

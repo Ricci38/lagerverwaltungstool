@@ -41,8 +41,6 @@ public interface Oberflaeche {
 
 	public Lager getAusgewaehlterKnoten();
 
-	public void showTabLagerbuchung();
-
 	public void zeigeLagerbuchungen(List<Buchung> buchungen);
 
 	boolean isCardNeueLieferungAktiv();
