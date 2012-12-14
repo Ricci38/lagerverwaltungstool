@@ -10,7 +10,6 @@ public class Lieferung {
 	private final List<Buchung> buchungen;
 	private final int gesamtMenge;
 	private static List<Lieferung> lieferungen = new ArrayList<Lieferung>();
-	
 
 	public Lieferung(Date d, int gesamtMenge, List<Buchung> b) {
 		this.lieferungsDatum = d;
@@ -18,7 +17,7 @@ public class Lieferung {
 		this.buchungen = new ArrayList<Buchung>(b);
 		lieferungen.add(this);
 	}
-	
+
 	public Lieferung(Date d, Buchung b) {
 		this.lieferungsDatum = d;
 		List<Buchung> bl = new ArrayList<Buchung>();
@@ -44,16 +43,13 @@ public class Lieferung {
 	public static List<Lieferung> getAllLieferungen() {
 		return lieferungen;
 	}
-	
+
 	//Lieferungen werden durch das Datum eindeutig identifiziert -> Selektion anhand des Datums ist möglich
-	public static Lieferung getLieferung(String date)
-	{
+	public static Lieferung getLieferung(String date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
-		
-		for (Lieferung l : lieferungen)
-		{
-			if ((sdf.format(l.getLieferungsDatum())).equals(date))
-				return l;
+
+		for (Lieferung l : lieferungen) {
+			if ((sdf.format(l.getLieferungsDatum())).equals(date)) return l;
 		}
 		return null;
 	}

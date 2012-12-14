@@ -10,7 +10,6 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
@@ -40,7 +39,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+
 		if (e.getActionCommand().toLowerCase().equals(("Neues Lager").toLowerCase())) {
 
 			// Neuen Knoten hinzufügen
@@ -87,7 +86,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 					if (pane_value == JOptionPane.OK_OPTION) {
 						pre_knoten.addTreeElement(name).veraenderBestand(menge);
-						
+
 						GUI_lager.refreshTree(); // Anzeige des Trees aktualisieren
 					}
 				} else {
@@ -100,50 +99,54 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				Tools.showMsg("Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
 		} else if (e.getActionCommand().toLowerCase().equals(("Neue Lieferung").toLowerCase())) {
 			//TODO Ausbuchungen = negative Lieferungen...   evtl. schon behoben. Aber testen!
+			//TODO Klappt nicht ganz, da die Berechnung für den Prozentsatz (oder so!) nur auf positive Zahlen ausgelegt ist
 			GUI_lager.disableLagerUebersicht();
+			GUI_lager.disableAlleBuchungenBestaetigen();
 			GUI_lager.showCardNeueLieferung();
 			GUI_lager.showUndoRedo();
-			
-			
+			GUI_lager.enableJetztBuchen();
+
 			GUI_lager.disableLagerUebersicht();
 		} else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
+			GUI_lager.enableJetztBuchen();
 			befehlBuchung.undo();
-			
+
 		} else if (e.getActionCommand().toLowerCase().equals(("redo").toLowerCase())) {
 			befehlBuchung.redo();
+			if (GUI_lager.getVerbleibendeMenge() == 0) {
+				GUI_lager.enableAlleBuchungenBestaetigen();
+			}
 
-		} else if (e.getActionCommand().toLowerCase().equals(("Nächste Buchung").toLowerCase())) {
-			//FIXME Wenn nach einer Buchung der verbleibende Bestand 0 ist muss der Button Nächste Buchung ausgegraut werden
+		} else if (e.getActionCommand().toLowerCase().equals(("Jetzt buchen").toLowerCase())) {
 			int restMenge;
 			int menge = getBuchungsMenge();
-			if (menge!= -1)
-			{
-				if (GUI_lager.getVerbleibendeMenge() == -1)
-					GUI_lager.setVerbleibendeMenge(Integer.parseInt(GUI_lager.getGesamtmenge()));
-				
+			if (menge != -1) {
+				// FIXME du hast diese funktion darauf ausgelegt, dass sie ausschließlich mit positiven Zahlen arbeiten kann :D
+				if (GUI_lager.getVerbleibendeMenge() == -1) GUI_lager.setVerbleibendeMenge(Integer.parseInt(GUI_lager.getGesamtmenge()));
+
 				restMenge = GUI_lager.getVerbleibendeMenge() - menge;
-				if (restMenge >= 0)
-				{
+				if (restMenge >= 0) {
 					befehlBuchung.execute(GUI_lager.getAusgewaehlterKnoten(), menge, new Date());
 					GUI_lager.setVerbleibendeMenge(restMenge);
 					GUI_lager.showVerbleibendeMenge();
-					
+					if (restMenge <= 0) {
+						GUI_lager.disableJetztBuchen();
+						GUI_lager.enableAlleBuchungenBestaetigen();
+					}
 
 					//Lagerbuchungen aktualisieren, sodass die Tabelle die soeben getätigte Buchung aufführt
-					GUI_lager.zeigeLagerbuchungen(((Lager) GUI_lager.getAusgewaehlterKnoten()).getBuchungen());
-				}
-				else
-				{
+					GUI_lager.zeigeLagerbuchungen(GUI_lager.getAusgewaehlterKnoten().getBuchungen());
+				} else {
 					//FIXME Prozentuele Berechnung ist falsch. Bei großen Zahlen bleiben bei 0% Reste über
-					int prozentsatz = Math.round(((float)(GUI_lager.getVerbleibendeMenge()*100 / Integer.parseInt(GUI_lager.getGesamtmenge()))));
-					Tools.showMsg("Der prozentuale Anteil ist zu hoch! Der größte mögliche Wert wäre: " + prozentsatz);
+					//TODO Lsg: Bei der letzten Buchung, bei der "0%" übrig bleibt, einfach den Restbestand, der noch zu verteilen bliebe, mit zu der letzten Buchung packen und Benutzer informieren
+					int prozentsatz = Math.round((GUI_lager.getVerbleibendeMenge() * 100 / Integer.parseInt(GUI_lager.getGesamtmenge())));
+					Tools.showMsg("Der prozentuale Anteil ist zu hoch!\n\nDer größte mögliche Wert wäre: " + prozentsatz + "%");
 				}
 			}
-			GUI_lager.x(GUI_lager.getAusgewaehlterKnoten().getName());
-			
+			GUI_lager.showLagerFuerBuchung(GUI_lager.getAusgewaehlterKnoten().getName());
+
 		} else if (e.getActionCommand().toLowerCase().equals(("Bestätigen").toLowerCase())) {
-			if (!Buchung.getNeueBuchungen().isEmpty())
-			{	
+			if (!Buchung.getNeueBuchungen().isEmpty()) {
 				GUI_lager.enableLagerUebersicht();
 				GUI_lager.hideUndoRedo();
 				GUI_lager.showCardUebersicht();
@@ -151,10 +154,9 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				befehlBuchung.clearAll();
 				GUI_lager.setVerbleibendeMenge(-1);
 				GUI_lager.refreshTree();		//Anzeige des Trees aktualisieren
-			}
-			else
-				Tools.showMsg("Bitte zuerst auf Nächste Buchung klicken");
-			
+			} else
+				Tools.showMsg("Bitte zuerst auf \"Jetzt buchen\" klicken");
+
 		} else if (e.getActionCommand().toLowerCase().equals(("Abbrechen").toLowerCase())) {
 			befehlBuchung.undoAll();
 			GUI_lager.enableLagerUebersicht();
@@ -167,49 +169,40 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	private int getBuchungsMenge() {
 		String gesamtmenge_str, prozentualerAnteil_str;
 		int gesamtmenge, prozentualerAnteil, anteil;
-		gesamtmenge_str = GUI_lager.getGesamtmenge(); 
+		gesamtmenge_str = GUI_lager.getGesamtmenge();
 		prozentualerAnteil_str = GUI_lager.getProzentualerAnteil();
-		
-		if (isItANumber(gesamtmenge_str) && isItANumber(prozentualerAnteil_str))
-		{
+
+		if (isItANumber(gesamtmenge_str) && isItANumber(prozentualerAnteil_str)) {
 			gesamtmenge = Integer.parseInt(gesamtmenge_str);
 			prozentualerAnteil = Integer.parseInt(prozentualerAnteil_str);
-			
+
 			//XXX Durch das Auskommentierte sind Ausbuchungen möglich geworden
-//			if (gesamtmenge > 0)
-//			{
-				if ((prozentualerAnteil < 1) ||(prozentualerAnteil > 100))
-					Tools.showMsg("Ungültiger prozentueler Anteil! Nur ganzzahlige Werte von 1 bis 100.");
-				else
-				{
-					//Kaufmännisch runden
-					anteil = Math.round((float)(gesamtmenge * prozentualerAnteil)/100);
-					return anteil;
-				}
-//			}
-//			else
-//				Tools.showMsg("Die Gesamtmenge kann nicht kleiner als 1 sein!");
-		}
-		else
+			//			if (gesamtmenge > 0)
+			//			{
+			if ((prozentualerAnteil < 1) || (prozentualerAnteil > 100))
+				Tools.showMsg("Ungültiger prozentueler Anteil! Nur ganzzahlige Werte von 1 bis 100.");
+			else {
+				//Kaufmännisch runden
+				anteil = Math.round((float) (gesamtmenge * prozentualerAnteil) / 100);
+				return anteil;
+			}
+			//			}
+			//			else
+			//				Tools.showMsg("Die Gesamtmenge kann nicht kleiner als 1 sein!");
+		} else
 			Tools.showMsg("Es sind nur ganzzahlige Werte erlaubt!");
-		
+
 		return -1;		//Ungültige Eingabe
 	}
 
-	
-	
-	
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		if (GUI_lager.isCardUebersichtAktiv())
 			GUI_lager.zeigeLagerbuchungen(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
 		else if (GUI_lager.isCardNeueLieferungAktiv() && GUI_lager.getAusgewaehlterKnoten().isLeaf())
-			GUI_lager.x(GUI_lager.getAusgewaehlterKnoten().getName());
+			GUI_lager.showLagerFuerBuchung(GUI_lager.getAusgewaehlterKnoten().getName());
 	}
 
-	
-	
-	
 	// XXX Bedarf einer gründlichen Überprüfung :)
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -264,13 +257,13 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	public static ILieferungBefehl getBefehlLieferung() {
 		return befehlLieferung;
 	}
-	
+
 	private boolean isItANumber(String s) {
-	try {
-		Integer.parseInt(s);
-		return true;
-	} catch (Exception e) {
-		return false;
+		try {
+			Integer.parseInt(s);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
-}
 }

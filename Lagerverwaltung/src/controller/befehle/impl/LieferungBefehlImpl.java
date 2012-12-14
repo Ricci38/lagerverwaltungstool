@@ -10,10 +10,7 @@ import controller.Lagerverwaltung_handler;
 import controller.befehle.ILieferungBefehl;
 
 public class LieferungBefehlImpl implements ILieferungBefehl {
-	
-	/* (non-Javadoc)
-	 * @see controller.ILieferungBefehl#execute(model.Lieferung)
-	 */
+
 	@Override
 	public Lieferung execute(Date d, int menge, List<Buchung> buchungen) {
 		for (Buchung b : buchungen) {

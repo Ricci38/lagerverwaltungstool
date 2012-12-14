@@ -49,7 +49,7 @@ public interface Oberflaeche {
 
 	boolean isCardUebersichtAktiv();
 
-	void x(String n);
+	void showLagerFuerBuchung(String n);
 
 	String getGesamtmenge();
 
@@ -60,5 +60,13 @@ public interface Oberflaeche {
 	int getVerbleibendeMenge();
 
 	void showVerbleibendeMenge();
+
+	void enableJetztBuchen();
+
+	void disableJetztBuchen();
+
+	void enableAlleBuchungenBestaetigen();
+
+	void disableAlleBuchungenBestaetigen();
 
 }

@@ -8,7 +8,7 @@ public class Buchung {
 
 	private static int id;
 	private static List<Buchung> neueBuchungen = new ArrayList<Buchung>();
-	
+
 	private final int menge;
 	private final int buchung_ID;
 	private final String lagerName;
@@ -33,7 +33,7 @@ public class Buchung {
 	public Date getDatum() {
 		return datum;
 	}
-	
+
 	public void updateDate(Date d) {
 		this.datum = d;
 	}
@@ -45,7 +45,7 @@ public class Buchung {
 	public static void clearNeueBuchungen() {
 		neueBuchungen.clear();
 	}
-	
+
 	public static int getGesamtMenge() {
 		int m = 0;
 		for (Buchung b : neueBuchungen) {
