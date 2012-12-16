@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import view.Tools;
+
 import exception.LagerverwaltungsException;
 
 public class Lager extends DefaultMutableTreeNode {
@@ -14,6 +16,7 @@ public class Lager extends DefaultMutableTreeNode {
 	private boolean isBestandHaltend;
 	private int bestand;
 	private String name;
+	private static List<String> namensListe = new ArrayList<String>();
 
 	private final List<Buchung> buchungen = new ArrayList<Buchung>();
 
@@ -23,9 +26,19 @@ public class Lager extends DefaultMutableTreeNode {
 	public Lager(String bez) {
 		//XXX Soll die 0 jetzt doch angezeigt werden? Siehe unten in der Methode veraenderBestand da haben wir das extra so gemacht, das bei einem Bestand von 0 keiner angezeigt wird... fände ich auch besser
 		super(bez + " 0");
-		this.name = bez;
-		this.bestand = 0;
-		this.isBestandHaltend = true;
+		if (checkNamen(bez))
+		{
+			namensListe.add(bez);
+			this.name = bez;
+			this.bestand = 0;
+			this.isBestandHaltend = true;
+		}
+		else
+		{
+			List<String> result = new ArrayList<String>();
+			result.add("Der Lagername \"" + bez +"\" wurde bereits verwendet!");
+			throw new LagerverwaltungsException("Lagername bereits verwendet!", result, null );
+		}
 	}
 
 	/**
@@ -84,7 +97,7 @@ public class Lager extends DefaultMutableTreeNode {
 		List<String> result = new ArrayList<String>();
 		if ((this.bestand + menge >= 0)) {
 			this.bestand = this.bestand + menge;
-//			this.setUserObject(this.name + ((menge != 0) ? " " + this.bestand : "")); // Ändert angezeigten Namen im Baum XXX Fixt 'fixme': Neue Lager mit Bestand 0
+			this.setUserObject(this.name + ((menge != 0) ? " " + this.bestand : "")); // Ändert angezeigten Namen im Baum
 		} else {
 			result.add("Bestand kleiner 0 nicht möglich.");
 			throw new LagerverwaltungsException("Bestand vom Lager \"" + this.name + "\" kann nicht geändert werden.", result, null);
@@ -96,6 +109,22 @@ public class Lager extends DefaultMutableTreeNode {
 			return true;
 		}
 		return false;
+	}
+	
+	//Überprüfung ob der Lagername bereits vorgekommen ist
+	private boolean checkNamen(String bez)
+	{
+		if (namensListe.isEmpty())
+			return true;
+		else
+		{
+			for(String name: namensListe)
+			{
+				if (bez.equals(name))
+					return false;
+			}
+		}
+		return true;
 	}
 
 	// Wurzel erstellen
