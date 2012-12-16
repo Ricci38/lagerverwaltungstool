@@ -3,7 +3,6 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import exception.LagerverwaltungsException;
@@ -85,7 +84,7 @@ public class Lager extends DefaultMutableTreeNode {
 		List<String> result = new ArrayList<String>();
 		if ((this.bestand + menge >= 0)) {
 			this.bestand = this.bestand + menge;
-			this.setUserObject(this.name + ((menge != 0) ? " " + this.bestand : "")); // Ändert angezeigten Namen im Baum
+//			this.setUserObject(this.name + ((menge != 0) ? " " + this.bestand : "")); // Ändert angezeigten Namen im Baum XXX Fixt 'fixme': Neue Lager mit Bestand 0
 		} else {
 			result.add("Bestand kleiner 0 nicht möglich.");
 			throw new LagerverwaltungsException("Bestand vom Lager \"" + this.name + "\" kann nicht geändert werden.", result, null);
