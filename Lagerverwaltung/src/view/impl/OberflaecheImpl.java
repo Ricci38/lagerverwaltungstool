@@ -233,7 +233,7 @@ public class OberflaecheImpl implements Oberflaeche {
 			//FIXME Prozentuele Berechnung ist falsch. Bei großen Zahlen bleiben bei 0% Reste über
 			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge + " entspricht "
 					+ Math.round((verbleibendeMenge * 100 / Integer.parseInt(gesamtmenge.getText()))) + "% der Gesamtmenge");
-		} catch (Exception e) {
+		} catch (Exception e) { // XXX Exception spezilalisieren
 			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge);
 		}
 		lagerBezeichnung.setText(n);
@@ -527,7 +527,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		return hinzugefuegteLager;
 	}
 
-	public static void setLagerListener(ActionListener l) {
+	public static void setLagerListener(ActionListener l) { // XXX go for interface?
 		listener_Lagerverwaltung = l;
 	}
 

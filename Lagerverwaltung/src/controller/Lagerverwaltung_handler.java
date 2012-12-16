@@ -135,18 +135,13 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			//Unterscheidung zwischen Zahl und Text in dem Textfeld 
 			//Bei Zahl: Textfeld wird nicht geleert
 			//Bei Text: Textfeld wird geleert
-			try {
-				Integer.parseInt(((JTextField) e.getSource()).getText());
-				//Falls hier keine Exception geworfen wird ist es eine Zahl
-			} catch (NumberFormatException ex) {
+			if (!isItANumber(((JTextField) e.getSource()).getText()))
 				((JTextField) e.getSource()).setText("");
-			}
 		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-
 	}
 
 	@Override
@@ -165,7 +160,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	private void neuesLager(ActionEvent e)
 	{
 		//FIXME Wenn neue Lager mit einem Anfangsbestand von 0 angelegt werden, wird der Bestand 0 nicht im Namen angezeigt
-		//FIXME LLagernamen dürfen nur einmal vergeben werden!
+		//FIXME Lagernamen dürfen nur einmal vergeben werden!
 		// Neuen Knoten hinzufügen
 					Lager pre_knoten;
 					pre_knoten = GUI_lager.getAusgewaehlterKnoten();
@@ -282,7 +277,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			GUI_lager.showCardUebersicht();
 			befehlLieferung.execute(new Date(), Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
 			befehlBuchung.clearAll();
-			GUI_lager.setVerbleibendeMenge(-1);
+			GUI_lager.setVerbleibendeMenge(-1); // XXX wäre das dann nicht eine verbleibende negative menge, die mit eingebucht werden müsste?
 			GUI_lager.refreshTree();		//Anzeige des Trees aktualisieren
 		} else
 			Tools.showMsg("Bitte zuerst auf \"Jetzt buchen\" klicken");
