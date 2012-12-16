@@ -130,9 +130,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 	private void neuesLager(ActionEvent e)
 	{
-		// FIXME Wenn neue Lager mit einem Anfangsbestand von 0 angelegt werden,
-		// wird der Bestand 0 nicht im Namen angezeigt
-		
 		// Neuen Knoten hinzufügen
 		Lager pre_knoten;
 		pre_knoten = GUI_lager.getAusgewaehlterKnoten();
@@ -259,7 +256,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				befehlBuchung.execute(GUI_lager.getAusgewaehlterKnoten(), menge, new Date());
 				GUI_lager.setVerbleibendeMenge(restMenge);
 				GUI_lager.showVerbleibendeMenge();
-				if (restMenge <= 0) {
+				if (restMenge == 0) {
 					GUI_lager.disableJetztBuchen();
 					GUI_lager.enableAlleBuchungenBestaetigen();
 				}
