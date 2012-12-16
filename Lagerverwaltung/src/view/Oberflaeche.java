@@ -29,7 +29,7 @@ public interface Oberflaeche {
 	
 	public void enableLagerUebersicht();
 	
-	public void disableLagerUebersicht();
+	public void disableNeueLieferung();
 	
 	public void showUndoRedo();
 	
@@ -66,5 +66,9 @@ public interface Oberflaeche {
 	void enableAlleBuchungenBestaetigen();
 
 	void disableAlleBuchungenBestaetigen();
+
+	void enableNeuesLager();
+
+	void disableNeuesLager();
 
 }

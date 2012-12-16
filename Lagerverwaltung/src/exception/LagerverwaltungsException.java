@@ -13,7 +13,6 @@ public class LagerverwaltungsException extends RuntimeException implements Seria
 	
 	public LagerverwaltungsException(String message, List<String>result, Exception ex) {
 		super(message,ex);
-		//XXX Hier evtl. die Fehlernachricht als Pop-Up ausgebenlassen?
 		this.result = result;
 	}
 	
