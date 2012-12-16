@@ -24,7 +24,6 @@ public class Lager extends DefaultMutableTreeNode {
 
 	// ### Konstruktor ###
 	public Lager(String bez) {
-		//XXX Soll die 0 jetzt doch angezeigt werden? Siehe unten in der Methode veraenderBestand da haben wir das extra so gemacht, das bei einem Bestand von 0 keiner angezeigt wird... fände ich auch besser
 		super(bez + " 0");
 		if (checkNamen(bez))
 		{
@@ -97,7 +96,7 @@ public class Lager extends DefaultMutableTreeNode {
 		List<String> result = new ArrayList<String>();
 		if ((this.bestand + menge >= 0)) {
 			this.bestand = this.bestand + menge;
-			this.setUserObject(this.name + ((menge != 0) ? " " + this.bestand : "")); // Ändert angezeigten Namen im Baum
+			this.setUserObject(this.name + " " + this.bestand); // Ändert angezeigten Namen im Baum
 		} else {
 			result.add("Bestand kleiner 0 nicht möglich.");
 			throw new LagerverwaltungsException("Bestand vom Lager \"" + this.name + "\" kann nicht geändert werden.", result, null);

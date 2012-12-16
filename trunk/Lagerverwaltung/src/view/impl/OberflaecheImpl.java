@@ -27,6 +27,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.event.CellEditorListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -233,7 +234,7 @@ public class OberflaecheImpl implements Oberflaeche {
 			//FIXME Prozentuele Berechnung ist falsch. Bei großen Zahlen bleiben bei 0% Reste über
 			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge + " entspricht "
 					+ Math.round((verbleibendeMenge * 100 / Integer.parseInt(gesamtmenge.getText()))) + "% der Gesamtmenge");
-		} catch (Exception e) { // XXX Exception spezilalisieren
+		} catch (NumberFormatException e) {
 			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge);
 		}
 		lagerBezeichnung.setText(n);
@@ -282,10 +283,21 @@ public class OberflaecheImpl implements Oberflaeche {
 	public boolean isCardUebersichtAktiv() {
 		return isCardUebersichtAktiv;
 	}
-
+	
 	@Override
-	public void disableLagerUebersicht() {
-		lageruebersicht.setEnabled(false);
+	public void disableNeuesLager()
+	{
+		neuesLager.setEnabled(false);
+	}
+	
+	@Override
+	public void enableNeuesLager()
+	{
+		neuesLager.setEnabled(true);
+	}
+	
+	@Override
+	public void disableNeueLieferung() {
 		neueLieferung.setEnabled(false);
 	}
 
@@ -385,6 +397,13 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		int i = buchungsListe.size();
 
+		/*
+		 *OberflaecheImpl.getInstance().getAusgewaehlterKnoten().isLeaf()...
+		 *
+		OberflaecheImpl.getInstance().getAusgewaehlterKnoten().getChildCount()...
+		OberflaecheImpl.getInstance().getAusgewaehlterKnoten().getChildAt(index)...
+		*/
+		
 		/*
 		 * TODO Hier vielleicht schon eine zweite for-Schleife drum herum legen,
 		 * um auch von einem Lager, das kein 'leaf' ist, alle darunter liegenden
@@ -527,7 +546,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		return hinzugefuegteLager;
 	}
 
-	public static void setLagerListener(ActionListener l) { // XXX go for interface?
+	public static void setLagerListener(ActionListener l) {
 		listener_Lagerverwaltung = l;
 	}
 
