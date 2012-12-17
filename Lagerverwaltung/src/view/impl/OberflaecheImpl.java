@@ -27,7 +27,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.event.CellEditorListener;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -389,14 +388,18 @@ public class OberflaecheImpl implements Oberflaeche {
 		daten.add(new ArrayList<String>());
 		daten.add(new ArrayList<String>());
 
-		if (buchungsListe.isEmpty()) return;
-
-		String[] spalten = new String[] { "Buchungs ID", "Lager", "Datum", "Menge" };
-
-		p_center_lieferungdetails.removeAll();
-
-		int i = buchungsListe.size();
-
+		
+		//FIXME: Diese Funtkion muss in eine andere Methode! 
+		//Diese Methde zeigt für eine Lieferung die Buchungsdetails auf die verschiedenen Lager an (Tab Lieferungsdetails).
+		//Die neue Funktion soll aber die kumulierten Lagerbuchungen aller Unterlager anzeigen (Tab Lagerbuchungen) -> ab in zeigeLagerbuchungen()
+//		if (!getAusgewaehlterKnoten().isLeaf())
+//		{
+//			for(int j = 0; j < getAusgewaehlterKnoten().getChildCount(); j++)
+//			{
+//				buchungsListe.addAll( ((Lager)(getAusgewaehlterKnoten().getChildAt(j))).getBuchungen());
+//			}
+//		}
+		
 		/*
 		 *OberflaecheImpl.getInstance().getAusgewaehlterKnoten().isLeaf()...
 		 *
@@ -415,6 +418,16 @@ public class OberflaecheImpl implements Oberflaeche {
 		 * ODER: Methode schreiben, die alle Listen mit Buchungen zu einer
 		 * zusammenfügt und diese dann anzeigt...
 		 */
+			
+		if (buchungsListe.isEmpty()) return;
+
+		String[] spalten = new String[] { "Buchungs ID", "Lager", "Datum", "Menge" };
+
+		p_center_lieferungdetails.removeAll();
+
+		int i = buchungsListe.size();
+
+	
 		if (!(buchungsListe.isEmpty())) {
 			for (Buchung b : buchungsListe) {
 

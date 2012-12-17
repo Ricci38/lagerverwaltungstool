@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import view.Tools;
-
 import exception.LagerverwaltungsException;
 
 public class Lager extends DefaultMutableTreeNode {
