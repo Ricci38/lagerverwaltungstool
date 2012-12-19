@@ -64,7 +64,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	public void valueChanged(TreeSelectionEvent e) {
 		if (GUI_lager.isCardUebersichtAktiv())
 			GUI_lager.zeigeLagerbuchungen(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
-		else if (GUI_lager.isCardNeueLieferungAktiv() && GUI_lager.getAusgewaehlterKnoten().isLeaf())
+		else if (GUI_lager.isCardNeueLieferungAktiv() && null != GUI_lager.getAusgewaehlterKnoten() && GUI_lager.getAusgewaehlterKnoten().isLeaf())
 			GUI_lager.showLagerFuerBuchung(GUI_lager.getAusgewaehlterKnoten().getName());
 	}
 
@@ -87,7 +87,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			if (!isItANumber(((JTextField) e.getSource()).getText()))
 				((JTextField) e.getSource()).setText("");
 		} catch (NullPointerException npe) {
-			
+			Tools.showMsg("NPE");
 		}
 	}
 
@@ -166,7 +166,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				if (pane_value == JOptionPane.OK_OPTION) {
 					try {
 						pre_knoten.addTreeElement(name).veraenderBestand(menge);
-						GUI_lager.refreshTree(); // Anzeige des Trees aktualisieren
+						GUI_lager.refreshTree(GUI_lager.getAusgewaehlterKnoten()); // Anzeige des Trees aktualisieren
 					} catch (Exception ex)		//Falls der Lagername bereits vergeben wurde, wird eine Ecxeption geworfen
 					{
 						Tools.showMsg(ex.getMessage());
@@ -192,7 +192,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		GUI_lager.showUndoRedo();
 		GUI_lager.enableJetztBuchen();
 		GUI_lager.disableNeueLieferung();
-		GUI_lager.refreshTree();
+		GUI_lager.refreshTree(GUI_lager.getAusgewaehlterKnoten());
 	}
 
 	private void jetztBuchen(ActionEvent e) {
@@ -222,6 +222,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			}
 		}
 		GUI_lager.showLagerFuerBuchung(GUI_lager.getAusgewaehlterKnoten().getName());
+		GUI_lager.refreshTree(GUI_lager.getAusgewaehlterKnoten());
 	}
 
 	private int getBuchungsMenge() {

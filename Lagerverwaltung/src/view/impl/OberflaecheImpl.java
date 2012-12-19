@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 
 import lagerverwaltungStart.Main;
 import model.Buchung;
@@ -37,7 +38,7 @@ import view.Oberflaeche;
 import view.Tools;
 
 public class OberflaecheImpl implements Oberflaeche {
-	
+
 	// TODO Variablen sortieren (z.B. nach Type & Name)
 	// ### Singeltonvariable ###
 	private static Oberflaeche theInstance;
@@ -58,14 +59,14 @@ public class OberflaecheImpl implements Oberflaeche {
 	private JTree lagerTree;
 	private JTable tbl_buchungsUebersicht, tbl_lieferungsUebersicht, tbl_lagerbuchungen;
 	private JTabbedPane p_center_tabbs = new JTabbedPane();
-	
+
 	// ### Variablen der Ansicht für eine neue Lieferung ###
 	private JTextField gesamtmenge, prozentAnteil, saldo;
 	private int verbleibendeMenge = 0;
 	private JLabel lagerBezeichnung, restMenge;
 	private JButton btn_best, btn_abbr, btn_jetztBuchen;
 	private GridBagLayout gbl;
-	
+
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
 
 	private boolean isCardUebersichtAktiv = false;
@@ -186,7 +187,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		c.add(p_center, BorderLayout.CENTER);
 	}
 
-	private void buildNeueLieferung() {
+	private void buildNeueLieferung() { // TODO Neue Lieferung Benutzeranweisung & Radio Buttons zu-&abbuchung
 		p_center_neue_lieferung = new JPanel();
 		p_center_neue_lieferung_north = new JPanel();
 		p_center_neue_lieferung_center = new JPanel();
@@ -228,7 +229,7 @@ public class OberflaecheImpl implements Oberflaeche {
 	public void showLagerFuerBuchung(String n) {
 		resetCardNeueLieferung();
 		try {
-			//FIXME Prozentuele Berechnung ist falsch. Bei großen Zahlen bleiben bei 0% Reste über
+			//FIXME Prozentuale Berechnung ist falsch. Bei großen Zahlen bleiben bei 0% Reste über
 			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge + " entspricht "
 					+ Math.round((verbleibendeMenge * 100 / Integer.parseInt(gesamtmenge.getText()))) + "% der Gesamtmenge");
 		} catch (NumberFormatException e) {
@@ -375,6 +376,9 @@ public class OberflaecheImpl implements Oberflaeche {
 	@Override
 	public void zeigeLieferungsdetails(List<Buchung> buchungsListe) {
 
+		if (buchungsListe.isEmpty())
+			return;
+
 		p_center_lieferungdetails.setLayout(new BorderLayout());
 
 		// Aufbau einer 4 x X Matrix
@@ -384,79 +388,41 @@ public class OberflaecheImpl implements Oberflaeche {
 		daten.add(new ArrayList<String>());
 		daten.add(new ArrayList<String>());
 
-		//FIXME: Diese Funtkion muss in eine andere Methode! 
-		//Diese Methde zeigt für eine Lieferung die Buchungsdetails auf die verschiedenen Lager an (Tab Lieferungsdetails).
-		//Die neue Funktion soll aber die kumulierten Lagerbuchungen aller Unterlager anzeigen (Tab Lagerbuchungen) -> ab in zeigeLagerbuchungen()
-		//		if (!getAusgewaehlterKnoten().isLeaf())
-		//		{
-		//			for(int j = 0; j < getAusgewaehlterKnoten().getChildCount(); j++)
-		//			{
-		//				buchungsListe.addAll( ((Lager)(getAusgewaehlterKnoten().getChildAt(j))).getBuchungen());
-		//			}
-		//		}
-
-		/*
-		 * OberflaecheImpl.getInstance().getAusgewaehlterKnoten().isLeaf()...
-		 * 
-		 * OberflaecheImpl.getInstance().getAusgewaehlterKnoten().getChildCount()
-		 * ...
-		 * OberflaecheImpl.getInstance().getAusgewaehlterKnoten().getChildAt(
-		 * index)...
-		 */
-
-		/*
-		 * TODO Hier vielleicht schon eine zweite for-Schleife drum herum legen,
-		 * um auch von einem Lager, das kein 'leaf' ist, alle darunter liegenden
-		 * Lager zu erfassen. Dann müsste auch die Matrix oben um eine
-		 * ArrayList<String> erweitert werden, um den Lagernamen aufnehmen zu
-		 * können. Das ist denke ich mal einfacher, als wenn wir das dann noch
-		 * einmal anders machen für die "Oberlager".
-		 * 
-		 * ODER: Methode schreiben, die alle Listen mit Buchungen zu einer
-		 * zusammenfügt und diese dann anzeigt...
-		 */
-
-		if (buchungsListe.isEmpty())
-			return;
-
 		String[] spalten = new String[] { "Buchungs ID", "Lager", "Datum", "Menge" };
 
 		p_center_lieferungdetails.removeAll();
 
 		int i = buchungsListe.size();
 
-		if (!(buchungsListe.isEmpty())) {
-			for (Buchung b : buchungsListe) {
+		for (Buchung b : buchungsListe) {
+			daten.get(0).add(((Integer) b.getBuchungID()).toString());
+			daten.get(1).add(b.getLagerName());
+			daten.get(2).add(sdf.format(b.getDatum()));
+			daten.get(3).add(((Integer) b.getMenge()).toString());
+		}
 
-				daten.get(0).add(((Integer) b.getBuchungID()).toString());
-				daten.get(1).add(b.getLagerName());
-				daten.get(2).add(sdf.format(b.getDatum()));
-				daten.get(3).add(((Integer) b.getMenge()).toString());
+		if (i > 0) {
+			String[][] tblDaten = new String[i][4];
+
+			for (int j = 0; j < i; j++) {
+
+				tblDaten[j][0] = daten.get(0).get(j);
+				tblDaten[j][1] = daten.get(1).get(j);
+				tblDaten[j][2] = daten.get(2).get(j);
+				tblDaten[j][3] = daten.get(3).get(j);
 			}
 
-			if (i > 0) {
-				String[][] tblDaten = new String[i][4];
+			tbl_buchungsUebersicht = new JTable(tblDaten, spalten) {
+				private static final long serialVersionUID = 861599783877862457L;
 
-				for (int j = 0; j < i; j++) {
-
-					tblDaten[j][0] = daten.get(0).get(j);
-					tblDaten[j][1] = daten.get(1).get(j);
-					tblDaten[j][2] = daten.get(2).get(j);
-					tblDaten[j][3] = daten.get(3).get(j);
+				@Override
+				public boolean isCellEditable(int arg0, int arg1) {
+					return false;
 				}
+			};
 
-				tbl_buchungsUebersicht = new JTable(tblDaten, spalten) {
-					private static final long serialVersionUID = 861599783877862457L;
-
-					@Override
-					public boolean isCellEditable(int arg0, int arg1) {
-						return false;
-					}
-				};
-
-				tbl_buchungsUebersicht.setFillsViewportHeight(true);
-				p_center_lieferungdetails.add(new JScrollPane(tbl_buchungsUebersicht), BorderLayout.CENTER);
-			}
+			tbl_buchungsUebersicht.setFillsViewportHeight(true);
+			p_center_lieferungdetails.add(new JScrollPane(tbl_buchungsUebersicht), BorderLayout.CENTER);
 		}
 		p_center_lieferungdetails.updateUI();
 	}
@@ -500,49 +466,57 @@ public class OberflaecheImpl implements Oberflaeche {
 
 	@Override
 	public void zeigeLagerbuchungen(List<Buchung> b) {
-		if (null == getAusgewaehlterKnoten()) {
+		if (null == getAusgewaehlterKnoten() || null == b)
 			return;
-		} else {
-			p_center_lagerbuchungen.removeAll();
-			if (null == b || b.isEmpty()) {
-				if (!getAusgewaehlterKnoten().isLeaf() && getAusgewaehlterKnoten().getBestand() > 0) {
-					p_center_lagerbuchungen.add(new JLabel("Gesamtsaldo des Oberlagers \"" + getAusgewaehlterKnoten() + "\": "
-							+ getAusgewaehlterKnoten().getBestand()));
-				} else
-					p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
-			} else {
-				p_center_lagerbuchungen.setLayout(new BorderLayout());
+		p_center_lagerbuchungen.removeAll();
+		Lager l = getAusgewaehlterKnoten();
+		if ((l.isLeaf() && l.getBestand() == 0))
+			p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
+		else {
+			p_center_lagerbuchungen.setLayout(new BorderLayout());
 
-				int i = 0;
+			if (b.isEmpty())
+				b.addAll(getAllBuchungen(l));
 
-				String[] spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
-				String[][] daten = new String[b.size()][3];
+			int i = 0;
+			String[] spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
+			String[][] daten = new String[b.size()][3];
 
-				for (Buchung bu : b) {
-					daten[i][0] = ((Integer) bu.getBuchungID()).toString();
-					daten[i][1] = sdf.format(bu.getDatum());
-					daten[i++][2] = ((Integer) bu.getMenge()).toString();
-				}
-
-				tbl_lagerbuchungen = new JTable(daten, spalten) {
-
-					private static final long serialVersionUID = 6620092595652821138L;
-
-					@Override
-					public boolean isCellEditable(int arg0, int arg1) {
-						return false;
-					}
-				};
-
-				tbl_lagerbuchungen.setFillsViewportHeight(true);
-				p_center_lagerbuchungen.add(saldo = new JTextField("Buchungen von Lager \"" + getAusgewaehlterKnoten().getName() + "\" mit Saldo "
-						+ getAusgewaehlterKnoten().getBestand() + ":"), BorderLayout.NORTH);
-				p_center_lagerbuchungen.add(new JScrollPane(tbl_lagerbuchungen), BorderLayout.CENTER);
-				saldo.setEditable(false);
-				saldo.setFocusable(false);
+			for (Buchung bu : b) {
+				daten[i][0] = ((Integer) bu.getBuchungID()).toString();
+				daten[i][1] = sdf.format(bu.getDatum());
+				daten[i++][2] = ((Integer) bu.getMenge()).toString();
 			}
-			p_center_lagerbuchungen.updateUI();
+
+			tbl_lagerbuchungen = new JTable(daten, spalten) {
+				private static final long serialVersionUID = 6620092595652821138L;
+
+				@Override
+				public boolean isCellEditable(int arg0, int arg1) {
+					return false;
+				}
+			};
+			tbl_lagerbuchungen.setFillsViewportHeight(true);
+			p_center_lagerbuchungen.add(saldo = new JTextField("Buchungen von " + (l.isLeaf() ? "Lager" : "Oberlagers") + " \"" + l.getName() + "\" mit Saldo "
+					+ l.getBestand() + ":"), BorderLayout.NORTH);
+			p_center_lagerbuchungen.add(new JScrollPane(tbl_lagerbuchungen), BorderLayout.CENTER);
+			saldo.setEditable(false);
+			saldo.setFocusable(false);
 		}
+		p_center_lagerbuchungen.updateUI();
+	}
+
+	@Override
+	public List<Buchung> getAllBuchungen(Lager l) {
+		List<Buchung> b = new ArrayList<Buchung>();
+		for (int j = 0; j < l.getChildCount(); j++) {
+			if (l.getChildAt(j).isLeaf()) {
+				b.addAll(((Lager) (l.getChildAt(j))).getBuchungen());
+			} else {
+				b.addAll(getAllBuchungen((Lager) l.getChildAt(j)));
+			}
+		}
+		return b;
 	}
 
 	@Override
@@ -574,6 +548,11 @@ public class OberflaecheImpl implements Oberflaeche {
 	@Override
 	public void refreshTree() {
 		((DefaultTreeModel) lagerTree.getModel()).reload();
+	}
+
+	@Override
+	public void refreshTree(TreeNode node) {
+		((DefaultTreeModel) lagerTree.getModel()).reload(node);
 	}
 
 	@Override
