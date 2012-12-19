@@ -2,6 +2,8 @@ package view;
 
 import java.util.List;
 
+import javax.swing.tree.TreeNode;
+
 import model.Buchung;
 import model.Lager;
 import model.Lieferung;
@@ -33,6 +35,8 @@ public interface Oberflaeche {
 	public void selectTreeRoot();
 	
 	public void refreshTree();
+	
+	void refreshTree(TreeNode node);
 
 	public Lager getAusgewaehlterKnoten();
 
@@ -65,5 +69,7 @@ public interface Oberflaeche {
 	void enableNeuesLager();
 
 	void disableNeuesLager();
+
+	List<Buchung> getAllBuchungen(Lager l);
 
 }
