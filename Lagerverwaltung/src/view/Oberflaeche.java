@@ -1,9 +1,6 @@
 package view;
 
-import java.util.HashMap;
 import java.util.List;
-
-import javax.swing.JTextField;
 
 import model.Buchung;
 import model.Lager;
@@ -16,8 +13,6 @@ public interface Oberflaeche {
 	public void zeigeLieferungen(List<Lieferung> list);
 	
 	public void showTabLieferungsBuchungen(List<Buchung> buchungen);
-
-	public HashMap<Lager, JTextField> getHinzugefuegteLager();
 
 	public void showLagerverwaltung();
 
