@@ -9,7 +9,7 @@ import exception.LagerverwaltungsException;
 
 public class Lager extends DefaultMutableTreeNode {
 
-	private static Lager wurzel; 
+	private static Lager wurzel;
 	private Lager blatt;
 	private boolean isBestandHaltend;
 	private int bestand;
@@ -20,21 +20,23 @@ public class Lager extends DefaultMutableTreeNode {
 
 	private static final long serialVersionUID = -6664495404957376450L;
 
-	// ### Konstruktor ###
+	/**
+	 * Erstellt ein neues Lager
+	 * 
+	 * @param bez
+	 *            Der Name des Lagers
+	 */
 	public Lager(String bez) {
 		super(bez + " 0");
-		if (checkNamen(bez))
-		{
+		if (checkNamen(bez)) {
 			namensListe.add(bez);
 			this.name = bez;
 			this.bestand = 0;
 			this.isBestandHaltend = true;
-		}
-		else
-		{
+		} else {
 			List<String> result = new ArrayList<String>();
-			result.add("Der Lagername \"" + bez +"\" wurde bereits verwendet!");
-			throw new LagerverwaltungsException("Lagername bereits verwendet!", result, null );
+			result.add("Der Lagername \"" + bez + "\" wurde bereits verwendet!");
+			throw new LagerverwaltungsException("Lagername bereits verwendet!", result, null);
 		}
 	}
 
@@ -107,16 +109,13 @@ public class Lager extends DefaultMutableTreeNode {
 		}
 		return false;
 	}
-	
+
 	//Überprüfung ob der Lagername bereits vorgekommen ist
-	private boolean checkNamen(String bez)
-	{
+	private boolean checkNamen(String bez) {
 		if (namensListe.isEmpty())
 			return true;
-		else
-		{
-			for(String name: namensListe)
-			{
+		else {
+			for (String name : namensListe) {
 				if (bez.equals(name))
 					return false;
 			}

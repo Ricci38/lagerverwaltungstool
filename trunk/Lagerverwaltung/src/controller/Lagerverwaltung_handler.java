@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -23,7 +22,6 @@ import controller.befehle.ILieferungBefehl;
 import controller.befehle.impl.BuchungBefehlImpl;
 import controller.befehle.impl.LieferungBefehlImpl;
 
-
 public class Lagerverwaltung_handler implements ActionListener, TreeSelectionListener, MouseListener {
 
 	Oberflaeche GUI_lager;
@@ -40,42 +38,27 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getActionCommand().toLowerCase().equals(("Neues Lager").toLowerCase())) {
-
 			neuesLager(e);
-			
 		} else if (e.getActionCommand().toLowerCase().equals(("Neue Lieferung").toLowerCase())) {
-			
 			neueLieferung(e);
-			
 		} else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
 			GUI_lager.enableJetztBuchen();
 			befehlBuchung.undo();
-
 		} else if (e.getActionCommand().toLowerCase().equals(("redo").toLowerCase())) {
 			befehlBuchung.redo();
 			if (GUI_lager.getVerbleibendeMenge() == 0) {
 				GUI_lager.enableAlleBuchungenBestaetigen();
 			}
-
 		} else if (e.getActionCommand().toLowerCase().equals(("Jetzt buchen").toLowerCase())) {
-			
 			jetztBuchen(e);
-			
 		} else if (e.getActionCommand().toLowerCase().equals(("Bestätigen").toLowerCase())) {
-			
 			lieferungBestaetigen(e);
-
 		} else if (e.getActionCommand().toLowerCase().equals(("Abbrechen").toLowerCase())) {
-			
 			lieferungAbbrechen(e);
-		
 		} else if (e.getActionCommand().toLowerCase().equals(("Lieferungs-/ Lagerübersicht").toLowerCase())) {
-			
 			zeigeLieferungsLagerUebersicht(e);
-			
 		}
 	}
-
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
@@ -89,25 +72,22 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	@Override
 	public void mousePressed(MouseEvent e) {
 		try {
-			int selectedRow;
-			String value;
 			JTable tbl_lieferungsUebersicht = (JTable) e.getSource();
-			selectedRow = tbl_lieferungsUebersicht.getSelectedRow();
+			int selectedRow = tbl_lieferungsUebersicht.getSelectedRow();
 			if (selectedRow == -1)		//Keine Zeile ausgewählt
 				return;
-
-			value = tbl_lieferungsUebersicht.getValueAt(selectedRow, 0).toString();				//Wert (Datum) der ausgewählten Zeile und ersten Spalte
-
-			Lieferung lieferung = Lieferung.getLieferung(value);
-
-			List<Buchung> buchungen = lieferung.getBuchungen();
-			GUI_lager.showTabLieferungsBuchungen(buchungen);
+			
+			//Wert (Datum) der ausgewählten Zeile und ersten Spalte
+			String value = tbl_lieferungsUebersicht.getValueAt(selectedRow, 0).toString();
+			GUI_lager.showTabLieferungsBuchungen(Lieferung.getLieferung(value).getBuchungen());
 		} catch (ClassCastException cce) {
 			//Unterscheidung zwischen Zahl und Text in dem Textfeld 
 			//Bei Zahl: Textfeld wird nicht geleert
 			//Bei Text: Textfeld wird geleert
 			if (!isItANumber(((JTextField) e.getSource()).getText()))
 				((JTextField) e.getSource()).setText("");
+		} catch (NullPointerException npe) {
+			
 		}
 	}
 
@@ -127,12 +107,9 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	public void mouseExited(MouseEvent e) {
 	}
 
-
-	private void neuesLager(ActionEvent e)
-	{
+	private void neuesLager(ActionEvent e) {
 		// Neuen Knoten hinzufügen
-		Lager pre_knoten;
-		pre_knoten = GUI_lager.getAusgewaehlterKnoten();
+		Lager pre_knoten = GUI_lager.getAusgewaehlterKnoten();
 
 		// Falls ein Knoten ausgewählt wurde
 		if (null != pre_knoten) {
@@ -142,37 +119,24 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				int menge = 0, pane_value;
 				JTextField lagername = new JTextField();
 				JTextField bestand = new JTextField();
-				Object message[] = { "Lagername: ", lagername,
-						"Anfangs Bestand: ", bestand };
-				JOptionPane pane = new JOptionPane(message,
-						JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+				Object message[] = { "Lagername: ", lagername, "Anfangs Bestand: ", bestand };
+				JOptionPane pane = new JOptionPane(message, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 
 				// Dialog erstellen und Eingabeparameter einlesen
 				do {
-					pane.createDialog("Neues Lager erstellen").setVisible(true); // Eingabemaske
-																					// für
-																					// den
-																					// Knotennamen
-					pane_value = ((Integer) pane.getValue()).intValue(); // Button
-																			// Benutzung
-																			// des
-																			// Benutzers
-																			// einlesen
-																			// (Ok
-																			// oder
-																			// Abbruch)
+					// Eingabemaske für den Knotennamen
+					pane.createDialog("Neues Lager erstellen").setVisible(true);
+
+					// Button Benutzung des Benutzers einlesen (Ok oder Abbruch)
+					pane_value = ((Integer) pane.getValue()).intValue();
 					name = lagername.getText().trim();
 					menge_str = bestand.getText().trim();
 
 					if (pane_value == JOptionPane.OK_OPTION) {
 
 						if (name.isEmpty()) {
-							JOptionPane
-									.showMessageDialog(
-											null,
-											"Es ist ein ungültiger Lagername eingegeben worden!",
-											"Ungültige Bezeichnung",
-											JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!", "Ungültige Bezeichnung",
+									JOptionPane.ERROR_MESSAGE);
 						} else if (!(null == menge_str || menge_str.isEmpty())) {
 							if (isItANumber(menge_str)) {
 								menge = Integer.parseInt(menge_str);
@@ -195,61 +159,51 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 						else
 							Tools.showMsg("Bitte geben Sie eine Bestandsmenge an!");
 					}
-				} while ((pane_value == JOptionPane.OK_OPTION)
-						&& ((name.isEmpty() || name == null) || (menge_str
-								.isEmpty() || menge_str == null))); // falls auf
-																	// OK
-																	// geklickt
-																	// wurde
-																	// und...
+					
+					// falls auf  OK geklickt wurde und...
+				} while ((pane_value == JOptionPane.OK_OPTION) && ((name.isEmpty() || name == null) || (menge_str.isEmpty() || menge_str == null)));
 
 				if (pane_value == JOptionPane.OK_OPTION) {
-					try
-					{
-					pre_knoten.addTreeElement(name).veraenderBestand(menge);
-					GUI_lager.refreshTree(); // Anzeige des Trees aktualisieren
-					}
-					catch(Exception ex)		//Falls der Lagername bereits vergeben wurde wird eine Ecxeption geworfen
+					try {
+						pre_knoten.addTreeElement(name).veraenderBestand(menge);
+						GUI_lager.refreshTree(); // Anzeige des Trees aktualisieren
+					} catch (Exception ex)		//Falls der Lagername bereits vergeben wurde, wird eine Ecxeption geworfen
 					{
 						Tools.showMsg(ex.getMessage());
 					}
-					
 				}
 			} else {
 				Tools.showMsg("Das ausgewählte Lager besitzt einen Bestand. Lagererstellung nicht möglich!");
 			}
-
 		}
 		// Falls kein Lager ausgewählt wurde wird ein Fehler ausgegeben
 		else
 			Tools.showMsg("Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
 	}
 
-	private void neueLieferung(ActionEvent e)
-	{
+	private void neueLieferung(ActionEvent e) {
 		//TODO Ausbuchungen = negative Lieferungen...   evtl. schon behoben. Aber testen!
 		//TODO Klappt nicht ganz, da die Berechnung für den Prozentsatz (oder so!) nur auf positive Zahlen ausgelegt ist
 		GUI_lager.disableNeuesLager();
 		GUI_lager.disableNeueLieferung();
 		GUI_lager.disableAlleBuchungenBestaetigen();
+		GUI_lager.selectTreeRoot();
 		GUI_lager.showCardNeueLieferung();
 		GUI_lager.showUndoRedo();
 		GUI_lager.enableJetztBuchen();
-
 		GUI_lager.disableNeueLieferung();
+		GUI_lager.refreshTree();
 	}
-	
-	private void jetztBuchen(ActionEvent e)
-	{
+
+	private void jetztBuchen(ActionEvent e) {
 		int restMenge;
 		int menge = getBuchungsMenge();
 		if (menge != -1) {
 			// FIXME du hast diese funktion darauf ausgelegt, dass sie ausschließlich mit positiven Zahlen arbeiten kann :D
-			if (GUI_lager.getVerbleibendeMenge() == -1) 
+			if (GUI_lager.getVerbleibendeMenge() == -1)
 				GUI_lager.setVerbleibendeMenge(Integer.parseInt(GUI_lager.getGesamtmenge()));
-
 			if (menge < 0)
-				menge = menge *-1;
+				menge = menge * -1;
 			restMenge = GUI_lager.getVerbleibendeMenge() - menge;
 			//FIXME Falls die verbleibende Menge < als 1% der Gesamtmenge ist auf die letzte Buchung mit aufschlagen
 			if (restMenge >= 0) {
@@ -260,7 +214,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 					GUI_lager.disableJetztBuchen();
 					GUI_lager.enableAlleBuchungenBestaetigen();
 				}
-
 				//Lagerbuchungen aktualisieren, sodass die Tabelle die soeben getätigte Buchung aufführt
 				GUI_lager.zeigeLagerbuchungen(GUI_lager.getAusgewaehlterKnoten().getBuchungen());
 			} else {
@@ -269,9 +222,8 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			}
 		}
 		GUI_lager.showLagerFuerBuchung(GUI_lager.getAusgewaehlterKnoten().getName());
-
 	}
-	
+
 	private int getBuchungsMenge() {
 		String gesamtmenge_str, prozentualerAnteil_str;
 		int gesamtmenge, prozentualerAnteil, anteil;
@@ -295,8 +247,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		return -1;		//Ungültige Eingabe
 	}
 
-	private void lieferungBestaetigen(ActionEvent e)
-	{
+	private void lieferungBestaetigen(ActionEvent e) {
 		if (!Buchung.getNeueBuchungen().isEmpty()) {
 			GUI_lager.enableNeuesLager();
 			GUI_lager.enableLagerUebersicht();
@@ -309,9 +260,8 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		} else
 			Tools.showMsg("Bitte zuerst auf \"Jetzt buchen\" klicken");
 	}
-	
-	private void lieferungAbbrechen(ActionEvent e)
-	{
+
+	private void lieferungAbbrechen(ActionEvent e) {
 		befehlBuchung.undoAll();
 		GUI_lager.enableNeuesLager();
 		GUI_lager.enableLagerUebersicht();
@@ -319,28 +269,23 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		GUI_lager.showCardUebersicht();
 		GUI_lager.setVerbleibendeMenge(-1);
 	}
-	
-	private void zeigeLieferungsLagerUebersicht(ActionEvent e)
-	{
+
+	private void zeigeLieferungsLagerUebersicht(ActionEvent e) {
 		if (GUI_lager.isCardNeueLieferungAktiv())				//Falls eine neue Lieferung durchgeführt wird
 		{
-			int value = JOptionPane.showOptionDialog(null, "Möchten Sie die aktuelle Lieferung abbrechen um zu der Lieferungs- / Lagerübersicht zu gelangen?\nAlle Änderungen werden verworfen!", "Sicher?",
-					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-			
-			if (value == JOptionPane.YES_OPTION)
-			{
+			int value = JOptionPane.showOptionDialog(null,
+					"Möchten Sie die aktuelle Lieferung abbrechen um zu der Lieferungs- / Lagerübersicht zu gelangen?\nAlle Änderungen werden verworfen!",
+					"Sicher?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+			if (value == JOptionPane.YES_OPTION) {
 				lieferungAbbrechen(e);				//Aktion entspricht dem Lieferungs Abbruch
-			}
-			else if (value == JOptionPane.NO_OPTION)
-			{
+			} else if (value == JOptionPane.NO_OPTION) {
 				// mach nichts
 			}
-				
+
 		}
 	}
-	
-	
-	
+
 	public static IBuchungBefehl getBefehlBuchung() {
 		return befehlBuchung;
 	}

@@ -14,7 +14,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -38,7 +37,8 @@ import view.Oberflaeche;
 import view.Tools;
 
 public class OberflaecheImpl implements Oberflaeche {
-
+	
+	// TODO Variablen sortieren (z.B. nach Type & Name)
 	// ### Singeltonvariable ###
 	private static Oberflaeche theInstance;
 
@@ -46,10 +46,10 @@ public class OberflaecheImpl implements Oberflaeche {
 	private static ActionListener listener_Lagerverwaltung;
 	private static MouseListener listener_LieferungsUebersicht;
 
-	// ### Variablen für die einzelnen Oberflächen ###
+	// ### Variable, die die Oberfläche beinhaltet ###
 	private JFrame lagerverwaltung;
 
-	// ### Variablen für das Hauptfenster ###
+	// ### Variablen für das Oberfläche ###
 	private JPanel p_top, p_top_sub_top, p_top_sub_bottom, p_tree, p_center, p_platzhalter1, p_platzhalter2;
 	private JPanel p_center_lieferungen, p_center_lieferungdetails, p_center_lagerbuchungen;
 	private JPanel p_center_neue_lieferung, p_center_neue_lieferung_north, p_center_neue_lieferung_south, p_center_neue_lieferung_center;
@@ -58,16 +58,14 @@ public class OberflaecheImpl implements Oberflaeche {
 	private JTree lagerTree;
 	private JTable tbl_buchungsUebersicht, tbl_lieferungsUebersicht, tbl_lagerbuchungen;
 	private JTabbedPane p_center_tabbs = new JTabbedPane();
-
-	// ### Variablen für den EinbuchungsAssistent ###
+	
+	// ### Variablen der Ansicht für eine neue Lieferung ###
 	private JTextField gesamtmenge, prozentAnteil, saldo;
 	private int verbleibendeMenge = 0;
-	private JLabel lagerBezeichnung, anteilsMenge, restMenge;
+	private JLabel lagerBezeichnung, restMenge;
 	private JButton btn_best, btn_abbr, btn_jetztBuchen;
 	private GridBagLayout gbl;
-	private static int anz_hinzugefuegterLager = 0;
-	private final HashMap<Lager, JTextField> hinzugefuegteLager = new HashMap<Lager, JTextField>();
-
+	
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
 
 	private boolean isCardUebersichtAktiv = false;
@@ -75,7 +73,6 @@ public class OberflaecheImpl implements Oberflaeche {
 
 	// ### privater Konstruktor (Singelton) ###
 	private OberflaecheImpl() {
-
 		buildLagerverwaltung();
 		hideUndoRedo();
 		showCardUebersicht();
@@ -85,7 +82,8 @@ public class OberflaecheImpl implements Oberflaeche {
 	 * Erstellt die Oberfläche für das Hauptfenster der Lagerverwaltung
 	 */
 	private void buildLagerverwaltung() {
-		if (lagerverwaltung != null) return;
+		if (lagerverwaltung != null)
+			return;
 		lagerverwaltung = new JFrame("Lagerverwaltung");
 		lagerverwaltung.setSize(1000, 700);
 		lagerverwaltung.setMinimumSize(new Dimension(900, 500));
@@ -282,19 +280,17 @@ public class OberflaecheImpl implements Oberflaeche {
 	public boolean isCardUebersichtAktiv() {
 		return isCardUebersichtAktiv;
 	}
-	
+
 	@Override
-	public void disableNeuesLager()
-	{
+	public void disableNeuesLager() {
 		neuesLager.setEnabled(false);
 	}
-	
+
 	@Override
-	public void enableNeuesLager()
-	{
+	public void enableNeuesLager() {
 		neuesLager.setEnabled(true);
 	}
-	
+
 	@Override
 	public void disableNeueLieferung() {
 		neueLieferung.setEnabled(false);
@@ -388,25 +384,26 @@ public class OberflaecheImpl implements Oberflaeche {
 		daten.add(new ArrayList<String>());
 		daten.add(new ArrayList<String>());
 
-		
 		//FIXME: Diese Funtkion muss in eine andere Methode! 
 		//Diese Methde zeigt für eine Lieferung die Buchungsdetails auf die verschiedenen Lager an (Tab Lieferungsdetails).
 		//Die neue Funktion soll aber die kumulierten Lagerbuchungen aller Unterlager anzeigen (Tab Lagerbuchungen) -> ab in zeigeLagerbuchungen()
-//		if (!getAusgewaehlterKnoten().isLeaf())
-//		{
-//			for(int j = 0; j < getAusgewaehlterKnoten().getChildCount(); j++)
-//			{
-//				buchungsListe.addAll( ((Lager)(getAusgewaehlterKnoten().getChildAt(j))).getBuchungen());
-//			}
-//		}
-		
+		//		if (!getAusgewaehlterKnoten().isLeaf())
+		//		{
+		//			for(int j = 0; j < getAusgewaehlterKnoten().getChildCount(); j++)
+		//			{
+		//				buchungsListe.addAll( ((Lager)(getAusgewaehlterKnoten().getChildAt(j))).getBuchungen());
+		//			}
+		//		}
+
 		/*
-		 *OberflaecheImpl.getInstance().getAusgewaehlterKnoten().isLeaf()...
-		 *
-		OberflaecheImpl.getInstance().getAusgewaehlterKnoten().getChildCount()...
-		OberflaecheImpl.getInstance().getAusgewaehlterKnoten().getChildAt(index)...
-		*/
-		
+		 * OberflaecheImpl.getInstance().getAusgewaehlterKnoten().isLeaf()...
+		 * 
+		 * OberflaecheImpl.getInstance().getAusgewaehlterKnoten().getChildCount()
+		 * ...
+		 * OberflaecheImpl.getInstance().getAusgewaehlterKnoten().getChildAt(
+		 * index)...
+		 */
+
 		/*
 		 * TODO Hier vielleicht schon eine zweite for-Schleife drum herum legen,
 		 * um auch von einem Lager, das kein 'leaf' ist, alle darunter liegenden
@@ -418,8 +415,9 @@ public class OberflaecheImpl implements Oberflaeche {
 		 * ODER: Methode schreiben, die alle Listen mit Buchungen zu einer
 		 * zusammenfügt und diese dann anzeigt...
 		 */
-			
-		if (buchungsListe.isEmpty()) return;
+
+		if (buchungsListe.isEmpty())
+			return;
 
 		String[] spalten = new String[] { "Buchungs ID", "Lager", "Datum", "Menge" };
 
@@ -427,7 +425,6 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		int i = buchungsListe.size();
 
-	
 		if (!(buchungsListe.isEmpty())) {
 			for (Buchung b : buchungsListe) {
 
@@ -554,11 +551,6 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center_tabbs.setSelectedComponent(p_center_lieferungdetails);
 	}
 
-	@Override
-	public HashMap<Lager, JTextField> getHinzugefuegteLager() {
-		return hinzugefuegteLager;
-	}
-
 	public static void setLagerListener(ActionListener l) {
 		listener_Lagerverwaltung = l;
 	}
@@ -592,7 +584,6 @@ public class OberflaecheImpl implements Oberflaeche {
 	// ### Disabling clone() by throwing CloneNotSupportedException ###
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
-		throw new CloneNotSupportedException("This is a singelton, dude! No cloning at all!");
+		throw new CloneNotSupportedException("This is a singelton, dude! No cloning allowed!");
 	}
-
 }

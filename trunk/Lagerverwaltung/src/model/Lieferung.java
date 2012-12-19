@@ -47,9 +47,8 @@ public class Lieferung {
 	//Lieferungen werden durch das Datum eindeutig identifiziert -> Selektion anhand des Datums ist möglich
 	public static Lieferung getLieferung(String date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
-
 		for (Lieferung l : lieferungen) {
-			if ((sdf.format(l.getLieferungsDatum())).equals(date)) return l;
+			if (date.equals(sdf.format(l.getLieferungsDatum()))) return l;
 		}
 		return null;
 	}
