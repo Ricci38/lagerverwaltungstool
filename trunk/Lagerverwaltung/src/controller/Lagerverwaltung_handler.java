@@ -238,9 +238,20 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		}
 		// Falls kein Lager ausgewählt wurde wird ein Fehler ausgegeben
 		else
+		{
 			Tools.showMsg("Es ist kein Lager ausgewählt, das umgenannt werden kann!");
+			return;
+		}
 		
-		
+		JTable tbl_lieferungsUebersicht = gui.getTbl_lieferungsUebersicht();
+		int selectedRow = tbl_lieferungsUebersicht.getSelectedRow();
+		if (selectedRow == -1) // Keine Zeile ausgewählt
+			return;
+
+		// Wert (Datum) der ausgewählten Zeile und ersten Spalte
+		String value = tbl_lieferungsUebersicht.getValueAt(selectedRow, 0).toString();
+		gui.showLieferungsdetails(Lieferung.getLieferung(value).getBuchungen());
+		gui.showLagerbuchungen(knoten.getBuchungen());
 	}
 
 	private void neueLieferung(ActionEvent e) {

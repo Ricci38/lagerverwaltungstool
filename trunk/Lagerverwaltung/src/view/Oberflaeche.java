@@ -2,6 +2,7 @@ package view;
 
 import java.util.List;
 
+import javax.swing.JTable;
 import javax.swing.tree.TreeNode;
 
 import model.Buchung;
@@ -92,13 +93,13 @@ public interface Oberflaeche {
 
 	public void showVerbleibendeMenge();
 	
-	public void updateLieferungsdetails();
-
 	public void selectTreeRoot();
 
 	// ### JTree neu aufbauen ###
 	public void refreshTree();
 
 	public void refreshTree(TreeNode node);
+
+	JTable getTbl_lieferungsUebersicht();
 
 }
