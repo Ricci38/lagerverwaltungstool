@@ -96,4 +96,8 @@ public interface Oberflaeche {
 
 	void setVerbleibenderProzentanteil(int verbleibenderProzentanteil);
 
+	void enableLagerUmbenennen();
+
+	void disableLagerUmbenennen();
+
 }
