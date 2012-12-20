@@ -401,6 +401,16 @@ public class OberflaecheImpl implements Oberflaeche {
 	public void disableUndo() {
 		undo.setEnabled(false);
 	}
+	
+	@Override
+	public void enableLagerUmbenennen() {
+		lagerUmbenennen.setEnabled(true);
+	}
+	
+	@Override
+	public void disableLagerUmbenennen() {
+		lagerUmbenennen.setEnabled(false);
+	}
 
 	@Override
 	public void hideUndoRedo() {
