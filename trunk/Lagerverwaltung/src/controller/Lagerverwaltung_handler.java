@@ -76,7 +76,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			gui.showLagerFuerBuchung(gui.getAusgewaehlterKnoten().getName());
 	}
 
-	// TODO Bedarf einer gründlichen Überprüfung!
 	@Override
 	public void mousePressed(MouseEvent e) {
 		try {
