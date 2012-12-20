@@ -17,4 +17,10 @@ public interface IBuchungBefehl {
 
 	void clearAll();
 
+	boolean hasRemainingUndos();
+
+	boolean hasRemainingRedos();
+
+	public void clearRedos();
+
 }

@@ -80,4 +80,16 @@ public interface Oberflaeche {
 
 	void enableBuchungsArt();
 
+	public void enableGesamtmenge();
+	
+	public void disableGesamtmenge();
+
+	void enableRedo();
+
+	void disableRedo();
+
+	void enableUndo();
+
+	void disableUndo();
+
 }

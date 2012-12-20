@@ -42,7 +42,7 @@ import view.Tools;
 //TODO Eigenständigkeitserklärung
 public class OberflaecheImpl implements Oberflaeche {
 
-	// TODO Variablen sortieren (z.B. nach Type & Name)
+	// TODO Variablen & Methoden sortieren (z.B. nach Type & Name)
 	// ### Singeltonvariable ###
 	private static Oberflaeche theInstance;
 
@@ -65,7 +65,7 @@ public class OberflaecheImpl implements Oberflaeche {
 
 	// ### Variablen der Ansicht für eine neue Lieferung ###
 	private JTextField gesamtmenge, prozentAnteil, saldo;
-	private int verbleibendeMenge = 0;
+	private int verbleibendeMenge = 0, verbleibenderProzentanteil = 0;
 	private JLabel lagerBezeichnung, restMenge;
 	private JButton btn_best, btn_abbr, btn_jetztBuchen;
 	private GridBagLayout gbl;
@@ -192,7 +192,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		c.add(p_center, BorderLayout.CENTER);
 	}
 
-	private void buildNeueLieferung() { // TODO Neue Lieferung Benutzeranweisung & Radio Buttons zu-&abbuchung
+	private void buildNeueLieferung() {
 		p_center_neue_lieferung = new JPanel();
 		p_center_neue_lieferung_north = new JPanel();
 		p_center_neue_lieferung_center = new JPanel();
@@ -209,10 +209,10 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		btn_best.addActionListener(listener_Lagerverwaltung);
 		btn_abbr.addActionListener(listener_Lagerverwaltung);
-		
+
 		zuBuchung = new JRadioButton("Zubuchen", true);
 		abBuchung = new JRadioButton("Abbuchen");
-		
+
 		buchungsArt = new ButtonGroup();
 		buchungsArt.add(zuBuchung);
 		buchungsArt.add(abBuchung);
@@ -229,14 +229,16 @@ public class OberflaecheImpl implements Oberflaeche {
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, lagerBezeichnung = new JLabel(), 0, 5, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 5, 1, 1, 0, 0,
 				GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel(" "), 2, 5, 1, 1, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, btn_jetztBuchen = new JButton("Jetzt buchen"), 2, 6, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel("Es wird automatisch aufgerundet!"), 0, 8, 3, 1, 0, 0, GridBagConstraints.VERTICAL);
 		prozentAnteil.addMouseListener(listener_LieferungsUebersicht);
 		btn_jetztBuchen.addActionListener(listener_Lagerverwaltung);
 		prozentAnteil.setPreferredSize(new Dimension(120, 20));
 		restMenge.setVisible(false);
 		lagerBezeichnung.setVisible(false);
 		prozentAnteil.setVisible(false);
-		btn_jetztBuchen.setVisible(false);
+		btn_jetztBuchen.setEnabled(false);
 	}
 
 	@Override
@@ -245,14 +247,14 @@ public class OberflaecheImpl implements Oberflaeche {
 		try {
 			//FIXME Prozentuale Berechnung ist falsch. Bei großen Zahlen bleiben bei 0% Reste über
 			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge + " entspricht "
-					+ Math.round((verbleibendeMenge * 100 / Integer.parseInt(gesamtmenge.getText()))) + "% der Gesamtmenge");
+					+ (int) Math.floor((verbleibendeMenge * 100 / Integer.parseInt(gesamtmenge.getText()))) + "% der Gesamtmenge");
 		} catch (NumberFormatException e) {
 			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge);
 		}
 		lagerBezeichnung.setText(n);
 		lagerBezeichnung.setVisible(true);
 		prozentAnteil.setVisible(true);
-		btn_jetztBuchen.setVisible(true);
+		btn_jetztBuchen.setEnabled(true);
 		p_center_neue_lieferung_center.updateUI();
 	}
 
@@ -264,7 +266,7 @@ public class OberflaecheImpl implements Oberflaeche {
 	private void resetCardNeueLieferung() {
 		lagerBezeichnung.setVisible(false);
 		prozentAnteil.setVisible(false);
-		btn_jetztBuchen.setVisible(false);
+		btn_jetztBuchen.setEnabled(false);
 		prozentAnteil.setText("prozentualer Anteil");
 	}
 
@@ -275,6 +277,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		isCardUebersichtAktiv = false;
 		isCardNeueLieferungAktiv = true;
 		verbleibendeMenge = -1;
+		verbleibenderProzentanteil = -1;
 		gesamtmenge.setText("Gesamtmenge");
 	}
 
@@ -295,24 +298,20 @@ public class OberflaecheImpl implements Oberflaeche {
 	public boolean isCardUebersichtAktiv() {
 		return isCardUebersichtAktiv;
 	}
-	
+
 	@Override
-	public boolean isAbBuchung()
-	{
+	public boolean isAbBuchung() {
 		return abBuchung.isSelected();
 	}
-	
-	//TODO: nötig?
+
 	@Override
-	public void enableBuchungsArt()
-	{
+	public void enableBuchungsArt() {
 		zuBuchung.setEnabled(true);
 		abBuchung.setEnabled(true);
 	}
-	
+
 	@Override
-	public void disableBuchungsArt()
-	{
+	public void disableBuchungsArt() {
 		zuBuchung.setEnabled(false);
 		abBuchung.setEnabled(false);
 	}
@@ -349,6 +348,16 @@ public class OberflaecheImpl implements Oberflaeche {
 	}
 
 	@Override
+	public void enableGesamtmenge() {
+		gesamtmenge.setEditable(true);
+	}
+
+	@Override
+	public void disableGesamtmenge() {
+		gesamtmenge.setEditable(false);
+	}
+
+	@Override
 	public void enableAlleBuchungenBestaetigen() {
 		btn_best.setEnabled(true);
 	}
@@ -356,6 +365,26 @@ public class OberflaecheImpl implements Oberflaeche {
 	@Override
 	public void disableAlleBuchungenBestaetigen() {
 		btn_best.setEnabled(false);
+	}
+	
+	@Override
+	public void enableRedo() {
+		redo.setEnabled(true);
+	}
+	
+	@Override
+	public void disableRedo() {
+		redo.setEnabled(false);
+	}
+	
+	@Override
+	public void enableUndo() {
+		undo.setEnabled(true);
+	}
+	
+	@Override
+	public void disableUndo() {
+		undo.setEnabled(false);
 	}
 
 	@Override
@@ -396,12 +425,20 @@ public class OberflaecheImpl implements Oberflaeche {
 		return verbleibendeMenge;
 	}
 
+	public int getVerbleibenderProzentanteil() {
+		return verbleibenderProzentanteil;
+	}
+
+	public void setVerbleibenderProzentanteil(int verbleibenderProzentanteil) {
+		this.verbleibenderProzentanteil = verbleibenderProzentanteil;
+	}
+
 	/**
 	 * Get the instance of this singelton
 	 * 
 	 * @return the singelton object of the class 'Oberflaeche'
 	 */
-	public static Oberflaeche getInstance() {
+	public static synchronized Oberflaeche getInstance() {
 		if (theInstance == null) {
 			theInstance = new OberflaecheImpl();
 		}
@@ -600,4 +637,5 @@ public class OberflaecheImpl implements Oberflaeche {
 	protected Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException("This is a singelton, dude! No cloning allowed!");
 	}
+
 }
