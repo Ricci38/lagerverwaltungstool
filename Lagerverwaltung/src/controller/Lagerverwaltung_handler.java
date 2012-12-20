@@ -50,11 +50,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			gui.enableRedo();
 			if (!befehlBuchung.hasRemainingUndos())
 				gui.disableUndo();
-			if (gui.getVerbleibendeMenge() == Integer.parseInt(gui.getGesamtmenge())) {
-				gui.enableBuchungsArt();
-				gui.enableGesamtmenge();
-			}
-
 			gui.refreshTree(gui.getAusgewaehlterKnoten());
 		} else if (e.getActionCommand().toLowerCase().equals(("redo").toLowerCase())) {
 			befehlBuchung.redo();
@@ -65,7 +60,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				gui.disableRedo();
 			if (gui.getVerbleibendeMenge() == 0)
 				gui.enableAlleBuchungenBestaetigen();
-
 			gui.refreshTree(gui.getAusgewaehlterKnoten());
 		} else if (e.getActionCommand().toLowerCase().equals(("Jetzt buchen").toLowerCase())) {
 			jetztBuchen(e);
@@ -200,13 +194,11 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	}
 
 	private void lagerUmebennnen(ActionEvent e) {
-		//FIXME: Root darf nicht umbenannt werden können
-		
 		// Neuen Knoten hinzufügen
 		Lager knoten = gui.getAusgewaehlterKnoten();
 
 		// Falls ein Knoten ausgewählt wurde
-		if (null != knoten) {
+		if (null != knoten && !knoten.isRoot()) {
 			String neuerName = null;
 			int pane_value;
 			JTextField lagername = new JTextField();
@@ -290,15 +282,13 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 				// Falls weniger als 1 % der Restmenge verbleiben, wird die
 				// Restmenge der aktuellen Buchung hinzugefügt
-				if (restProzent < 1) {
+				if (restProzent < 1 && restMenge > 0) {
 					Tools.showMsg("Die Restmenge von " + (gui.getVerbleibendeMenge() - menge) + " wurde zur letzten Buchungsmenge hinzugefügt.");
 					menge = gui.getVerbleibendeMenge();
 					restMenge = 0;
 				}
-
 				if (gui.isAbBuchung())
-					menge = menge * -1; //TODO TESTEN!
-
+					menge = menge * -1;
 				befehlBuchung.execute(l, menge, new Date(), Integer.parseInt(gui.getProzentualerAnteil()));
 				gui.setVerbleibendeMenge(restMenge);
 				gui.setVerbleibenderProzentanteil(restProzent);
@@ -338,16 +328,16 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			prozentualerAnteil = Integer.parseInt(prozentualerAnteil_str);
 
 			if (gesamtmenge < 1)
-				Tools.showMsg("Es sind nur Gesamtmengen größer 0 zulässig!");
+				Tools.showErr("Es sind nur Gesamtmengen größer 0 zulässig!");
 			else {
 				if ((prozentualerAnteil < 1) || (prozentualerAnteil > 100))
-					Tools.showMsg("Ungültiger prozentueler Anteil! Nur ganzzahlige Werte von 1 bis 100.");
+					Tools.showErr("Ungültiger prozentueler Anteil! Nur ganzzahlige Werte von 1 bis 100.");
 				else
 					// Abrunden
 					return (int) Math.floor(((double) (gesamtmenge * prozentualerAnteil) / 100));
 			}
 		} else
-			Tools.showMsg("Es sind nur ganzzahlige Werte erlaubt!");
+			Tools.showErr("Es sind nur ganzzahlige Werte erlaubt!");
 		return -1; // Ungültige Eingabe
 	}
 
@@ -363,7 +353,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			gui.refreshTree();
 			befehlBuchung.clearAll();
 		} else
-			Tools.showMsg("Bitte zuerst auf \"Jetzt buchen\" klicken");
+			Tools.showErr("Bitte zuerst auf \"Jetzt buchen\" klicken");
 	}
 
 	private void lieferungAbbrechen(ActionEvent e) {
