@@ -11,13 +11,13 @@ public class Buchung {
 
 	private final int menge, prozentAnteil;
 	private final int buchung_ID;
-	private final String lagerName;
+	private final Lager lager;
 	private Date datum;
 
-	public Buchung(int m, Date datum, String lagerName, int prozent) {
+	public Buchung(int m, Date datum, Lager l, int prozent) {
 		this.menge = m;
 		this.prozentAnteil = prozent;
-		this.lagerName = lagerName;
+		this.lager = l;
 		this.buchung_ID = getNextId();
 		this.datum = datum;
 		neueBuchungen.add(this);
@@ -56,7 +56,7 @@ public class Buchung {
 	}
 
 	public String getLagerName() {
-		return lagerName;
+		return this.lager.getName();
 	}
 
 	private static synchronized int getNextId() {

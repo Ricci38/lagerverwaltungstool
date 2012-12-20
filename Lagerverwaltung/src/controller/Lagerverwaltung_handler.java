@@ -239,6 +239,8 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		// Falls kein Lager ausgewählt wurde wird ein Fehler ausgegeben
 		else
 			Tools.showMsg("Es ist kein Lager ausgewählt, das umgenannt werden kann!");
+		
+		
 	}
 
 	private void neueLieferung(ActionEvent e) {

@@ -91,6 +91,8 @@ public interface Oberflaeche {
 	public void showTabLieferungsBuchungen(List<Buchung> buchungen);
 
 	public void showVerbleibendeMenge();
+	
+	public void updateLieferungsdetails();
 
 	public void selectTreeRoot();
 
