@@ -10,6 +10,8 @@ import model.Lieferung;
 
 public interface Oberflaeche {
 
+	
+	//TODO Übersichtlich gestalten (Sortieren)
 	public void zeigeLieferungsdetails(List<Buchung> list);
 
 	public void zeigeLieferungen(List<Lieferung> list);
@@ -71,5 +73,11 @@ public interface Oberflaeche {
 	void disableNeuesLager();
 
 	List<Buchung> getAllBuchungen(Lager l);
+
+	boolean isAbBuchung();
+
+	void disableBuchungsArt();
+
+	void enableBuchungsArt();
 
 }
