@@ -54,7 +54,7 @@ public class OberflaecheImpl implements Oberflaeche {
 	// ### Variable, die die Oberfläche beinhaltet ###
 	private JFrame lagerverwaltung;
 
-	// ### Variablen für das Oberfläche ###
+	// ### Variablen für die Oberfläche ###
 	private JPanel p_top, p_top_sub_top, p_top_sub_bottom, p_tree, p_center, p_platzhalter1, p_platzhalter2;
 	private JPanel p_center_lieferungen, p_center_lieferungdetails, p_center_lagerbuchungen;
 	private JPanel p_center_neue_lieferung, p_center_neue_lieferung_north, p_center_neue_lieferung_south, p_center_neue_lieferung_center;
@@ -64,7 +64,7 @@ public class OberflaecheImpl implements Oberflaeche {
 	private JTable tbl_buchungsUebersicht, tbl_lieferungsUebersicht, tbl_lagerbuchungen;
 	private JTabbedPane p_center_tabbs = new JTabbedPane();
 
-	// ### Variablen der Ansicht für eine neue Lieferung ###
+	// ### Variablen der Ansicht "Neue Lieferung" ###
 	private JTextField gesamtmenge, prozentAnteil, saldo;
 	private int verbleibendeMenge = 0, verbleibenderProzentanteil = 0;
 	private JLabel lagerBezeichnung, restMenge;
@@ -73,8 +73,10 @@ public class OberflaecheImpl implements Oberflaeche {
 	private JRadioButton zuBuchung, abBuchung;
 	private ButtonGroup buchungsArt;
 
+	// ### Festsethendes Datumsformat ###
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
 
+	// ### Zustandsvariablen, um zu überprüfen, welche Sicht gezeigt wird ###
 	private boolean isCardUebersichtAktiv = false;
 	private boolean isCardNeueLieferungAktiv = false;
 
@@ -172,7 +174,6 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_tree.setPreferredSize(new Dimension(250, 50)); // Breite des Trees festlegen. Höhe wird aufgrund des BorderLayouts ignoriert!
 		JScrollPane scrollBar = new JScrollPane(lagerTree);
 		lagerTree.addTreeSelectionListener((TreeSelectionListener) listener_Lagerverwaltung);
-		// FIXME Hierdurch kann man die Namen im Tree verändern
 		p_tree.add(scrollBar);
 
 		// ### Menüauswahl im CENTER ###
@@ -183,7 +184,7 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		gbl = new GridBagLayout();
 
-		buildNeueLieferung();
+		buildCardNeueLieferung();
 
 		p_center = new JPanel();
 		p_center.setLayout(new CardLayout());
@@ -194,7 +195,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		c.add(p_center, BorderLayout.CENTER);
 	}
 
-	private void buildNeueLieferung() {
+	private void buildCardNeueLieferung() {
 		p_center_neue_lieferung = new JPanel();
 		p_center_neue_lieferung_north = new JPanel();
 		p_center_neue_lieferung_center = new JPanel();
@@ -240,34 +241,192 @@ public class OberflaecheImpl implements Oberflaeche {
 		restMenge.setVisible(false);
 		lagerBezeichnung.setVisible(false);
 		prozentAnteil.setVisible(false);
-		btn_jetztBuchen.setEnabled(false);
-	}
-
-	@Override
-	public void showLagerFuerBuchung(String n) {
-		resetCardNeueLieferung();
-		try {
-			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge + " entspricht " + verbleibenderProzentanteil + "% der Gesamtmenge");
-		} catch (NumberFormatException e) {
-			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge);
-		}
-		lagerBezeichnung.setText(n);
-		lagerBezeichnung.setVisible(true);
-		prozentAnteil.setVisible(true);
-		btn_jetztBuchen.setEnabled(true);
-		p_center_neue_lieferung_center.updateUI();
-	}
-
-	@Override
-	public void showVerbleibendeMenge() {
-		restMenge.setVisible(true);
+		disableJetztBuchen();
 	}
 
 	private void resetCardNeueLieferung() {
 		lagerBezeichnung.setVisible(false);
 		prozentAnteil.setVisible(false);
-		btn_jetztBuchen.setEnabled(false);
+		disableJetztBuchen();
 		prozentAnteil.setText("prozentualer Anteil");
+	}
+
+	@Override
+	public void enableAlleBuchungenBestaetigen() {
+		btn_best.setEnabled(true);
+	}
+
+	@Override
+	public void enableBuchungsArt() {
+		zuBuchung.setEnabled(true);
+		abBuchung.setEnabled(true);
+	}
+
+	@Override
+	public void enableGesamtmenge() {
+		gesamtmenge.setEditable(true);
+	}
+
+	@Override
+	public void enableJetztBuchen() {
+		btn_jetztBuchen.setEnabled(true);
+	}
+
+	@Override
+	public void enableLagerUebersicht() {
+		lageruebersicht.setEnabled(true);
+		neueLieferung.setEnabled(true);
+	}
+
+	@Override
+	public void enableLagerUmbenennen() {
+		lagerUmbenennen.setEnabled(true);
+	}
+
+	@Override
+	public void enableNeuesLager() {
+		neuesLager.setEnabled(true);
+	}
+
+	@Override
+	public void enableRedo() {
+		redo.setEnabled(true);
+	}
+
+	@Override
+	public void enableUndo() {
+		undo.setEnabled(true);
+	}
+
+	@Override
+	public void disableBuchungsArt() {
+		zuBuchung.setEnabled(false);
+		abBuchung.setEnabled(false);
+	}
+
+	@Override
+	public void disableNeuesLager() {
+		neuesLager.setEnabled(false);
+	}
+
+	@Override
+	public void disableNeueLieferung() {
+		neueLieferung.setEnabled(false);
+	}
+
+	@Override
+	public void disableJetztBuchen() {
+		btn_jetztBuchen.setEnabled(false);
+	}
+
+	@Override
+	public void disableGesamtmenge() {
+		gesamtmenge.setEditable(false);
+	}
+
+	@Override
+	public void disableAlleBuchungenBestaetigen() {
+		btn_best.setEnabled(false);
+	}
+
+	@Override
+	public void disableRedo() {
+		redo.setEnabled(false);
+	}
+
+	@Override
+	public void disableUndo() {
+		undo.setEnabled(false);
+	}
+
+	@Override
+	public void disableLagerUmbenennen() {
+		lagerUmbenennen.setEnabled(false);
+	}
+
+	@Override
+	public void hideLagerverwaltung() {
+		lagerverwaltung.setVisible(false);
+	}
+
+	@Override
+	public void hideUndoRedo() {
+		undo.setVisible(false);
+		redo.setVisible(false);
+	}
+
+	@Override
+	public void showUndoRedo() {
+		undo.setVisible(true);
+		redo.setVisible(true);
+	}
+
+	@Override
+	public void showLagerverwaltung() {
+		lagerverwaltung.setVisible(true);
+	}
+
+	@Override
+	public boolean isAbBuchung() {
+		return abBuchung.isSelected();
+	}
+
+	@Override
+	public boolean isCardNeueLieferungAktiv() {
+		return isCardNeueLieferungAktiv;
+	}
+
+	@Override
+	public boolean isCardUebersichtAktiv() {
+		return isCardUebersichtAktiv;
+	}
+
+	@Override
+	public List<Buchung> getAllBuchungen(Lager l) {
+		List<Buchung> b = new ArrayList<Buchung>();
+		for (int j = 0; j < l.getChildCount(); j++) {
+			if (l.getChildAt(j).isLeaf()) {
+				b.addAll(((Lager) (l.getChildAt(j))).getBuchungen());
+			} else {
+				b.addAll(getAllBuchungen((Lager) l.getChildAt(j)));
+			}
+		}
+		return b;
+	}
+
+	@Override
+	public Lager getAusgewaehlterKnoten() {
+		return (Lager) lagerTree.getLastSelectedPathComponent();
+	}
+
+	@Override
+	public String getGesamtmenge() {
+		return gesamtmenge.getText();
+	}
+
+	@Override
+	public String getProzentualerAnteil() {
+		return prozentAnteil.getText();
+	}
+
+	@Override
+	public int getVerbleibendeMenge() {
+		return verbleibendeMenge;
+	}
+
+	@Override
+	public int getVerbleibenderProzentanteil() {
+		return verbleibenderProzentanteil;
+	}
+
+	@Override
+	public void setVerbleibendeMenge(int menge) {
+		verbleibendeMenge = menge;
+	}
+
+	@Override
+	public void setVerbleibenderProzentanteil(int verbleibenderProzentanteil) {
+		this.verbleibenderProzentanteil = verbleibenderProzentanteil;
 	}
 
 	@Override
@@ -290,175 +449,61 @@ public class OberflaecheImpl implements Oberflaeche {
 	}
 
 	@Override
-	public boolean isCardNeueLieferungAktiv() {
-		return isCardNeueLieferungAktiv;
-	}
-
-	@Override
-	public boolean isCardUebersichtAktiv() {
-		return isCardUebersichtAktiv;
-	}
-
-	@Override
-	public boolean isAbBuchung() {
-		return abBuchung.isSelected();
-	}
-
-	@Override
-	public void enableBuchungsArt() {
-		zuBuchung.setEnabled(true);
-		abBuchung.setEnabled(true);
-	}
-
-	@Override
-	public void disableBuchungsArt() {
-		zuBuchung.setEnabled(false);
-		abBuchung.setEnabled(false);
-	}
-
-	@Override
-	public void disableNeuesLager() {
-		neuesLager.setEnabled(false);
-	}
-
-	@Override
-	public void enableNeuesLager() {
-		neuesLager.setEnabled(true);
-	}
-
-	@Override
-	public void disableNeueLieferung() {
-		neueLieferung.setEnabled(false);
-	}
-
-	@Override
-	public void enableLagerUebersicht() {
-		lageruebersicht.setEnabled(true);
-		neueLieferung.setEnabled(true);
-	}
-
-	@Override
-	public void enableJetztBuchen() {
-		btn_jetztBuchen.setEnabled(true);
-	}
-
-	@Override
-	public void disableJetztBuchen() {
-		btn_jetztBuchen.setEnabled(false);
-	}
-
-	@Override
-	public void enableGesamtmenge() {
-		gesamtmenge.setEditable(true);
-	}
-
-	@Override
-	public void disableGesamtmenge() {
-		gesamtmenge.setEditable(false);
-	}
-
-	@Override
-	public void enableAlleBuchungenBestaetigen() {
-		btn_best.setEnabled(true);
-	}
-
-	@Override
-	public void disableAlleBuchungenBestaetigen() {
-		btn_best.setEnabled(false);
-	}
-
-	@Override
-	public void enableRedo() {
-		redo.setEnabled(true);
-	}
-
-	@Override
-	public void disableRedo() {
-		redo.setEnabled(false);
-	}
-
-	@Override
-	public void enableUndo() {
-		undo.setEnabled(true);
-	}
-
-	@Override
-	public void disableUndo() {
-		undo.setEnabled(false);
-	}
-
-	@Override
-	public void enableLagerUmbenennen() {
-		lagerUmbenennen.setEnabled(true);
-	}
-
-	@Override
-	public void disableLagerUmbenennen() {
-		lagerUmbenennen.setEnabled(false);
-	}
-
-	@Override
-	public void hideUndoRedo() {
-		undo.setVisible(false);
-		redo.setVisible(false);
-	}
-
-	@Override
-	public void showUndoRedo() {
-		undo.setVisible(true);
-		redo.setVisible(true);
-	}
-
-	@Override
-	public void selectTreeRoot() {
-		lagerTree.setSelectionRow(0);
-		lagerTree.expandRow(0);
-	}
-
-	@Override
-	public String getGesamtmenge() {
-		return gesamtmenge.getText();
-	}
-
-	@Override
-	public String getProzentualerAnteil() {
-		return prozentAnteil.getText();
-	}
-
-	@Override
-	public void setVerbleibendeMenge(int menge) {
-		verbleibendeMenge = menge;
-	}
-
-	@Override
-	public int getVerbleibendeMenge() {
-		return verbleibendeMenge;
-	}
-
-	@Override
-	public int getVerbleibenderProzentanteil() {
-		return verbleibenderProzentanteil;
-	}
-
-	@Override
-	public void setVerbleibenderProzentanteil(int verbleibenderProzentanteil) {
-		this.verbleibenderProzentanteil = verbleibenderProzentanteil;
-	}
-
-	/**
-	 * Get the instance of this singelton
-	 * 
-	 * @return the singelton object of the class 'Oberflaeche'
-	 */
-	public static synchronized Oberflaeche getInstance() {
-		if (theInstance == null) {
-			theInstance = new OberflaecheImpl();
+	public void showLagerbuchungen(List<Buchung> b) {
+		if (null == getAusgewaehlterKnoten() || null == b)
+			return;
+		p_center_lagerbuchungen.removeAll();
+		Lager l = getAusgewaehlterKnoten();
+		if ((l.isLeaf() && l.getBestand() == 0))
+			p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
+		else {
+			p_center_lagerbuchungen.setLayout(new BorderLayout());
+	
+			if (b.isEmpty())
+				b.addAll(getAllBuchungen(l));
+	
+			int i = 0;
+			String[] spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
+			String[][] daten = new String[b.size()][3];
+	
+			for (Buchung bu : b) {
+				daten[i][0] = ((Integer) bu.getBuchungID()).toString();
+				daten[i][1] = sdf.format(bu.getDatum());
+				daten[i++][2] = ((Integer) bu.getMenge()).toString();
+			}
+	
+			tbl_lagerbuchungen = new JTable(daten, spalten) {
+				private static final long serialVersionUID = 6620092595652821138L;
+	
+				@Override
+				public boolean isCellEditable(int arg0, int arg1) {
+					return false;
+				}
+			};
+			tbl_lagerbuchungen.setFillsViewportHeight(true);
+			p_center_lagerbuchungen.add(saldo = new JTextField("Buchungen von " + (l.isLeaf() ? "Lager" : "Oberlagers") + " \"" + l.getName() + "\" mit Saldo "
+					+ l.getBestand() + ":"), BorderLayout.NORTH);
+			p_center_lagerbuchungen.add(new JScrollPane(tbl_lagerbuchungen), BorderLayout.CENTER);
+			saldo.setEditable(false);
+			saldo.setFocusable(false);
 		}
-		return theInstance;
+		p_center_lagerbuchungen.updateUI();
 	}
 
 	@Override
-	public void zeigeLieferungsdetails(List<Buchung> buchungsListe) {
+	public void showLagerFuerBuchung(String n) {
+		resetCardNeueLieferung();
+		restMenge.setText("Verbleibende Menge: " + verbleibendeMenge + " entspricht " + verbleibenderProzentanteil + "% der Gesamtmenge");
+		lagerBezeichnung.setText(n);
+		lagerBezeichnung.setVisible(true);
+		prozentAnteil.setVisible(true);
+		if (verbleibendeMenge != 0)
+			enableJetztBuchen();
+		p_center_neue_lieferung_center.updateUI();
+	}
+
+	@Override
+	public void showLieferungsdetails(List<Buchung> buchungsListe) {
 
 		if (buchungsListe.isEmpty())
 			return;
@@ -512,7 +557,7 @@ public class OberflaecheImpl implements Oberflaeche {
 	}
 
 	@Override
-	public void zeigeLieferungen(List<Lieferung> lieferungen) {
+	public void showLieferungen(List<Lieferung> lieferungen) {
 		if (lieferungen.isEmpty()) {
 			p_center_lieferungen.add(new JLabel("Es wurden noch keine Lieferungen ausgeführt."));
 			return;
@@ -549,83 +594,20 @@ public class OberflaecheImpl implements Oberflaeche {
 	}
 
 	@Override
-	public void zeigeLagerbuchungen(List<Buchung> b) {
-		if (null == getAusgewaehlterKnoten() || null == b)
-			return;
-		p_center_lagerbuchungen.removeAll();
-		Lager l = getAusgewaehlterKnoten();
-		if ((l.isLeaf() && l.getBestand() == 0))
-			p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
-		else {
-			p_center_lagerbuchungen.setLayout(new BorderLayout());
-
-			if (b.isEmpty())
-				b.addAll(getAllBuchungen(l));
-
-			int i = 0;
-			String[] spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
-			String[][] daten = new String[b.size()][3];
-
-			for (Buchung bu : b) {
-				daten[i][0] = ((Integer) bu.getBuchungID()).toString();
-				daten[i][1] = sdf.format(bu.getDatum());
-				daten[i++][2] = ((Integer) bu.getMenge()).toString();
-			}
-
-			tbl_lagerbuchungen = new JTable(daten, spalten) {
-				private static final long serialVersionUID = 6620092595652821138L;
-
-				@Override
-				public boolean isCellEditable(int arg0, int arg1) {
-					return false;
-				}
-			};
-			tbl_lagerbuchungen.setFillsViewportHeight(true);
-			p_center_lagerbuchungen.add(saldo = new JTextField("Buchungen von " + (l.isLeaf() ? "Lager" : "Oberlagers") + " \"" + l.getName() + "\" mit Saldo "
-					+ l.getBestand() + ":"), BorderLayout.NORTH);
-			p_center_lagerbuchungen.add(new JScrollPane(tbl_lagerbuchungen), BorderLayout.CENTER);
-			saldo.setEditable(false);
-			saldo.setFocusable(false);
-		}
-		p_center_lagerbuchungen.updateUI();
-	}
-
-	@Override
-	public List<Buchung> getAllBuchungen(Lager l) {
-		List<Buchung> b = new ArrayList<Buchung>();
-		for (int j = 0; j < l.getChildCount(); j++) {
-			if (l.getChildAt(j).isLeaf()) {
-				b.addAll(((Lager) (l.getChildAt(j))).getBuchungen());
-			} else {
-				b.addAll(getAllBuchungen((Lager) l.getChildAt(j)));
-			}
-		}
-		return b;
-	}
-
-	@Override
 	public void showTabLieferungsBuchungen(List<Buchung> buchungen) {
-		theInstance.zeigeLieferungsdetails(buchungen);
+		theInstance.showLieferungsdetails(buchungen);
 		p_center_tabbs.setSelectedComponent(p_center_lieferungdetails);
 	}
 
-	public static void setLagerListener(ActionListener l) {
-		listener_Lagerverwaltung = l;
-	}
-
-	public static void setLieferungListener(MouseListener l) {
-		listener_LieferungsUebersicht = l;
-	}
-
-	// ### Show & Hide Frames ###
 	@Override
-	public void showLagerverwaltung() {
-		lagerverwaltung.setVisible(true);
+	public void showVerbleibendeMenge() {
+		restMenge.setVisible(true);
 	}
 
 	@Override
-	public void hideLagerverwaltung() {
-		lagerverwaltung.setVisible(false);
+	public void selectTreeRoot() {
+		lagerTree.setSelectionRow(0);
+		lagerTree.expandRow(0);
 	}
 
 	// ### JTree neu aufbauen ###
@@ -639,9 +621,24 @@ public class OberflaecheImpl implements Oberflaeche {
 		((DefaultTreeModel) lagerTree.getModel()).reload(node);
 	}
 
-	@Override
-	public Lager getAusgewaehlterKnoten() {
-		return (Lager) lagerTree.getLastSelectedPathComponent();
+	/**
+	 * Get the instance of this singelton
+	 * 
+	 * @return the singelton object of the class 'Oberflaeche'
+	 */
+	public static synchronized Oberflaeche getInstance() {
+		if (theInstance == null) {
+			theInstance = new OberflaecheImpl();
+		}
+		return theInstance;
+	}
+
+	public static void setLagerListener(ActionListener l) {
+		listener_Lagerverwaltung = l;
+	}
+
+	public static void setLieferungListener(MouseListener l) {
+		listener_LieferungsUebersicht = l;
 	}
 
 	// ### Disabling clone() by throwing CloneNotSupportedException ###

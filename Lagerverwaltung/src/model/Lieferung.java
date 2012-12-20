@@ -27,12 +27,16 @@ public class Lieferung {
 		lieferungen.add(this);
 	}
 
-	public Date getLieferungsDatum() {
-		return this.lieferungsDatum;
-	}
-
 	public List<Buchung> getBuchungen() {
 		return buchungen;
+	}
+
+	public int getGesamtMenge() {
+		return gesamtMenge;
+	}
+
+	public Date getLieferungsDatum() {
+		return this.lieferungsDatum;
 	}
 
 	public static List<Lieferung> addLieferungen(Lieferung l) {
@@ -51,9 +55,5 @@ public class Lieferung {
 			if (date.equals(sdf.format(l.getLieferungsDatum()))) return l;
 		}
 		return null;
-	}
-
-	public int getGesamtMenge() {
-		return gesamtMenge;
 	}
 }
