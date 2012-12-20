@@ -200,6 +200,8 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	}
 
 	private void lagerUmebennnen(ActionEvent e) {
+		//FIXME: Root darf nicht umbenannt werden können
+		
 		// Neuen Knoten hinzufügen
 		Lager knoten = gui.getAusgewaehlterKnoten();
 
