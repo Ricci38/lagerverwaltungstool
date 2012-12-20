@@ -36,7 +36,9 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 			OberflaecheImpl.getInstance().showLagerFuerBuchung(l.getName());
 			OberflaecheImpl.getInstance().setVerbleibendeMenge(OberflaecheImpl.getInstance().getVerbleibendeMenge() + b.getMenge());
 		} catch (Exception e) {
-			Tools.showMsg("Ich nix rückgängig machen können.");
+			// Sollte normalerweise nicht mehr benötigt werden :)
+			// Nur für den Fall, dass irgendetwas schief läuft
+			Tools.showMsg("Sie haben gewonnen!\n\nUnd zwar ein Stickstoffatom.\nWir gratulieren Ihnen herzlichst! :)");
 			return;
 		}
 	}
@@ -50,7 +52,9 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 			l.addBuchung(b);
 			OberflaecheImpl.getInstance().setVerbleibendeMenge(OberflaecheImpl.getInstance().getVerbleibendeMenge() - b.getMenge());
 		} catch (Exception e) {
-			Tools.showMsg("Ich kann nichts wiederholen.");
+			// Sollte normalerweise nicht mehr benötigt werden :)
+			// Nur für den Fall, dass irgendetwas schief läuft
+			Tools.showMsg("Sie haben gewonnen!\n\nUnd zwar ein Sauerstoffatom.\nWir gratulieren Ihnen herzlichst! :)");
 		}
 	}
 
@@ -69,6 +73,22 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 		lagerStackUndo.clear();
 		lagerStackRedo.clear();
 		Buchung.clearNeueBuchungen();
+	}
+	
+	@Override
+	public boolean hasRemainingUndos() {
+		return buchungsStackUndo.size() != 0 ? true : false;
+	}
+	
+	@Override
+	public boolean hasRemainingRedos() {
+		return buchungsStackRedo.size() != 0 ? true : false;
+	}
+
+	@Override
+	public void clearRedos() {
+		buchungsStackRedo.clear();
+		lagerStackRedo.clear();
 	}
 
 }
