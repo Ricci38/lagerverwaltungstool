@@ -26,20 +26,29 @@ public class Tools {
 		gbl.setConstraints(c, gbc);
 		cont.add(c);
 	}
+	
+	public static boolean isStringANumber(String s) {
+		try {
+			Integer.parseInt(s);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 
-	public static void showMsg(String s) {
-		JOptionPane.showMessageDialog(null, s);
+	public static void showErr(Exception e) {
+		JOptionPane.showMessageDialog(null, e.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+	}
+
+	public static void showErr(String s) {
+		JOptionPane.showMessageDialog(null, s, "Fehler", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public static void showMsg(int i) {
 		JOptionPane.showMessageDialog(null, i);
 	}
 
-	public static void showErr(Exception e) {
-		JOptionPane.showMessageDialog(null, e.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
-	}
-	
-	public static void showErr(String s) {
-		JOptionPane.showMessageDialog(null, s, "Fehler", JOptionPane.ERROR_MESSAGE);
+	public static void showMsg(String s) {
+		JOptionPane.showMessageDialog(null, s);
 	}
 }

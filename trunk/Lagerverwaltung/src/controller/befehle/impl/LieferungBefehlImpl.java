@@ -18,7 +18,7 @@ public class LieferungBefehlImpl implements ILieferungBefehl {
 		}
 		Lieferung l = new Lieferung(d, menge, buchungen);
 		Lagerverwaltung_handler.getBefehlBuchung().clearAll();
-		OberflaecheImpl.getInstance().zeigeLieferungen(Lieferung.getAllLieferungen());
+		OberflaecheImpl.getInstance().showLieferungen(Lieferung.getAllLieferungen());
 		return l;
 	}
 }

@@ -8,19 +8,19 @@ import model.Lager;
 public interface IBuchungBefehl {
 	
 	public Buchung execute(Lager l, int menge, Date d, int prozent);
-	
+
 	public void undo();
-	
+
 	public void redo();
-	
+
 	public void undoAll();
 
-	void clearAll();
-
-	boolean hasRemainingUndos();
-
-	boolean hasRemainingRedos();
+	public void clearAll();
 
 	public void clearRedos();
+
+	public boolean hasRemainingUndos();
+
+	public boolean hasRemainingRedos();
 
 }

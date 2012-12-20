@@ -31,10 +31,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	private static IBuchungBefehl befehlBuchung = new BuchungBefehlImpl();
 	private static ILieferungBefehl befehlLieferung = new LieferungBefehlImpl();
 
-	public void announceGUI_Lager(Oberflaeche myGUI) {
-		this.gui = myGUI;
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
@@ -75,12 +71,12 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		if (gui.isCardUebersichtAktiv())
-			gui.zeigeLagerbuchungen(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
+			gui.showLagerbuchungen(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
 		else if (gui.isCardNeueLieferungAktiv() && null != gui.getAusgewaehlterKnoten() && gui.getAusgewaehlterKnoten().isLeaf())
 			gui.showLagerFuerBuchung(gui.getAusgewaehlterKnoten().getName());
 	}
 
-	// XXX Bedarf einer gründlichen Überprüfung :)
+	// TODO Bedarf einer gründlichen Überprüfung!
 	@Override
 	public void mousePressed(MouseEvent e) {
 		try {
@@ -96,7 +92,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			// Unterscheidung zwischen Zahl und Text in dem Textfeld
 			// Bei Zahl: Textfeld wird nicht geleert
 			// Bei Text: Textfeld wird geleert
-			if (!isItANumber(((JTextField) e.getSource()).getText()))
+			if (!Tools.isStringANumber(((JTextField) e.getSource()).getText()))
 				((JTextField) e.getSource()).setText("");
 		} catch (NullPointerException npe) {
 			Tools.showMsg("Sie haben soeben einen NullPointer gewonnen!\nUnd niemand weiß warum.");
@@ -150,7 +146,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 							JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!", "Ungültige Bezeichnung",
 									JOptionPane.ERROR_MESSAGE);
 						} else if (!(null == menge_str || menge_str.isEmpty())) {
-							if (isItANumber(menge_str)) {
+							if (Tools.isStringANumber(menge_str)) {
 								menge = Integer.parseInt(menge_str);
 								if (menge < 0) {
 									Tools.showMsg("Es sind keine negativen Bestände möglich!");
@@ -297,14 +293,14 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				gui.disableGesamtmenge();
 				gui.enableUndo();
 
-				if (restMenge == 0) {
+				if (restMenge <= 0 || restProzent <= 0) {
 					gui.disableJetztBuchen();
 					gui.enableAlleBuchungenBestaetigen();
 				}
 
 				// Lagerbuchungen aktualisieren, sodass die Tabelle die soeben
 				// getätigte Buchung aufführt
-				gui.zeigeLagerbuchungen(l.getBuchungen());
+				gui.showLagerbuchungen(l.getBuchungen());
 			} else {
 				Tools.showErr("Der prozentuale Anteil ist zu hoch!\n\nDer größte mögliche Wert wäre: " + gui.getVerbleibenderProzentanteil() + "%");
 				return;
@@ -323,7 +319,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		gesamtmenge_str = gui.getGesamtmenge();
 		prozentualerAnteil_str = gui.getProzentualerAnteil();
 
-		if (isItANumber(gesamtmenge_str) && isItANumber(prozentualerAnteil_str)) {
+		if (Tools.isStringANumber(gesamtmenge_str) && Tools.isStringANumber(prozentualerAnteil_str)) {
 			gesamtmenge = Integer.parseInt(gesamtmenge_str);
 			prozentualerAnteil = Integer.parseInt(prozentualerAnteil_str);
 
@@ -383,21 +379,16 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		gui.refreshTree();
 	}
 
+	public void announceGUI_Lager(Oberflaeche myGUI) {
+		this.gui = myGUI;
+	}
+
 	public static IBuchungBefehl getBefehlBuchung() {
 		return befehlBuchung;
 	}
 
 	public static ILieferungBefehl getBefehlLieferung() {
 		return befehlLieferung;
-	}
-
-	private boolean isItANumber(String s) {
-		try {
-			Integer.parseInt(s);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
 	}
 
 }

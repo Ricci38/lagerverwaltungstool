@@ -85,6 +85,12 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 	}
 	
 	@Override
+	public void clearRedos() {
+		buchungsStackRedo.clear();
+		lagerStackRedo.clear();
+	}
+
+	@Override
 	public boolean hasRemainingUndos() {
 		return buchungsStackUndo.size() != 0 ? true : false;
 	}
@@ -92,12 +98,6 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 	@Override
 	public boolean hasRemainingRedos() {
 		return buchungsStackRedo.size() != 0 ? true : false;
-	}
-
-	@Override
-	public void clearRedos() {
-		buchungsStackRedo.clear();
-		lagerStackRedo.clear();
 	}
 
 }

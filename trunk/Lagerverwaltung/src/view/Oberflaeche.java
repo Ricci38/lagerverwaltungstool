@@ -10,94 +10,93 @@ import model.Lieferung;
 
 public interface Oberflaeche {
 
-	
-	//TODO Übersichtlich gestalten (Sortieren)
-	public void zeigeLieferungsdetails(List<Buchung> list);
+	public void enableAlleBuchungenBestaetigen();
 
-	public void zeigeLieferungen(List<Lieferung> list);
-	
-	public void showTabLieferungsBuchungen(List<Buchung> buchungen);
+	public void enableBuchungsArt();
 
-	public void showLagerverwaltung();
+	public void enableGesamtmenge();
+
+	public void enableJetztBuchen();
+
+	public void enableLagerUebersicht();
+
+	public void enableLagerUmbenennen();
+
+	public void enableNeuesLager();
+
+	public void enableRedo();
+
+	public void enableUndo();
+
+	public void disableBuchungsArt();
+
+	public void disableNeuesLager();
+
+	public void disableNeueLieferung();
+
+	public void disableJetztBuchen();
+
+	public void disableGesamtmenge();
+
+	public void disableAlleBuchungenBestaetigen();
+
+	public void disableRedo();
+
+	public void disableUndo();
+
+	public void disableLagerUmbenennen();
 
 	public void hideLagerverwaltung();
 
-	public void showCardNeueLieferung();
-	
-	public void showCardUebersicht();
-	
-	public void enableLagerUebersicht();
-	
-	public void disableNeueLieferung();
-	
-	public void showUndoRedo();
-	
 	public void hideUndoRedo();
-	
-	public void selectTreeRoot();
-	
-	public void refreshTree();
-	
-	void refreshTree(TreeNode node);
+
+	public void showUndoRedo();
+
+	public void showLagerverwaltung();
+
+	public boolean isAbBuchung();
+
+	public boolean isCardNeueLieferungAktiv();
+
+	public boolean isCardUebersichtAktiv();
+
+	public List<Buchung> getAllBuchungen(Lager l);
 
 	public Lager getAusgewaehlterKnoten();
 
-	public void zeigeLagerbuchungen(List<Buchung> buchungen);
+	public String getGesamtmenge();
 
-	boolean isCardNeueLieferungAktiv();
+	public String getProzentualerAnteil();
 
-	boolean isCardUebersichtAktiv();
+	public int getVerbleibendeMenge();
 
-	void showLagerFuerBuchung(String n);
+	public int getVerbleibenderProzentanteil();
 
-	String getGesamtmenge();
+	public void setVerbleibendeMenge(int menge);
 
-	String getProzentualerAnteil();
+	public void setVerbleibenderProzentanteil(int verbleibenderProzentanteil);
 
-	void setVerbleibendeMenge(int menge);
+	public void showCardNeueLieferung();
 
-	int getVerbleibendeMenge();
+	public void showCardUebersicht();
 
-	void showVerbleibendeMenge();
+	public void showLagerbuchungen(List<Buchung> b);
 
-	void enableJetztBuchen();
+	public void showLagerFuerBuchung(String n);
 
-	void disableJetztBuchen();
+	public void showLieferungsdetails(List<Buchung> buchungsListe);
 
-	void enableAlleBuchungenBestaetigen();
+	public void showLieferungen(List<Lieferung> lieferungen);
 
-	void disableAlleBuchungenBestaetigen();
+	public void showTabLieferungsBuchungen(List<Buchung> buchungen);
 
-	void enableNeuesLager();
+	public void showVerbleibendeMenge();
 
-	void disableNeuesLager();
+	public void selectTreeRoot();
 
-	List<Buchung> getAllBuchungen(Lager l);
+	// ### JTree neu aufbauen ###
+	public void refreshTree();
 
-	boolean isAbBuchung();
-
-	void disableBuchungsArt();
-
-	void enableBuchungsArt();
-
-	public void enableGesamtmenge();
-	
-	public void disableGesamtmenge();
-
-	void enableRedo();
-
-	void disableRedo();
-
-	void enableUndo();
-
-	void disableUndo();
-
-	int getVerbleibenderProzentanteil();
-
-	void setVerbleibenderProzentanteil(int verbleibenderProzentanteil);
-
-	void enableLagerUmbenennen();
-
-	void disableLagerUmbenennen();
+	public void refreshTree(TreeNode node);
 
 }

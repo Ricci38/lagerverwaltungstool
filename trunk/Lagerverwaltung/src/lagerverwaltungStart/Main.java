@@ -13,7 +13,7 @@ import controller.befehle.IBuchungBefehl;
 
 public class Main {
 
-	public static final String VERSION = "0.8b";
+	public static final String VERSION = "0.8.3b";
 
 	/**
 	 * @param args
@@ -38,7 +38,7 @@ public class Main {
 		}
 
 		OberflaecheImpl.getInstance().selectTreeRoot();
-		OberflaecheImpl.getInstance().zeigeLieferungen(Lieferung.getAllLieferungen());
+		OberflaecheImpl.getInstance().showLieferungen(Lieferung.getAllLieferungen());
 
 	}
 
