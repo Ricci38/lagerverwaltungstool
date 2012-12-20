@@ -599,6 +599,12 @@ public class OberflaecheImpl implements Oberflaeche {
 	}
 
 	@Override
+	public void updateLieferungsdetails()
+	{
+		p_center_lieferungdetails.updateUI();
+	}
+	
+	@Override
 	public void showVerbleibendeMenge() {
 		restMenge.setVisible(true);
 	}

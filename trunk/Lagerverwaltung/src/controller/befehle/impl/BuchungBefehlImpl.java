@@ -21,7 +21,7 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 	public Buchung execute(Lager l, int menge, Date d, int prozent) {
 		Buchung b;
 		l.veraenderBestand(menge);
-		l.addBuchung(b = new Buchung(menge, d, l.getName(), prozent));
+		l.addBuchung(b = new Buchung(menge, d, l, prozent));
 		buchungsStackUndo.push(b);
 		lagerStackUndo.push(l);
 		return b;
