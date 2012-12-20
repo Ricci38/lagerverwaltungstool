@@ -409,6 +409,11 @@ public class OberflaecheImpl implements Oberflaeche {
 	}
 
 	@Override
+	public JTable getTbl_lieferungsUebersicht() {
+		return tbl_lieferungsUebersicht;
+	}
+
+	@Override
 	public int getVerbleibendeMenge() {
 		return verbleibendeMenge;
 	}
@@ -598,12 +603,6 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center_tabbs.setSelectedComponent(p_center_lieferungdetails);
 	}
 
-	@Override
-	public void updateLieferungsdetails()
-	{
-		p_center_lieferungdetails.updateUI();
-	}
-	
 	@Override
 	public void showVerbleibendeMenge() {
 		restMenge.setVisible(true);
