@@ -5,6 +5,7 @@ import java.util.Stack;
 
 import model.Buchung;
 import model.Lager;
+import view.Oberflaeche;
 import view.Tools;
 import view.impl.OberflaecheImpl;
 import controller.befehle.IBuchungBefehl;
@@ -17,10 +18,10 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 	private final Stack<Lager> lagerStackRedo = new Stack<Lager>();
 
 	@Override
-	public Buchung execute(Lager l, int menge, Date d) {
+	public Buchung execute(Lager l, int menge, Date d, int prozent) {
 		Buchung b;
 		l.veraenderBestand(menge);
-		l.addBuchung(b = new Buchung(menge, d, l.getName()));
+		l.addBuchung(b = new Buchung(menge, d, l.getName(), prozent));
 		buchungsStackUndo.push(b);
 		lagerStackUndo.push(l);
 		return b;
@@ -29,12 +30,16 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 	@Override
 	public void undo() {
 		try {
+			Oberflaeche oberflaeche = OberflaecheImpl.getInstance(); 
 			Buchung b = buchungsStackRedo.push(buchungsStackUndo.pop());
 			Lager l = lagerStackRedo.push(lagerStackUndo.pop());
 			l.removeBuchung(b);
 			l.veraenderBestand(-b.getMenge());
-			OberflaecheImpl.getInstance().showLagerFuerBuchung(l.getName());
-			OberflaecheImpl.getInstance().setVerbleibendeMenge(OberflaecheImpl.getInstance().getVerbleibendeMenge() + b.getMenge());
+			Buchung.getNeueBuchungen().remove(b);
+			oberflaeche.showLagerFuerBuchung(l.getName());
+			oberflaeche.setVerbleibendeMenge(oberflaeche.getVerbleibendeMenge() + b.getMenge());
+			oberflaeche.setVerbleibenderProzentanteil(oberflaeche.getVerbleibenderProzentanteil() + b.getProzentAnteil());
+			oberflaeche.showLagerFuerBuchung(oberflaeche.getAusgewaehlterKnoten().getName());
 		} catch (Exception e) {
 			// Sollte normalerweise nicht mehr benötigt werden :)
 			// Nur für den Fall, dass irgendetwas schief läuft
@@ -46,11 +51,15 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 	@Override
 	public void redo() {
 		try {
+			Oberflaeche oberflaeche = OberflaecheImpl.getInstance();
 			Buchung b = buchungsStackUndo.push(buchungsStackRedo.pop());
 			Lager l = lagerStackUndo.push(lagerStackRedo.pop());
 			l.veraenderBestand(b.getMenge());
 			l.addBuchung(b);
-			OberflaecheImpl.getInstance().setVerbleibendeMenge(OberflaecheImpl.getInstance().getVerbleibendeMenge() - b.getMenge());
+			Buchung.getNeueBuchungen().add(b);
+			oberflaeche.setVerbleibendeMenge(oberflaeche.getVerbleibendeMenge() - b.getMenge());
+			oberflaeche.setVerbleibenderProzentanteil(oberflaeche.getVerbleibenderProzentanteil() - b.getProzentAnteil());
+			oberflaeche.showLagerFuerBuchung(oberflaeche.getAusgewaehlterKnoten().getName());
 		} catch (Exception e) {
 			// Sollte normalerweise nicht mehr benötigt werden :)
 			// Nur für den Fall, dass irgendetwas schief läuft
