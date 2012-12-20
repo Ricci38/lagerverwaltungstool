@@ -14,7 +14,7 @@ import controller.befehle.IBuchungBefehl;
 
 public class Main {
 
-	public static final String VERSION = "0.8.6b";
+	public static final String VERSION = "0.9.1b";
 
 	/**
 	 * @param args
@@ -46,34 +46,85 @@ public class Main {
 	}
 
 	private static void beispielHierarchieLaden(Lager root) {
-		Lager knoten, blatt1, blatt2;
-		//TODO Buchungen einpflegen
+		//Anlegen der Lagerhierarchie
+		Lager[][] lager = new Lager[10][10];
 		IBuchungBefehl befehlBuchung = Lagerverwaltung_handler.getBefehlBuchung();
-		knoten = root.addTreeElement("Deutschland");
-		blatt1 = knoten.addTreeElement("Niedersachsen");
-		blatt2 = blatt1.addTreeElement("Hannover-Misburg");
-		befehlBuchung.execute(blatt2, 200, new Date(), 14);
-		blatt2 = blatt1.addTreeElement("Nienburg");
-		befehlBuchung.execute(blatt2, 1200, new Date(), 86);
-		blatt1 = knoten.addTreeElement("NRW");
-		blatt1 = knoten.addTreeElement("Bremen");
-		blatt1 = knoten.addTreeElement("Hessen");
-		blatt1 = knoten.addTreeElement("Sachsen");
-		blatt1 = knoten.addTreeElement("Brandenburg");
-		blatt1 = knoten.addTreeElement("MV");
-		knoten = root.addTreeElement("Europa");
-		blatt1 = knoten.addTreeElement("Frankreich");
-		blatt2 = blatt1.addTreeElement("Paris-Nord");
-		blatt2 = blatt1.addTreeElement("OrlÈans");
-		blatt2 = blatt1.addTreeElement("Marseille");
-		blatt2 = blatt1.addTreeElement("NÓmes");
-		blatt1 = knoten.addTreeElement("Italien");
-		blatt2 = blatt1.addTreeElement("Mailand");
-		blatt2 = blatt1.addTreeElement("L'aquila");
-		blatt1 = knoten.addTreeElement("Spanien");
-		knoten = root.addTreeElement("Groﬂbritannien");
-
-		Lagerverwaltung_handler.getBefehlLieferung().execute(new Date(), Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+		lager[0][0] = root.addTreeElement("Deutschland");
+			lager[1][0]= lager[0][0].addTreeElement("Niedersachsen");
+				lager[2][0] = lager[1][0].addTreeElement("Hannover-Misburg");
+				lager[2][1] = lager[1][0].addTreeElement("Nienburg");
+			lager[1][1] = lager[0][0].addTreeElement("NRW");
+			lager[1][2] = lager[0][0].addTreeElement("Bremen");
+			lager[1][3] = lager[0][0].addTreeElement("Hessen");
+			lager[1][4] = lager[0][0].addTreeElement("Sachsen");
+			lager[1][5] = lager[0][0].addTreeElement("Brandenburg");
+			lager[1][6] = lager[0][0].addTreeElement("MV");
+		lager[0][1] = root.addTreeElement("Europa");
+			lager[1][7] = lager[0][1].addTreeElement("Frankreich");
+				lager[2][2] = lager[1][7].addTreeElement("Paris-Nord");
+				lager[2][3] = lager[1][7].addTreeElement("OrlÈans");
+				lager[2][4] = lager[1][7].addTreeElement("Marseille");
+				lager[2][5] = lager[1][7].addTreeElement("NÓmes");
+			lager[1][8] = lager[0][1].addTreeElement("Italien");
+				lager[2][6] = lager[1][8].addTreeElement("Mailand");
+				lager[2][7] = lager[1][8].addTreeElement("L'aquila");
+			lager[1][9] = lager[0][1].addTreeElement("Spanien");
+		lager[0][2] = root.addTreeElement("Groﬂbritannien");
+		
+		
+		//Anlegen der Beispielbuchungen
+		Date datum1, datum2, datum3, datum4, datum5;
+	
+		//1. Lieferung
+		datum1 = new Date();
+		befehlBuchung.execute(lager[1][2], 500, datum1, 50); //Bremen
+		befehlBuchung.execute(lager[1][6], 200, datum1, 20); //MV
+		befehlBuchung.execute(lager[2][6], 100, datum1, 10); //Mailand
+		befehlBuchung.execute(lager[1][9], 100, datum1, 10); //Spanien
+		befehlBuchung.execute(lager[0][2], 100, datum1, 10); //Groﬂbritannien
+		
+		Lagerverwaltung_handler.getBefehlLieferung().execute(datum1, Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+		befehlBuchung.clearAll();
+		
+		//2. Lieferung
+		datum2 = new Date(datum1.getTime() + 1000l);
+		befehlBuchung.execute(lager[2][1], 1000, datum2, 50); //Nienburg
+		befehlBuchung.execute(lager[1][1], 400, datum2, 20); //NRW
+		befehlBuchung.execute(lager[1][3], 400, datum2, 20); //Hessen
+		befehlBuchung.execute(lager[1][4], 200, datum2, 10); //Sachsen
+		
+		Lagerverwaltung_handler.getBefehlLieferung().execute(datum2, Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+		befehlBuchung.clearAll();
+		
+		//3. Lieferung
+		datum3 = new Date(datum2.getTime() + 1000l);
+		befehlBuchung.execute(lager[1][5], 2000, datum3, 20); //Brandenburg
+		befehlBuchung.execute(lager[2][3], 1000, datum3, 10); //OrlÈans
+		befehlBuchung.execute(lager[2][7], 2500, datum3, 25); //L'Aquila
+		befehlBuchung.execute(lager[1][9], 2500, datum3, 25); //Spanien
+		befehlBuchung.execute(lager[0][2], 2000, datum3, 20); //Groﬂbritannien
+		
+		Lagerverwaltung_handler.getBefehlLieferung().execute(datum3, Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+		befehlBuchung.clearAll();
+		
+		//4. Lieferung
+		datum4 = new Date(datum3.getTime() + 1000l);
+		befehlBuchung.execute(lager[2][5], 2500, datum4, 50); //NÓmes
+		befehlBuchung.execute(lager[1][6], 2000, datum4, 40); //MV
+		befehlBuchung.execute(lager[2][1], 500, datum4, 10); //Nienburg
+		
+		Lagerverwaltung_handler.getBefehlLieferung().execute(datum4, Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+		befehlBuchung.clearAll();
+		
+		//5. Lieferung
+		datum5 = new Date(datum4.getTime() + 1000l);
+		befehlBuchung.execute(lager[2][2], 3750, datum5, 30); //Paris-Nord
+		befehlBuchung.execute(lager[1][5], 2500, datum5, 20); //Brandenburg
+		befehlBuchung.execute(lager[2][0], 1875, datum5, 15); //Hannover-Misburg
+		befehlBuchung.execute(lager[1][2], 1875, datum5, 15); //Bremen
+		befehlBuchung.execute(lager[2][6], 2500, datum5, 20); //Mailand
+		
+		Lagerverwaltung_handler.getBefehlLieferung().execute(datum5, Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 	}
 }
