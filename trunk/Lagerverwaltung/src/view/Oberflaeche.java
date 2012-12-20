@@ -92,4 +92,8 @@ public interface Oberflaeche {
 
 	void disableUndo();
 
+	int getVerbleibenderProzentanteil();
+
+	void setVerbleibenderProzentanteil(int verbleibenderProzentanteil);
+
 }

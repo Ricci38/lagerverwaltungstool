@@ -53,6 +53,8 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				GUI_lager.enableBuchungsArt();
 				GUI_lager.enableGesamtmenge();
 			}
+			
+			GUI_lager.refreshTree(GUI_lager.getAusgewaehlterKnoten());
 		} else if (e.getActionCommand().toLowerCase().equals(("redo").toLowerCase())) {
 			befehlBuchung.redo();
 			GUI_lager.disableGesamtmenge();
@@ -62,6 +64,8 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				GUI_lager.disableRedo();
 			if (GUI_lager.getVerbleibendeMenge() == 0)
 				GUI_lager.enableAlleBuchungenBestaetigen();
+			
+			GUI_lager.refreshTree(GUI_lager.getAusgewaehlterKnoten());
 		} else if (e.getActionCommand().toLowerCase().equals(("Jetzt buchen").toLowerCase())) {
 			jetztBuchen(e);
 			befehlBuchung.clearRedos();
@@ -215,8 +219,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	}
 
 	private void jetztBuchen(ActionEvent e) {
-		int restMenge;
-		int gesamtMenge;
+		int restMenge, restProzent, gesamtMenge;
 		int menge = getBuchungsMenge();
 		Lager l = GUI_lager.getAusgewaehlterKnoten();
 
@@ -224,22 +227,29 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			gesamtMenge = Integer.parseInt(GUI_lager.getGesamtmenge());
 			if (GUI_lager.getVerbleibendeMenge() == -1)
 				GUI_lager.setVerbleibendeMenge(gesamtMenge);
+			
+			if (GUI_lager.getVerbleibenderProzentanteil() == -1)
+				GUI_lager.setVerbleibenderProzentanteil(100);
 
 			restMenge = GUI_lager.getVerbleibendeMenge() - menge;
+			restProzent = GUI_lager.getVerbleibenderProzentanteil() - Integer.parseInt(GUI_lager.getProzentualerAnteil());
 
 			if (restMenge >= 0) {
 
-				//Falls der verbleibende Anteil kleiner als 0,5 % ist, wird er zur aktuellen Buchung hinzugefügt
-				if ((GUI_lager.getVerbleibendeMenge() < (0.005 * gesamtMenge)) && ((GUI_lager.getVerbleibendeMenge() - menge) > 0)) {
+				//Falls weniger als 1 % der Restmenge verbleiben, wird die Restmenge der aktuellen Buchung hinzugefügt
+				if (restProzent < 1)
+				{
 					Tools.showMsg("Die Restmenge von " + (GUI_lager.getVerbleibendeMenge() - menge) + " wurde zur letzten Buchungsmenge hinzugefügt.");
 					menge = GUI_lager.getVerbleibendeMenge();
+					restMenge = 0;
 				}
-
+				
 				if (GUI_lager.isAbBuchung())
 					menge = menge * -1;
 
-				befehlBuchung.execute(l, menge, new Date());
+				befehlBuchung.execute(l, menge, new Date(), Integer.parseInt(GUI_lager.getProzentualerAnteil()));
 				GUI_lager.setVerbleibendeMenge(restMenge);
+				GUI_lager.setVerbleibenderProzentanteil(restProzent);
 				GUI_lager.showVerbleibendeMenge();
 				GUI_lager.disableBuchungsArt();
 				GUI_lager.disableGesamtmenge();
@@ -250,13 +260,10 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 					GUI_lager.enableAlleBuchungenBestaetigen();
 				}
 
-				// Lagerbuchungen aktualisieren, sodass die Tabelle die soeben
-				// getätigte Buchung aufführt
+				// Lagerbuchungen aktualisieren, sodass die Tabelle die soeben getätigte Buchung aufführt
 				GUI_lager.zeigeLagerbuchungen(l.getBuchungen());
 			} else {
-				//FIXME Berechnung prüfen
-				int prozentsatz = (int) Math.ceil((GUI_lager.getVerbleibendeMenge() * 100 / gesamtMenge));
-				Tools.showMsg("Der prozentuale Anteil ist zu hoch!\n\nDer größte mögliche Wert wäre: " + prozentsatz + "%");
+				Tools.showMsg("Der prozentuale Anteil ist zu hoch!\n\nDer größte mögliche Wert wäre: " + GUI_lager.getVerbleibenderProzentanteil() + "%");
 			}
 		}
 
@@ -280,8 +287,8 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				if ((prozentualerAnteil < 1) || (prozentualerAnteil > 100))
 					Tools.showMsg("Ungültiger prozentueler Anteil! Nur ganzzahlige Werte von 1 bis 100.");
 				else
-					// Aufrunden
-					return (int) Math.ceil(((double) (gesamtmenge * prozentualerAnteil) / 100));
+					// Abrunden
+					return (int) Math.floor(((double) (gesamtmenge * prozentualerAnteil) / 100));
 			}
 		} else
 			Tools.showMsg("Es sind nur ganzzahlige Werte erlaubt!");

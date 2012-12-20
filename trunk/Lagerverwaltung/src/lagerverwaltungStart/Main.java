@@ -44,13 +44,14 @@ public class Main {
 
 	private static void beispielHierarchieLaden(Lager root) {
 		Lager knoten, blatt1, blatt2;
+		//TODO Buchungen einpflegen
 		IBuchungBefehl befehlBuchung = Lagerverwaltung_handler.getBefehlBuchung();
 		knoten = root.addTreeElement("Deutschland");
 		blatt1 = knoten.addTreeElement("Niedersachsen");
 		blatt2 = blatt1.addTreeElement("Hannover-Misburg");
-		befehlBuchung.execute(blatt2, 200, new Date());
+		befehlBuchung.execute(blatt2, 200, new Date(), 14);
 		blatt2 = blatt1.addTreeElement("Nienburg");
-		befehlBuchung.execute(blatt2, 1200, new Date());
+		befehlBuchung.execute(blatt2, 1200, new Date(), 86);
 		blatt1 = knoten.addTreeElement("NRW");
 		blatt1 = knoten.addTreeElement("Bremen");
 		blatt1 = knoten.addTreeElement("Hessen");

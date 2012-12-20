@@ -99,8 +99,8 @@ public class OberflaecheImpl implements Oberflaeche {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				int confirm = JOptionPane.showOptionDialog(lagerverwaltung, "Möchten Sie die Lagerverwaltung wirklich beenden?\n"
-						+ "Einstellungen werden nicht gespeichert.", "Wirklich beenden?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null,
-						null);
+						+ "Einstellungen werden nicht gespeichert.", "Wirklich beenden?", JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, null, null);
 				if (confirm == JOptionPane.YES_OPTION) {
 					hideLagerverwaltung();
 					lagerverwaltung.dispose();
@@ -110,12 +110,16 @@ public class OberflaecheImpl implements Oberflaeche {
 		});
 
 		Container c = lagerverwaltung.getContentPane();
-		c.setLayout(new BorderLayout(10, 10)); // in Klammer kann der Freiraum zwischen den einzelnen Elementen angegeben werden
+		c.setLayout(new BorderLayout(10, 10)); // in Klammer kann der Freiraum
+												// zwischen den einzelnen
+												// Elementen angegeben werden
 
 		// ### Panel für den 'undo' und den 'redo' Button ###
 		// Panel dient als Container für zwei Subpanels
 		p_top = new JPanel();
-		p_top.setLayout(new GridLayout(2, 1)); // Tabellenlayout um die beiden Panels untereinander zu stapeln
+		p_top.setLayout(new GridLayout(2, 1)); // Tabellenlayout um die beiden
+												// Panels untereinander zu
+												// stapeln
 		p_top.setSize(lagerverwaltung.getWidth(), 80);
 		p_top_sub_top = new JPanel();
 		l_titel = new JLabel("Lagerverwaltungstool v" + Main.VERSION);
@@ -166,10 +170,16 @@ public class OberflaecheImpl implements Oberflaeche {
 		lagerTree = new JTree(Lager.getTree());
 
 		p_tree = new JPanel(new GridLayout());
-		p_tree.setPreferredSize(new Dimension(250, 50)); // Breite des Trees festlegen. Höhe wird aufgrund des BorderLayouts ignoriert!
+		p_tree.setPreferredSize(new Dimension(250, 50)); // Breite des Trees
+															// festlegen. Höhe
+															// wird aufgrund des
+															// BorderLayouts
+															// ignoriert!
 		JScrollPane scrollBar = new JScrollPane(lagerTree);
 		lagerTree.addTreeSelectionListener((TreeSelectionListener) listener_Lagerverwaltung);
-		//FIXME Hierdurch kann man die Namen im Tree verändern (auch die Wurzel). Muss nur noch ein Listener im Handler zu angepasst und erstellt werden
+		// FIXME Hierdurch kann man die Namen im Tree verändern (auch die
+		// Wurzel). Muss nur noch ein Listener im Handler zu angepasst und
+		// erstellt werden
 		lagerTree.setEditable(true);
 		p_tree.add(scrollBar);
 
@@ -200,8 +210,10 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center_neue_lieferung_south = new JPanel();
 		p_center_neue_lieferung_south.setLayout(gbl);
 		p_center_neue_lieferung_south.setPreferredSize(new Dimension(1, 100));
-		Tools.addComponent(p_center_neue_lieferung_south, gbl, btn_best = new JButton("Bestätigen"), 1, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		Tools.addComponent(p_center_neue_lieferung_south, gbl, btn_abbr = new JButton("Abbrechen"), 3, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_center_neue_lieferung_south, gbl, btn_best = new JButton("Bestätigen"), 1, 0, 1, 1, 0, 0,
+				GridBagConstraints.NONE);
+		Tools.addComponent(p_center_neue_lieferung_south, gbl, btn_abbr = new JButton("Abbrechen"), 3, 0, 1, 1, 0, 0,
+				GridBagConstraints.NONE);
 		p_center_neue_lieferung.setLayout(new BorderLayout());
 		p_center_neue_lieferung.add(p_center_neue_lieferung_north, BorderLayout.NORTH);
 		p_center_neue_lieferung.add(p_center_neue_lieferung_center, BorderLayout.CENTER);
@@ -219,19 +231,24 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, zuBuchung, 0, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, abBuchung, 0, 1, 1, 1, 0, 0, GridBagConstraints.NONE);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel("Gesamtmenge :"), 0, 3, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 3, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, restMenge = new JLabel("Verbleibende Menge: " + verbleibendeMenge), 0, 4, 3, 1, 0, 0,
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel("Gesamtmenge :"), 0, 3, 1, 1, 0, 0,
 				GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 3, 1, 1, 0, 0,
+				GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, restMenge = new JLabel("Verbleibende Menge: " + verbleibendeMenge), 0, 4,
+				3, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		gesamtmenge.addMouseListener(listener_LieferungsUebersicht);
 		gesamtmenge.setPreferredSize(new Dimension(100, 20));
 
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, lagerBezeichnung = new JLabel(), 0, 5, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, lagerBezeichnung = new JLabel(), 0, 5, 1, 1, 0, 0,
+				GridBagConstraints.HORIZONTAL);
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 5, 1, 1, 0, 0,
 				GridBagConstraints.HORIZONTAL);
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel(" "), 2, 5, 1, 1, 0, 0, GridBagConstraints.NONE);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, btn_jetztBuchen = new JButton("Jetzt buchen"), 2, 6, 1, 1, 0, 0, GridBagConstraints.NONE);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel("Es wird automatisch aufgerundet!"), 0, 8, 3, 1, 0, 0, GridBagConstraints.VERTICAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, btn_jetztBuchen = new JButton("Jetzt buchen"), 2, 6, 1, 1, 0, 0,
+				GridBagConstraints.NONE);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel("Es wird automatisch abgerundet!"), 0, 8, 3, 1, 0, 0,
+				GridBagConstraints.VERTICAL);
 		prozentAnteil.addMouseListener(listener_LieferungsUebersicht);
 		btn_jetztBuchen.addActionListener(listener_Lagerverwaltung);
 		prozentAnteil.setPreferredSize(new Dimension(120, 20));
@@ -245,9 +262,8 @@ public class OberflaecheImpl implements Oberflaeche {
 	public void showLagerFuerBuchung(String n) {
 		resetCardNeueLieferung();
 		try {
-			//FIXME Prozentuale Berechnung ist falsch. Bei großen Zahlen bleiben bei 0% Reste über
-			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge + " entspricht "
-					+ (int) Math.floor((verbleibendeMenge * 100 / Integer.parseInt(gesamtmenge.getText()))) + "% der Gesamtmenge");
+			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge + " entspricht " + verbleibenderProzentanteil
+					+ "% der Gesamtmenge");
 		} catch (NumberFormatException e) {
 			restMenge.setText("Verbleibende Menge: " + verbleibendeMenge);
 		}
@@ -366,22 +382,22 @@ public class OberflaecheImpl implements Oberflaeche {
 	public void disableAlleBuchungenBestaetigen() {
 		btn_best.setEnabled(false);
 	}
-	
+
 	@Override
 	public void enableRedo() {
 		redo.setEnabled(true);
 	}
-	
+
 	@Override
 	public void disableRedo() {
 		redo.setEnabled(false);
 	}
-	
+
 	@Override
 	public void enableUndo() {
 		undo.setEnabled(true);
 	}
-	
+
 	@Override
 	public void disableUndo() {
 		undo.setEnabled(false);
@@ -425,10 +441,12 @@ public class OberflaecheImpl implements Oberflaeche {
 		return verbleibendeMenge;
 	}
 
+	@Override
 	public int getVerbleibenderProzentanteil() {
 		return verbleibenderProzentanteil;
 	}
 
+	@Override
 	public void setVerbleibenderProzentanteil(int verbleibenderProzentanteil) {
 		this.verbleibenderProzentanteil = verbleibenderProzentanteil;
 	}
@@ -569,8 +587,9 @@ public class OberflaecheImpl implements Oberflaeche {
 				}
 			};
 			tbl_lagerbuchungen.setFillsViewportHeight(true);
-			p_center_lagerbuchungen.add(saldo = new JTextField("Buchungen von " + (l.isLeaf() ? "Lager" : "Oberlagers") + " \"" + l.getName() + "\" mit Saldo "
-					+ l.getBestand() + ":"), BorderLayout.NORTH);
+			p_center_lagerbuchungen.add(
+					saldo = new JTextField("Buchungen von " + (l.isLeaf() ? "Lager" : "Oberlagers") + " \"" + l.getName() + "\" mit Saldo "
+							+ l.getBestand() + ":"), BorderLayout.NORTH);
 			p_center_lagerbuchungen.add(new JScrollPane(tbl_lagerbuchungen), BorderLayout.CENTER);
 			saldo.setEditable(false);
 			saldo.setFocusable(false);

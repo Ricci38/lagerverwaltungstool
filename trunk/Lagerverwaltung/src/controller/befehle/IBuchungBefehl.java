@@ -7,7 +7,7 @@ import model.Lager;
 
 public interface IBuchungBefehl {
 	
-	public Buchung execute(Lager l, int menge, Date d);
+	public Buchung execute(Lager l, int menge, Date d, int prozent);
 	
 	public void undo();
 	

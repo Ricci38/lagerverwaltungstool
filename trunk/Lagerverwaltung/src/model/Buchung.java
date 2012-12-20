@@ -9,13 +9,14 @@ public class Buchung {
 	private static int id;
 	private static List<Buchung> neueBuchungen = new ArrayList<Buchung>();
 
-	private final int menge;
+	private final int menge, prozentAnteil;
 	private final int buchung_ID;
 	private final String lagerName;
 	private Date datum;
 
-	public Buchung(int m, Date datum, String lagerName) {
+	public Buchung(int m, Date datum, String lagerName, int prozent) {
 		this.menge = m;
+		this.prozentAnteil = prozent;
 		this.lagerName = lagerName;
 		this.buchung_ID = getNextId();
 		this.datum = datum;
@@ -60,5 +61,9 @@ public class Buchung {
 
 	private static synchronized int getNextId() {
 		return ++id;
+	}
+
+	public int getProzentAnteil() {
+		return prozentAnteil;
 	}
 }
