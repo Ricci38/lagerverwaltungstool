@@ -21,17 +21,18 @@ import controller.befehle.IBuchungBefehl;
 import controller.befehle.ILieferungBefehl;
 import controller.befehle.impl.BuchungBefehlImpl;
 import controller.befehle.impl.LieferungBefehlImpl;
+import exception.LagerverwaltungsException;
 
 public class Lagerverwaltung_handler implements ActionListener, TreeSelectionListener, MouseListener {
 
-	Oberflaeche GUI_lager;
+	Oberflaeche gui;
 	static int lieferungID = 0;
 
 	private static IBuchungBefehl befehlBuchung = new BuchungBefehlImpl();
 	private static ILieferungBefehl befehlLieferung = new LieferungBefehlImpl();
 
 	public void announceGUI_Lager(Oberflaeche myGUI) {
-		this.GUI_lager = myGUI;
+		this.gui = myGUI;
 	}
 
 	@Override
@@ -41,39 +42,33 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			neuesLager(e);
 		} else if (e.getActionCommand().toLowerCase().equals(("Neue Lieferung").toLowerCase())) {
 			neueLieferung(e);
-			GUI_lager.disableUndo();
-			GUI_lager.disableRedo();
-
 		} else if (e.getActionCommand().toLowerCase().equals(("Lager umbenennen").toLowerCase())) {
 			lagerUmebennnen(e);
-
 		} else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
-			GUI_lager.enableJetztBuchen();
+			gui.enableJetztBuchen();
 			befehlBuchung.undo();
-			GUI_lager.enableRedo();
+			gui.enableRedo();
 			if (!befehlBuchung.hasRemainingUndos())
-				GUI_lager.disableUndo();
-			if (GUI_lager.getVerbleibendeMenge() == Integer.parseInt(GUI_lager.getGesamtmenge())) {
-				GUI_lager.enableBuchungsArt();
-				GUI_lager.enableGesamtmenge();
+				gui.disableUndo();
+			if (gui.getVerbleibendeMenge() == Integer.parseInt(gui.getGesamtmenge())) {
+				gui.enableBuchungsArt();
+				gui.enableGesamtmenge();
 			}
 
-			GUI_lager.refreshTree(GUI_lager.getAusgewaehlterKnoten());
+			gui.refreshTree(gui.getAusgewaehlterKnoten());
 		} else if (e.getActionCommand().toLowerCase().equals(("redo").toLowerCase())) {
 			befehlBuchung.redo();
-			GUI_lager.disableGesamtmenge();
-			GUI_lager.disableBuchungsArt();
-			GUI_lager.enableUndo();
+			gui.disableGesamtmenge();
+			gui.disableBuchungsArt();
+			gui.enableUndo();
 			if (!befehlBuchung.hasRemainingRedos())
-				GUI_lager.disableRedo();
-			if (GUI_lager.getVerbleibendeMenge() == 0)
-				GUI_lager.enableAlleBuchungenBestaetigen();
+				gui.disableRedo();
+			if (gui.getVerbleibendeMenge() == 0)
+				gui.enableAlleBuchungenBestaetigen();
 
-			GUI_lager.refreshTree(GUI_lager.getAusgewaehlterKnoten());
+			gui.refreshTree(gui.getAusgewaehlterKnoten());
 		} else if (e.getActionCommand().toLowerCase().equals(("Jetzt buchen").toLowerCase())) {
 			jetztBuchen(e);
-			befehlBuchung.clearRedos();
-			GUI_lager.disableRedo();
 		} else if (e.getActionCommand().toLowerCase().equals(("Bestätigen").toLowerCase())) {
 			lieferungBestaetigen(e);
 		} else if (e.getActionCommand().toLowerCase().equals(("Abbrechen").toLowerCase())) {
@@ -85,11 +80,10 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
-		if (GUI_lager.isCardUebersichtAktiv())
-			GUI_lager.zeigeLagerbuchungen(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
-		else if (GUI_lager.isCardNeueLieferungAktiv() && null != GUI_lager.getAusgewaehlterKnoten()
-				&& GUI_lager.getAusgewaehlterKnoten().isLeaf())
-			GUI_lager.showLagerFuerBuchung(GUI_lager.getAusgewaehlterKnoten().getName());
+		if (gui.isCardUebersichtAktiv())
+			gui.zeigeLagerbuchungen(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
+		else if (gui.isCardNeueLieferungAktiv() && null != gui.getAusgewaehlterKnoten() && gui.getAusgewaehlterKnoten().isLeaf())
+			gui.showLagerFuerBuchung(gui.getAusgewaehlterKnoten().getName());
 	}
 
 	// XXX Bedarf einer gründlichen Überprüfung :)
@@ -103,7 +97,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 			// Wert (Datum) der ausgewählten Zeile und ersten Spalte
 			String value = tbl_lieferungsUebersicht.getValueAt(selectedRow, 0).toString();
-			GUI_lager.showTabLieferungsBuchungen(Lieferung.getLieferung(value).getBuchungen());
+			gui.showTabLieferungsBuchungen(Lieferung.getLieferung(value).getBuchungen());
 		} catch (ClassCastException cce) {
 			// Unterscheidung zwischen Zahl und Text in dem Textfeld
 			// Bei Zahl: Textfeld wird nicht geleert
@@ -111,7 +105,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			if (!isItANumber(((JTextField) e.getSource()).getText()))
 				((JTextField) e.getSource()).setText("");
 		} catch (NullPointerException npe) {
-			Tools.showMsg("NPE");
+			Tools.showMsg("Sie haben soeben einen NullPointer gewonnen!\nUnd niemand weiß warum.");
 		}
 	}
 
@@ -133,7 +127,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 	private void neuesLager(ActionEvent e) {
 		// Neuen Knoten hinzufügen
-		Lager pre_knoten = GUI_lager.getAusgewaehlterKnoten();
+		Lager pre_knoten = gui.getAusgewaehlterKnoten();
 
 		// Falls ein Knoten ausgewählt wurde
 		if (null != pre_knoten) {
@@ -159,61 +153,55 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 					if (pane_value == JOptionPane.OK_OPTION) {
 
 						if (name.isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!",
-									"Ungültige Bezeichnung", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!", "Ungültige Bezeichnung",
+									JOptionPane.ERROR_MESSAGE);
 						} else if (!(null == menge_str || menge_str.isEmpty())) {
 							if (isItANumber(menge_str)) {
 								menge = Integer.parseInt(menge_str);
 								if (menge < 0) {
 									Tools.showMsg("Es sind keine negativen Bestände möglich!");
-									menge_str = ""; // Zuweisung eines leeren
-													// Strings, damit die do
-													// while Schleife erneut
-													// durchläuft
+									menge_str = ""; // Zuweisung eines leeren Strings, damit die do while Schleife erneut durchläuft
 								}
 							} else {
 								Tools.showMsg("Als Menge sind nur Zahlen erlaubt!");
-								menge_str = ""; // Zuweisung eines leeren
-												// Strings, damit die do while
-												// Schleife erneut durchläuft
+								menge_str = ""; // Zuweisung eines leeren Strings, damit die do while Schleife erneut durchläuft
 							}
 						}
-						// Falls kein Bestand eingegeben wurde wird ein Fehler
-						// ausgegeben
-						else
-							Tools.showMsg("Bitte geben Sie eine Bestandsmenge an!");
+						// Falls kein Bestand eingegeben wurde wird ein Fehler ausgegeben
+						else {
+							Tools.showErr("Bitte geben Sie eine Bestandsmenge an!");
+							continue;
+						}
 					}
 
 					// falls auf OK geklickt wurde und...
-				} while ((pane_value == JOptionPane.OK_OPTION)
-						&& ((name.isEmpty() || name == null) || (menge_str.isEmpty() || menge_str == null)));
+				} while ((pane_value == JOptionPane.OK_OPTION) && ((name.isEmpty() || name == null) || (menge_str.isEmpty() || menge_str == null)));
 
 				if (pane_value == JOptionPane.OK_OPTION) {
 					try {
 						pre_knoten.addTreeElement(name).veraenderBestand(menge);
-						GUI_lager.refreshTree(GUI_lager.getAusgewaehlterKnoten()); // Anzeige
-																					// des
-																					// Trees
-																					// aktualisieren
-					} catch (Exception ex) // Falls der Lagername bereits
-											// vergeben wurde, wird eine
-											// Ecxeption geworfen
-					{
-						Tools.showMsg(ex.getMessage());
+						gui.refreshTree(gui.getAusgewaehlterKnoten()); // Anzeige des Trees aktualisieren
+					} catch (LagerverwaltungsException ex) {
+						// Falls der Lagername bereits vergeben wurde, wird eine Exception geworfen
+						Tools.showErr(ex);
 					}
 				}
 			} else {
-				Tools.showMsg("Das ausgewählte Lager besitzt einen Bestand. Lagererstellung nicht möglich!");
+				Tools.showErr("Das ausgewählte Lager besitzt einen Bestand. Lagererstellung nicht möglich!");
+				return;
 			}
 		}
 		// Falls kein Lager ausgewählt wurde wird ein Fehler ausgegeben
-		else
-			Tools.showMsg("Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
+		else {
+			Tools.showErr("Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
+			return;
+		}
+		
 	}
 
 	private void lagerUmebennnen(ActionEvent e) {
 		// Neuen Knoten hinzufügen
-		Lager knoten = GUI_lager.getAusgewaehlterKnoten();
+		Lager knoten = gui.getAusgewaehlterKnoten();
 
 		// Falls ein Knoten ausgewählt wurde
 		if (null != knoten) {
@@ -236,10 +224,8 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				neuerName = neuerLagername.getText().trim();
 
 				if (pane_value == JOptionPane.OK_OPTION) {
-
 					if (null == neuerName || neuerName.isEmpty()) {
-						JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!", "Ungültige Bezeichnung",
-								JOptionPane.ERROR_MESSAGE);
+						Tools.showErr("Es ist ein ungültiger Lagername eingegeben worden!");
 						continue;
 					} else
 						break;
@@ -247,103 +233,103 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 					pane.setVisible(false);
 					return;
 				}
-
 				// falls auf OK geklickt wurde und...
 			} while (true);
 
 			if (pane_value == JOptionPane.OK_OPTION) {
 				try {
-					if (!knoten.veraendereName(neuerName))
-						Tools.showMsg("Name konnte nicht geändert werden.\nName bereits vorhanden!");
-
-					GUI_lager.refreshTree(knoten);
-				} catch (Exception ex) // Falls der Lagername bereits vergeben
-										// wurde, wird eine Ecxeption geworfen
-				{
-					Tools.showMsg(ex.getMessage());
+					knoten.veraendereName(neuerName);
+					gui.refreshTree(knoten);
+				} catch (LagerverwaltungsException ex) {
+					// Falls der Lagername bereits vergeben wurde, wird eine Exception geworfen
+					Tools.showErr(ex);
 				}
 			}
 
 		}
 		// Falls kein Lager ausgewählt wurde wird ein Fehler ausgegeben
 		else
-			Tools.showMsg("Es ist kein Lager ausgewählt, das umgenannt werden soll!");
+			Tools.showMsg("Es ist kein Lager ausgewählt, das umgenannt werden kann!");
 	}
 
 	private void neueLieferung(ActionEvent e) {
-		GUI_lager.disableNeuesLager();
-		GUI_lager.disableNeueLieferung();
-		GUI_lager.disableAlleBuchungenBestaetigen();
-		GUI_lager.enableBuchungsArt();
-		GUI_lager.selectTreeRoot();
-		GUI_lager.showCardNeueLieferung();
-		GUI_lager.showUndoRedo();
-		GUI_lager.enableGesamtmenge();
-		GUI_lager.disableNeueLieferung();
-		GUI_lager.refreshTree(GUI_lager.getAusgewaehlterKnoten());
+		gui.disableNeuesLager();
+		gui.disableNeueLieferung();
+		gui.disableAlleBuchungenBestaetigen();
+		gui.enableBuchungsArt();
+		gui.selectTreeRoot();
+		gui.showCardNeueLieferung();
+		gui.showUndoRedo();
+		gui.enableGesamtmenge();
+		gui.disableNeueLieferung();
+		gui.refreshTree(gui.getAusgewaehlterKnoten());
+		gui.disableUndo();
+		gui.disableRedo();
+		gui.disableNeuesLager();
 	}
 
 	private void jetztBuchen(ActionEvent e) {
 		int restMenge, restProzent, gesamtMenge;
 		int menge = getBuchungsMenge();
-		Lager l = GUI_lager.getAusgewaehlterKnoten();
+		Lager l = gui.getAusgewaehlterKnoten();
 
 		if (menge != -1) {
-			gesamtMenge = Integer.parseInt(GUI_lager.getGesamtmenge());
-			if (GUI_lager.getVerbleibendeMenge() == -1)
-				GUI_lager.setVerbleibendeMenge(gesamtMenge);
+			gesamtMenge = Integer.parseInt(gui.getGesamtmenge());
+			if (gui.getVerbleibendeMenge() == -1)
+				gui.setVerbleibendeMenge(gesamtMenge);
 
-			if (GUI_lager.getVerbleibenderProzentanteil() == -1)
-				GUI_lager.setVerbleibenderProzentanteil(100);
+			if (gui.getVerbleibenderProzentanteil() == -1)
+				gui.setVerbleibenderProzentanteil(100);
 
-			restMenge = GUI_lager.getVerbleibendeMenge() - menge;
-			restProzent = GUI_lager.getVerbleibenderProzentanteil() - Integer.parseInt(GUI_lager.getProzentualerAnteil());
+			restMenge = gui.getVerbleibendeMenge() - menge;
+			restProzent = gui.getVerbleibenderProzentanteil() - Integer.parseInt(gui.getProzentualerAnteil());
 
 			if (restMenge >= 0) {
 
 				// Falls weniger als 1 % der Restmenge verbleiben, wird die
 				// Restmenge der aktuellen Buchung hinzugefügt
 				if (restProzent < 1) {
-					Tools.showMsg("Die Restmenge von " + (GUI_lager.getVerbleibendeMenge() - menge)
-							+ " wurde zur letzten Buchungsmenge hinzugefügt.");
-					menge = GUI_lager.getVerbleibendeMenge();
+					Tools.showMsg("Die Restmenge von " + (gui.getVerbleibendeMenge() - menge) + " wurde zur letzten Buchungsmenge hinzugefügt.");
+					menge = gui.getVerbleibendeMenge();
 					restMenge = 0;
 				}
 
-				if (GUI_lager.isAbBuchung())
-					menge = menge * -1;
+				if (gui.isAbBuchung())
+					menge = menge * -1; //TODO TESTEN!
 
-				befehlBuchung.execute(l, menge, new Date(), Integer.parseInt(GUI_lager.getProzentualerAnteil()));
-				GUI_lager.setVerbleibendeMenge(restMenge);
-				GUI_lager.setVerbleibenderProzentanteil(restProzent);
-				GUI_lager.showVerbleibendeMenge();
-				GUI_lager.disableBuchungsArt();
-				GUI_lager.disableGesamtmenge();
-				GUI_lager.enableUndo();
+				befehlBuchung.execute(l, menge, new Date(), Integer.parseInt(gui.getProzentualerAnteil()));
+				gui.setVerbleibendeMenge(restMenge);
+				gui.setVerbleibenderProzentanteil(restProzent);
+				gui.showVerbleibendeMenge();
+				gui.disableBuchungsArt();
+				gui.disableGesamtmenge();
+				gui.enableUndo();
 
 				if (restMenge == 0) {
-					GUI_lager.disableJetztBuchen();
-					GUI_lager.enableAlleBuchungenBestaetigen();
+					gui.disableJetztBuchen();
+					gui.enableAlleBuchungenBestaetigen();
 				}
 
 				// Lagerbuchungen aktualisieren, sodass die Tabelle die soeben
 				// getätigte Buchung aufführt
-				GUI_lager.zeigeLagerbuchungen(l.getBuchungen());
+				gui.zeigeLagerbuchungen(l.getBuchungen());
 			} else {
-				Tools.showMsg("Der prozentuale Anteil ist zu hoch!\n\nDer größte mögliche Wert wäre: "
-						+ GUI_lager.getVerbleibenderProzentanteil() + "%");
+				Tools.showErr("Der prozentuale Anteil ist zu hoch!\n\nDer größte mögliche Wert wäre: " + gui.getVerbleibenderProzentanteil() + "%");
+				return;
 			}
 		}
 
-		GUI_lager.showLagerFuerBuchung(l.getName());
-		GUI_lager.refreshTree(l);
+		gui.showLagerFuerBuchung(l.getName());
+		gui.refreshTree(l);
+		befehlBuchung.clearRedos();
+		gui.disableRedo();
 	}
 
 	private int getBuchungsMenge() {
 		String gesamtmenge_str, prozentualerAnteil_str;
 		int gesamtmenge, prozentualerAnteil;
-		gesamtmenge_str = GUI_lager.getGesamtmenge();
-		prozentualerAnteil_str = GUI_lager.getProzentualerAnteil();
+		gesamtmenge_str = gui.getGesamtmenge();
+		prozentualerAnteil_str = gui.getProzentualerAnteil();
 
 		if (isItANumber(gesamtmenge_str) && isItANumber(prozentualerAnteil_str)) {
 			gesamtmenge = Integer.parseInt(gesamtmenge_str);
@@ -365,36 +351,35 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 	private void lieferungBestaetigen(ActionEvent e) {
 		if (!Buchung.getNeueBuchungen().isEmpty()) {
-			GUI_lager.enableNeuesLager();
-			GUI_lager.enableLagerUebersicht();
-			GUI_lager.hideUndoRedo();
-			GUI_lager.showCardUebersicht();
 			befehlLieferung.execute(new Date(), Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+			gui.enableNeuesLager();
+			gui.enableLagerUebersicht();
+			gui.hideUndoRedo();
+			gui.showCardUebersicht();
+			gui.enableLagerUmbenennen();
+			gui.setVerbleibendeMenge(-1);
+			gui.refreshTree();
 			befehlBuchung.clearAll();
-			GUI_lager.setVerbleibendeMenge(-1);
-			GUI_lager.refreshTree();
 		} else
 			Tools.showMsg("Bitte zuerst auf \"Jetzt buchen\" klicken");
 	}
 
 	private void lieferungAbbrechen(ActionEvent e) {
 		befehlBuchung.undoAll();
-		GUI_lager.enableNeuesLager();
-		GUI_lager.enableLagerUebersicht();
-		GUI_lager.hideUndoRedo();
-		GUI_lager.showCardUebersicht();
-		GUI_lager.setVerbleibendeMenge(-1);
-		GUI_lager.refreshTree();
+		gui.enableNeuesLager();
+		gui.enableLagerUebersicht();
+		gui.hideUndoRedo();
+		gui.showCardUebersicht();
+		gui.setVerbleibendeMenge(-1);
+		gui.refreshTree();
 	}
 
 	private void zeigeLieferungsLagerUebersicht(ActionEvent e) {
 		// Falls eine neue Lieferung durchgeführt wird
-		if (GUI_lager.isCardNeueLieferungAktiv()) {
-			int value = JOptionPane
-					.showOptionDialog(
-							null,
-							"Möchten Sie die aktuelle Lieferung abbrechen um zu der Lieferungs- / Lagerübersicht zu gelangen?\nAlle Änderungen werden verworfen!",
-							"Sicher?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		if (gui.isCardNeueLieferungAktiv()) {
+			int value = JOptionPane.showOptionDialog(null,
+					"Möchten Sie die aktuelle Lieferung abbrechen um zu der Lieferungs- / Lagerübersicht zu gelangen?\nAlle Änderungen werden verworfen!",
+					"Sicher?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 			if (value == JOptionPane.YES_OPTION) {
 				lieferungAbbrechen(e); // Aktion entspricht dem Lieferungs
@@ -403,7 +388,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				// mach nichts
 			}
 		}
-		GUI_lager.refreshTree();
+		gui.refreshTree();
 	}
 
 	public static IBuchungBefehl getBefehlBuchung() {
