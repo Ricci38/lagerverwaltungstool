@@ -57,7 +57,7 @@ public class OberflaecheImpl implements Oberflaeche {
 	private JPanel p_top, p_top_sub_top, p_top_sub_bottom, p_tree, p_center, p_platzhalter1, p_platzhalter2;
 	private JPanel p_center_lieferungen, p_center_lieferungdetails, p_center_lagerbuchungen;
 	private JPanel p_center_neue_lieferung, p_center_neue_lieferung_north, p_center_neue_lieferung_south, p_center_neue_lieferung_center;
-	private JButton redo, undo, neueLieferung, lageruebersicht, neuesLager;
+	private JButton redo, undo, neueLieferung, lageruebersicht, neuesLager, lagerUmbenennen;
 	private JLabel l_titel;
 	private JTree lagerTree;
 	private JTable tbl_buchungsUebersicht, tbl_lieferungsUebersicht, tbl_lagerbuchungen;
@@ -137,7 +137,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		redo = new JButton("redo");
 		neueLieferung = new JButton("Neue Lieferung");
 		neuesLager = new JButton("Neues Lager");
-
+		lagerUmbenennen = new JButton("Lager umbenennen");
 		lageruebersicht = new JButton("Lieferungs-/ Lagerübersicht");
 
 		// ### Actionlistener bekannt machen ###
@@ -145,6 +145,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		redo.addActionListener(listener_Lagerverwaltung);
 		neueLieferung.addActionListener(listener_Lagerverwaltung);
 		neuesLager.addActionListener(listener_Lagerverwaltung);
+		lagerUmbenennen.addActionListener(listener_Lagerverwaltung);
 		lageruebersicht.addActionListener(listener_Lagerverwaltung);
 
 		// ### Platzhalter ###
@@ -156,11 +157,12 @@ public class OberflaecheImpl implements Oberflaeche {
 		// ### Komponenten dem unteren Unterpanel hinzufügen ###
 		Tools.addComponent(p_top_sub_bottom, gbl2, neuesLager, 0, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_top_sub_bottom, gbl2, neueLieferung, 1, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		Tools.addComponent(p_top_sub_bottom, gbl2, p_platzhalter1, 2, 0, 1, 0, 0, 0, GridBagConstraints.NONE);
-		Tools.addComponent(p_top_sub_bottom, gbl2, undo, 3, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		Tools.addComponent(p_top_sub_bottom, gbl2, redo, 4, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		Tools.addComponent(p_top_sub_bottom, gbl2, p_platzhalter2, 5, 0, 5, 1, 1, 0, GridBagConstraints.NONE);
-		Tools.addComponent(p_top_sub_bottom, gbl2, lageruebersicht, 10, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, lagerUmbenennen, 2, 0, 1, 0, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, p_platzhalter1, 3, 0, 1, 0, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, undo, 4, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, redo, 5, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, p_platzhalter2, 6, 0, 5, 1, 1, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_top_sub_bottom, gbl2, lageruebersicht, 11, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
 
 		// ### Dem oberen Panel die beiden Unterpanels zuweisen ###
 		p_top.add(p_top_sub_top);
@@ -177,10 +179,7 @@ public class OberflaecheImpl implements Oberflaeche {
 															// ignoriert!
 		JScrollPane scrollBar = new JScrollPane(lagerTree);
 		lagerTree.addTreeSelectionListener((TreeSelectionListener) listener_Lagerverwaltung);
-		// FIXME Hierdurch kann man die Namen im Tree verändern (auch die
-		// Wurzel). Muss nur noch ein Listener im Handler zu angepasst und
-		// erstellt werden
-		lagerTree.setEditable(true);
+		// FIXME Hierdurch kann man die Namen im Tree verändern
 		p_tree.add(scrollBar);
 
 		// ### Menüauswahl im CENTER ###
