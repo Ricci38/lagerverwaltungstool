@@ -102,17 +102,17 @@ public class Lager extends DefaultMutableTreeNode {
 			throw new LagerverwaltungsException("Bestand vom Lager \"" + this.name + "\" kann nicht geändert werden.", result, null);
 		}
 	}
-	
-	public boolean veraendereName(String name)
-	{
-		if (checkNamen(name))
-		{
+
+	public boolean veraendereName(String name) {
+		if (checkNamen(name)) {
 			this.name = name;
 			this.setUserObject(this.isBestandHaltend ? name + " " + this.bestand : name);
 			return true;
+		} else {
+			List<String> result = new ArrayList<String>();
+			result.add("Ein Lager mit diesem Name existiert bereits.");
+			throw new LagerverwaltungsException("Der Name konnte nicht geändert werden.", result, null);
 		}
-		else
-			return false;
 	}
 
 	public boolean checkBestandsaenderung(int menge) {
