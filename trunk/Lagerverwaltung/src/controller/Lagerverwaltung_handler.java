@@ -269,7 +269,8 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 					Tools.showMsg("Ungültiger prozentueler Anteil! Nur ganzzahlige Werte von 1 bis 100.");
 				else {
 					// Kaufmännisch runden
-					anteil = (int) ((gesamtmenge * (float)(prozentualerAnteil / 100)) + 0.5);
+					//TODO richtig so?
+					anteil = (int) ((gesamtmenge * (float)(prozentualerAnteil / 100f)) + 0.5);
 					//anteil = (int) Math.floor(((double) (gesamtmenge * prozentualerAnteil) / 100));
 					return anteil;
 				}
