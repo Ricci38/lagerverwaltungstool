@@ -42,8 +42,7 @@ import view.Tools;
 //TODO Eigenständigkeitserklärung
 public class OberflaecheImpl implements Oberflaeche {
 
-	// TODO Variablen & Methoden sortieren (z.B. nach Type & Name)
-	// TODO Benutzer informieren über das mit den Lieferungen - je mehr Buchungen, desto höher die Restmenge
+	// TODO Variablen sortieren (z.B. nach Type & Name)
 	// ### Singeltonvariable ###
 	private static Oberflaeche theInstance;
 

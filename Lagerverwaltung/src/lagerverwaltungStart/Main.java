@@ -7,13 +7,14 @@ import javax.swing.JOptionPane;
 import model.Buchung;
 import model.Lager;
 import model.Lieferung;
+import view.Tools;
 import view.impl.OberflaecheImpl;
 import controller.Lagerverwaltung_handler;
 import controller.befehle.IBuchungBefehl;
 
 public class Main {
 
-	public static final String VERSION = "0.8.3b";
+	public static final String VERSION = "0.8.6b";
 
 	/**
 	 * @param args
@@ -39,6 +40,8 @@ public class Main {
 
 		OberflaecheImpl.getInstance().selectTreeRoot();
 		OberflaecheImpl.getInstance().showLieferungen(Lieferung.getAllLieferungen());
+		
+		Tools.showMsg("Bitte passen Sie bei vielen kleinen Buchungen innerhalb einer Lieferung auf.\n\nAufgrund des verwendeten Rundungssystems kann es, je nach Anzahl der Buchungen und der Gesamtmenge, zu Abweichungen kommen.");
 
 	}
 
