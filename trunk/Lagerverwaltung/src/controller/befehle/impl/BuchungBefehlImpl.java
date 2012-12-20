@@ -30,16 +30,16 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 	@Override
 	public void undo() {
 		try {
-			Oberflaeche oberflaeche = OberflaecheImpl.getInstance(); 
+			Oberflaeche gui = OberflaecheImpl.getInstance();
 			Buchung b = buchungsStackRedo.push(buchungsStackUndo.pop());
 			Lager l = lagerStackRedo.push(lagerStackUndo.pop());
 			l.removeBuchung(b);
 			l.veraenderBestand(-b.getMenge());
 			Buchung.getNeueBuchungen().remove(b);
-			oberflaeche.showLagerFuerBuchung(l.getName());
-			oberflaeche.setVerbleibendeMenge(oberflaeche.getVerbleibendeMenge() + b.getMenge());
-			oberflaeche.setVerbleibenderProzentanteil(oberflaeche.getVerbleibenderProzentanteil() + b.getProzentAnteil());
-			oberflaeche.showLagerFuerBuchung(oberflaeche.getAusgewaehlterKnoten().getName());
+			gui.showLagerFuerBuchung(l.getName());
+			gui.setVerbleibendeMenge(gui.getVerbleibendeMenge() + (gui.isAbBuchung() ? -b.getMenge() : b.getMenge()));
+			gui.setVerbleibenderProzentanteil(gui.getVerbleibenderProzentanteil() + b.getProzentAnteil());
+			gui.showLagerFuerBuchung(gui.getAusgewaehlterKnoten().getName());
 		} catch (Exception e) {
 			// Sollte normalerweise nicht mehr benötigt werden :)
 			// Nur für den Fall, dass irgendetwas schief läuft
@@ -51,15 +51,15 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 	@Override
 	public void redo() {
 		try {
-			Oberflaeche oberflaeche = OberflaecheImpl.getInstance();
+			Oberflaeche gui = OberflaecheImpl.getInstance();
 			Buchung b = buchungsStackUndo.push(buchungsStackRedo.pop());
 			Lager l = lagerStackUndo.push(lagerStackRedo.pop());
 			l.veraenderBestand(b.getMenge());
 			l.addBuchung(b);
 			Buchung.getNeueBuchungen().add(b);
-			oberflaeche.setVerbleibendeMenge(oberflaeche.getVerbleibendeMenge() - b.getMenge());
-			oberflaeche.setVerbleibenderProzentanteil(oberflaeche.getVerbleibenderProzentanteil() - b.getProzentAnteil());
-			oberflaeche.showLagerFuerBuchung(oberflaeche.getAusgewaehlterKnoten().getName());
+			gui.setVerbleibendeMenge(gui.getVerbleibendeMenge() - (gui.isAbBuchung() ? -b.getMenge() : b.getMenge()));
+			gui.setVerbleibenderProzentanteil(gui.getVerbleibenderProzentanteil() - b.getProzentAnteil());
+			gui.showLagerFuerBuchung(gui.getAusgewaehlterKnoten().getName());
 		} catch (Exception e) {
 			// Sollte normalerweise nicht mehr benötigt werden :)
 			// Nur für den Fall, dass irgendetwas schief läuft

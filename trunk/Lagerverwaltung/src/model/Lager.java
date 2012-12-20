@@ -103,11 +103,19 @@ public class Lager extends DefaultMutableTreeNode {
 		}
 	}
 
-	public boolean veraendereName(String name) {
+	/**
+	 * Verändert den Namen eines Lagers, insofern nicht ein anderes Lager diesen
+	 * Namen inne hat.
+	 * 
+	 * @param name
+	 *            Der neue Name
+	 * @return
+	 */
+	public void veraendereName(String name) {
 		if (checkNamen(name)) {
 			this.name = name;
 			this.setUserObject(this.isBestandHaltend ? name + " " + this.bestand : name);
-			return true;
+			return;
 		} else {
 			List<String> result = new ArrayList<String>();
 			result.add("Ein Lager mit diesem Name existiert bereits.");
