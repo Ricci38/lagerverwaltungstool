@@ -16,11 +16,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -37,6 +39,7 @@ import model.Lieferung;
 import view.Oberflaeche;
 import view.Tools;
 
+//TODO Eigenständigkeitserklärung
 public class OberflaecheImpl implements Oberflaeche {
 
 	// TODO Variablen sortieren (z.B. nach Type & Name)
@@ -66,6 +69,8 @@ public class OberflaecheImpl implements Oberflaeche {
 	private JLabel lagerBezeichnung, restMenge;
 	private JButton btn_best, btn_abbr, btn_jetztBuchen;
 	private GridBagLayout gbl;
+	private JRadioButton zuBuchung, abBuchung;
+	private ButtonGroup buchungsArt;
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - hh:mm:ss");
 
@@ -204,18 +209,27 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		btn_best.addActionListener(listener_Lagerverwaltung);
 		btn_abbr.addActionListener(listener_Lagerverwaltung);
+		
+		zuBuchung = new JRadioButton("Zubuchen", true);
+		abBuchung = new JRadioButton("Abbuchen");
+		
+		buchungsArt = new ButtonGroup();
+		buchungsArt.add(zuBuchung);
+		buchungsArt.add(abBuchung);
 
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel("Gesamtmenge :"), 0, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 0, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, restMenge = new JLabel("Verbleibende Menge: " + verbleibendeMenge), 0, 1, 3, 1, 0, 0,
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, zuBuchung, 0, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, abBuchung, 0, 1, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel("Gesamtmenge :"), 0, 3, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 3, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, restMenge = new JLabel("Verbleibende Menge: " + verbleibendeMenge), 0, 4, 3, 1, 0, 0,
 				GridBagConstraints.HORIZONTAL);
 		gesamtmenge.addMouseListener(listener_LieferungsUebersicht);
 		gesamtmenge.setPreferredSize(new Dimension(100, 20));
 
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, lagerBezeichnung = new JLabel(), 0, 2, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 2, 1, 1, 0, 0,
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, lagerBezeichnung = new JLabel(), 0, 5, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, prozentAnteil = new JTextField("Prozentualer Anteil"), 1, 5, 1, 1, 0, 0,
 				GridBagConstraints.HORIZONTAL);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, btn_jetztBuchen = new JButton("Jetzt buchen"), 2, 3, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, btn_jetztBuchen = new JButton("Jetzt buchen"), 2, 6, 1, 1, 0, 0, GridBagConstraints.NONE);
 		prozentAnteil.addMouseListener(listener_LieferungsUebersicht);
 		btn_jetztBuchen.addActionListener(listener_Lagerverwaltung);
 		prozentAnteil.setPreferredSize(new Dimension(120, 20));
@@ -280,6 +294,27 @@ public class OberflaecheImpl implements Oberflaeche {
 	@Override
 	public boolean isCardUebersichtAktiv() {
 		return isCardUebersichtAktiv;
+	}
+	
+	@Override
+	public boolean isAbBuchung()
+	{
+		return abBuchung.isSelected();
+	}
+	
+	//TODO: nötig?
+	@Override
+	public void enableBuchungsArt()
+	{
+		zuBuchung.setEnabled(true);
+		abBuchung.setEnabled(true);
+	}
+	
+	@Override
+	public void disableBuchungsArt()
+	{
+		zuBuchung.setEnabled(false);
+		abBuchung.setEnabled(false);
 	}
 
 	@Override
