@@ -40,7 +40,7 @@ import view.Oberflaeche;
 import view.Tools;
 
 //TODO Eigenständigkeitserklärung
-//XXX Wie werden Ablieferungen in der Übersicht vermerkt?
+//FIXME Undo/Redo -> Bilder!
 public class OberflaecheImpl implements Oberflaeche {
 
 	// TODO Variablen sortieren (z.B. nach Type & Name)

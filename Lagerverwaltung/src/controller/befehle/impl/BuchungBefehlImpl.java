@@ -23,7 +23,7 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 		int diff = l.veraenderBestand(menge);
 		if (diff == menge) 
 			return diff;
-		l.addBuchung(b = new Buchung(menge + diff, d, l, prozent + ((diff > 0) ? (int)(menge / (float)prozent) : 0))); //FIXME
+		l.addBuchung(b = new Buchung(menge + diff, d, l, prozent + ((diff > 0) ? (int)(menge / (float)prozent) : 0)));
 		buchungsStackUndo.push(b);
 		lagerStackUndo.push(l);
 		return diff;
