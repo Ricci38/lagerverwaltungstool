@@ -40,11 +40,8 @@ import model.Lieferung;
 import view.Oberflaeche;
 import view.Tools;
 
-//TODO Eigenständigkeitserklärung
-//FIXME Undo/Redo -> Bilder!
 public class OberflaecheImpl implements Oberflaeche {
 
-	// TODO Variablen sortieren (z.B. nach Type & Name)
 	// ### Singeltonvariable ###
 	private static Oberflaeche theInstance;
 
