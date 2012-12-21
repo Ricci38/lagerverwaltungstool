@@ -61,18 +61,16 @@ public class Lieferung {
 	}
 
 	/**
-	 * FIXME Rückgabetyp auf boolean ändern? (--> return lieferungen.add(l) !)
 	 * 
 	 * Fügt eine neue Lieferung der Liste aller Lieferungen hinzu und gibt die
 	 * neue Liste anschließend zurück.
 	 * 
 	 * @param l
 	 *            Die hinzuzufügende Lieferung
-	 * @return Die neue Liste aller Lieferungen
+	 * @return true, wenn die Lieferung der Liste hinzugefügt wurde.
 	 */
-	public static List<Lieferung> addLieferungen(Lieferung l) {
-		lieferungen.add(l);
-		return lieferungen;
+	public static boolean addLieferungen(Lieferung l) {
+		return lieferungen.add(l);
 	}
 
 	/**
