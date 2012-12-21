@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -132,8 +133,10 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_platzhalter1 = new JPanel();
 		p_platzhalter2 = new JPanel();
 
-		undo = new JButton("undo");
-		redo = new JButton("redo");
+		undo = new JButton("Undo");
+		redo = new JButton("Redo");
+		undo.setIcon(new ImageIcon("./images/Undo-icon.png"));
+		redo.setIcon(new ImageIcon("./images/Redo-icon.png"));
 		neueLieferung = new JButton("Neue Lieferung");
 		neuesLager = new JButton("Neues Lager");
 		lagerUmbenennen = new JButton("Lager umbenennen");

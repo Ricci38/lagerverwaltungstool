@@ -31,9 +31,11 @@ public class Tools {
 	 * @param height
 	 *            Die Höhe die die Komponente im Layout erhalten soll
 	 * @param weightx
-	 *            TODO Beschreibung weightx
+	 *            Wie weit sich die Komponente in X-Richtung gestreckt werden
+	 *            darf
 	 * @param weighty
-	 *            TODO Beschreibung weighty
+	 *            Wie wiet sich die Komponente in Y-Richtung gestreckt werden
+	 *            darf
 	 * @param gbcFill
 	 *            Definiert, ob die Komponente in ihrer Größe angepasst werden
 	 *            soll
