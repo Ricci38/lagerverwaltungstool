@@ -7,9 +7,11 @@ import model.Buchung;
 import model.Lieferung;
 
 /**
+ * Interface für den Lieferungsbefehl
+ * 
  * @version 1.1.0
  * @author Dominik Klüter
- *
+ * 
  */
 public interface ILieferungBefehl {
 

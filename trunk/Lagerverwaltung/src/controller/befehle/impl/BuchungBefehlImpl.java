@@ -11,6 +11,8 @@ import view.impl.OberflaecheImpl;
 import controller.befehle.IBuchungBefehl;
 
 /**
+ * Implementiert das Interface für den Buchungsbefehl.
+ * 
  * @version 1.1.0
  * @author Philo Könneker
  * 

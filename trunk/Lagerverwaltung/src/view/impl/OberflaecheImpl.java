@@ -41,6 +41,9 @@ import view.Oberflaeche;
 import view.Tools;
 
 /**
+ * Implementierung des Interfaces Oberflaeche. Implementiert konkret die
+ * grafische Benutzeroberfläche.
+ * 
  * @version 1.1.0
  * @author Dominik Klüter
  * @author Philo Könneker

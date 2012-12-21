@@ -12,6 +12,8 @@ import controller.GUI_handler;
 import controller.befehle.ILieferungBefehl;
 
 /**
+ * Implementiert das Interface für den Lieferungsbefehl.
+ * 
  * @version 1.1.0
  * @author Dominik Klüter
  * 

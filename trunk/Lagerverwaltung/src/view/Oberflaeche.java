@@ -10,9 +10,11 @@ import model.Lager;
 import model.Lieferung;
 
 /**
+ * Interface für die Oberfläche
+ * 
  * @version 1.1.0
  * @author Dominik Klüter
- *
+ * 
  */
 public interface Oberflaeche {
 
@@ -99,7 +101,7 @@ public interface Oberflaeche {
 	public void showTabLieferungsBuchungen(List<Buchung> buchungen);
 
 	public void showVerbleibendeMenge();
-	
+
 	public void selectTreeRoot();
 
 	public void refreshTree();

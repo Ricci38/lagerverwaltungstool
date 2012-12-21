@@ -6,16 +6,20 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * Stellt eine Lieferung mit ihren Buchungen, einem Lieferungsdatum, einer
+ * Gesamtmenge und dem Lieferungstyp dar. Des Weiteren enthält diese Klasse eine
+ * Liste aller Lieferungen.
+ * 
  * @version 1.1.0
  * @author Philo Könneker
- *
+ * 
  */
 public class Lieferung {
+	private static List<Lieferung> lieferungen = new ArrayList<Lieferung>();
 	private final Date lieferungsDatum;
 	private final List<Buchung> buchungen;
 	private final int gesamtMenge;
 	private final String lieferungsTyp;
-	private static List<Lieferung> lieferungen = new ArrayList<Lieferung>();
 
 	/**
 	 * Erstellt eine neue Lieferung und fügt diese automatisch der Liste aller
