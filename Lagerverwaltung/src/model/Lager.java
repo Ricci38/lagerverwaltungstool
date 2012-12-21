@@ -7,6 +7,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import exception.LagerverwaltungsException;
 
+/**
+ * @version 1.1.0
+ * @author Dominik Klüter
+ *
+ */
 public class Lager extends DefaultMutableTreeNode {
 
 	private static Lager wurzel;
@@ -96,12 +101,12 @@ public class Lager extends DefaultMutableTreeNode {
 	 * @return diff Positive Differenz zwischen der Menge, die abgebucht werden
 	 *         soll und dem Lagersaldo. Bei Zubuchungen liefert es 0.
 	 * @throws LagerverwaltungsException
-	 *             Wenn Fehler beim Ändern auftreten.
+	 *             Wenn ein Fehler beim Ändern auftreten.
 	 */
 	public int veraenderBestand(int menge) {
 		if (this.bestand == 0 && menge < 0) {
 			List<String> result = new ArrayList<String>();
-			result.add("Bestand kleiner 0 nicht möglich.");
+			result.add("Bestand kleiner 0 nicht möglich."); // Abbuchung aus einem leeren Lager ist nicht möglich
 			throw new LagerverwaltungsException("Bestand vom Lager \"" + this.name + "\" kann nicht geändert werden.", result, null);
 		}
 		if ((this.bestand + menge >= 0)) {
@@ -109,9 +114,9 @@ public class Lager extends DefaultMutableTreeNode {
 			this.setUserObject(this.name + " " + this.bestand); // Ändert angezeigten Namen im Baum
 			return 0;
 		} else {
-			int diff = Math.abs(this.bestand + menge);
+			int diff = Math.abs(this.bestand + menge); // Nimmt die Differenz aus dem abzubuchenden Bestand und dem abbuchbaren Bestand
 			this.bestand = 0;
-			this.setUserObject(this.name + " 0");
+			this.setUserObject(this.name + " 0"); // Ändert angezeigten Namen im Baum
 			return diff;
 		}
 	}
@@ -126,10 +131,10 @@ public class Lager extends DefaultMutableTreeNode {
 	public void veraendereName(String name) {
 		if (checkNamen(name)) {
 			this.name = name;
-			this.setUserObject(this.isBestandHaltend ? name + " " + this.bestand : name);
+			this.setUserObject(this.isBestandHaltend ? name + " " + this.bestand : name); // Ändert angezeigten Namen im Baum
 			return;
 		} else {
-			List<String> result = new ArrayList<String>();
+			List<String> result = new ArrayList<String>(); // Falls der Name bereits vergeben ist, wird hier eine Exception geworfen
 			result.add("Ein Lager mit diesem Name existiert bereits.");
 			throw new LagerverwaltungsException("Der Name konnte nicht geändert werden.", result, null);
 		}
@@ -159,7 +164,7 @@ public class Lager extends DefaultMutableTreeNode {
 		if (this.isLeaf()) { // falls dieser Knoten keine Kinder hat
 			return this.bestand;
 		} else {
-			// Bestände der einzelnen Kinder/Blätter zusammenaddieren
+			// Bestände der einzelnen Kinder/Blätter zusammenaddieren (kummulierter Bestand der Unterlager)
 			for (int i = 0; i < this.getChildCount(); i++) {
 				bestand_summe = bestand_summe + ((Lager) this.getChildAt(i)).getBestand();
 			}
@@ -190,9 +195,14 @@ public class Lager extends DefaultMutableTreeNode {
 	 * Setzt den Bestand eines Lagers, insofern das Lager einen Bestand haben
 	 * darf und die übergebene Menge größer oder gleich 0 ist.
 	 * 
+	 * Wird nicht mehr verwendet - stattdessen wird die Methode veraenderBestand(int) verwendet
+	 * @see veraenderBestand(int)
+	 * 
+	 * @deprecated since Version 1.1.0
 	 * @param menge
 	 * @throws LagerverwaltungsException
 	 */
+	@Deprecated
 	public void setBestand(int menge) {
 		List<String> result = new ArrayList<String>();
 		if (this.isBestandHaltend) {

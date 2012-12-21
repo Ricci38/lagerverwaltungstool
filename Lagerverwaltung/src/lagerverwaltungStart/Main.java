@@ -14,14 +14,13 @@ import controller.GUI_handler;
 import controller.befehle.IBuchungBefehl;
 
 /**
- * 
- * @author Dominik Klüter & Philo Könneker
- * @version 1.0.1
+ * @version 1.1.0
+ * @author Dominik Klüter
  * 
  */
 public class Main {
 
-	public static final String VERSION = "1.0.1";
+	public static final String VERSION = "1.1.0";
 
 	/**
 	 * @param args
@@ -57,7 +56,7 @@ public class Main {
 	}
 
 	private static void beispielLaden(Lager root) {
-		//Anlegen der Lagerhierarchie
+		// Anlegen der Lagerhierarchie
 		Lager[][] lager = new Lager[10][10];
 		IBuchungBefehl befehlBuchung = GUI_handler.getBefehlBuchung();
 		lager[0][0] = root.addTreeElement("Deutschland");
@@ -83,56 +82,56 @@ public class Main {
 		lager[0][2] = root.addTreeElement("Großbritannien");
 
 		//Anlegen der Beispielbuchungen
-		Date datum1, datum2, datum3, datum4, datum5;
+		Date datum1, datum2, datum3, datum4, datum5; // Jede Lieferung erhält ein eindeutigen Lieferzeitpunkt
 
 		//1. Lieferung
 		datum1 = new Date();
-		befehlBuchung.execute(lager[1][2], 500, datum1, 50); //Bremen
-		befehlBuchung.execute(lager[1][6], 200, datum1, 20); //MV
-		befehlBuchung.execute(lager[2][6], 100, datum1, 10); //Mailand
-		befehlBuchung.execute(lager[1][9], 100, datum1, 10); //Spanien
-		befehlBuchung.execute(lager[0][2], 100, datum1, 10); //Großbritannien
+		befehlBuchung.execute(lager[1][2], 500, datum1, 50); // Bremen
+		befehlBuchung.execute(lager[1][6], 200, datum1, 20); // MV
+		befehlBuchung.execute(lager[2][6], 100, datum1, 10); // Mailand
+		befehlBuchung.execute(lager[1][9], 100, datum1, 10); // Spanien
+		befehlBuchung.execute(lager[0][2], 100, datum1, 10); // Großbritannien
 
 		GUI_handler.getBefehlLieferung().execute(datum1, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 
 		//2. Lieferung
 		datum2 = new Date(datum1.getTime() + 1000l);
-		befehlBuchung.execute(lager[2][1], 1000, datum2, 50); //Nienburg
-		befehlBuchung.execute(lager[1][1], 400, datum2, 20); //NRW
-		befehlBuchung.execute(lager[1][3], 400, datum2, 20); //Hessen
-		befehlBuchung.execute(lager[1][4], 200, datum2, 10); //Sachsen
+		befehlBuchung.execute(lager[2][1], 1000, datum2, 50); // Nienburg
+		befehlBuchung.execute(lager[1][1], 400, datum2, 20); // NRW
+		befehlBuchung.execute(lager[1][3], 400, datum2, 20); // Hessen
+		befehlBuchung.execute(lager[1][4], 200, datum2, 10); // Sachsen
 
 		GUI_handler.getBefehlLieferung().execute(datum2, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 
 		//3. Lieferung
 		datum3 = new Date(datum2.getTime() + 1000l);
-		befehlBuchung.execute(lager[1][5], 2000, datum3, 20); //Brandenburg
-		befehlBuchung.execute(lager[2][3], 1000, datum3, 10); //Orléans
-		befehlBuchung.execute(lager[2][7], 2500, datum3, 25); //L'Aquila
-		befehlBuchung.execute(lager[1][9], 2500, datum3, 25); //Spanien
-		befehlBuchung.execute(lager[0][2], 2000, datum3, 20); //Großbritannien
+		befehlBuchung.execute(lager[1][5], 2000, datum3, 20); // Brandenburg
+		befehlBuchung.execute(lager[2][3], 1000, datum3, 10); // Orléans
+		befehlBuchung.execute(lager[2][7], 2500, datum3, 25); // L'Aquila
+		befehlBuchung.execute(lager[1][9], 2500, datum3, 25); // Spanien
+		befehlBuchung.execute(lager[0][2], 2000, datum3, 20); // Großbritannien
 
 		GUI_handler.getBefehlLieferung().execute(datum3, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 
 		//4. Lieferung
 		datum4 = new Date(datum3.getTime() + 1000l);
-		befehlBuchung.execute(lager[2][5], 2500, datum4, 50); //Nîmes
-		befehlBuchung.execute(lager[1][6], 2000, datum4, 40); //MV
-		befehlBuchung.execute(lager[2][1], 500, datum4, 10); //Nienburg
+		befehlBuchung.execute(lager[2][5], 2500, datum4, 50); // Nîmes
+		befehlBuchung.execute(lager[1][6], 2000, datum4, 40); // MV
+		befehlBuchung.execute(lager[2][1], 500, datum4, 10); // Nienburg
 
 		GUI_handler.getBefehlLieferung().execute(datum4, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 
 		//5. Lieferung
 		datum5 = new Date(datum4.getTime() + 1000l);
-		befehlBuchung.execute(lager[2][2], 3750, datum5, 30); //Paris-Nord
-		befehlBuchung.execute(lager[1][5], 2500, datum5, 20); //Brandenburg
-		befehlBuchung.execute(lager[2][0], 1875, datum5, 15); //Hannover-Misburg
-		befehlBuchung.execute(lager[1][2], 1875, datum5, 15); //Bremen
-		befehlBuchung.execute(lager[2][6], 2500, datum5, 20); //Mailand
+		befehlBuchung.execute(lager[2][2], 3750, datum5, 30); // Paris-Nord
+		befehlBuchung.execute(lager[1][5], 2500, datum5, 20); // Brandenburg
+		befehlBuchung.execute(lager[2][0], 1875, datum5, 15); // Hannover-Misburg
+		befehlBuchung.execute(lager[1][2], 1875, datum5, 15); // Bremen
+		befehlBuchung.execute(lager[2][6], 2500, datum5, 20); // Mailand
 
 		GUI_handler.getBefehlLieferung().execute(datum5, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();

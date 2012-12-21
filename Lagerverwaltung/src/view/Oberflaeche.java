@@ -9,6 +9,11 @@ import model.Buchung;
 import model.Lager;
 import model.Lieferung;
 
+/**
+ * @version 1.1.0
+ * @author Dominik Klüter
+ *
+ */
 public interface Oberflaeche {
 
 	public void enableAlleBuchungenBestaetigen();
@@ -69,6 +74,8 @@ public interface Oberflaeche {
 
 	public String getProzentualerAnteil();
 
+	public JTable getTbl_lieferungsUebersicht();
+
 	public int getVerbleibendeMenge();
 
 	public int getVerbleibenderProzentanteil();
@@ -81,7 +88,7 @@ public interface Oberflaeche {
 
 	public void showCardUebersicht();
 
-	public void showLagerbuchungen(List<Buchung> b);
+	public void showLagerbuchungen(Lager l);
 
 	public void showLagerFuerBuchung(String n);
 
@@ -95,11 +102,8 @@ public interface Oberflaeche {
 	
 	public void selectTreeRoot();
 
-	// ### JTree neu aufbauen ###
 	public void refreshTree();
 
 	public void refreshTree(TreeNode node);
-
-	JTable getTbl_lieferungsUebersicht();
 
 }
