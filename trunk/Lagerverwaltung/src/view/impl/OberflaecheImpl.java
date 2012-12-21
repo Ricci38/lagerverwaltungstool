@@ -489,6 +489,8 @@ public class OberflaecheImpl implements Oberflaeche {
 				}
 			};
 			tbl_lagerbuchungen.setFillsViewportHeight(true);
+			tbl_lagerbuchungen.setColumnSelectionAllowed(false);
+			tbl_lagerbuchungen.getTableHeader().setReorderingAllowed(false);
 			p_center_lagerbuchungen.add(saldo = new JTextField("Buchungen von " + (l.isLeaf() ? "Lager" : "Oberlagers") + " \"" + l.getName() + "\" mit Saldo "
 					+ l.getBestand() + ":"), BorderLayout.NORTH);
 			p_center_lagerbuchungen.add(new JScrollPane(tbl_lagerbuchungen), BorderLayout.CENTER);
@@ -565,6 +567,8 @@ public class OberflaecheImpl implements Oberflaeche {
 			};
 
 			tbl_buchungsUebersicht.setFillsViewportHeight(true);
+			tbl_buchungsUebersicht.setColumnSelectionAllowed(false);
+			tbl_buchungsUebersicht.getTableHeader().setReorderingAllowed(false);
 			p_center_lieferungdetails.add(new JScrollPane(tbl_buchungsUebersicht), BorderLayout.CENTER);
 		}
 		p_center_lieferungdetails.updateUI();
@@ -602,6 +606,8 @@ public class OberflaecheImpl implements Oberflaeche {
 		};
 
 		tbl_lieferungsUebersicht.setFillsViewportHeight(true);
+		tbl_lieferungsUebersicht.setColumnSelectionAllowed(false);
+		tbl_lieferungsUebersicht.getTableHeader().setReorderingAllowed(false);
 		tbl_lieferungsUebersicht.addMouseListener(listener_LieferungsUebersicht);
 		p_center_lieferungen.add(new JLabel("Lieferungsübersicht: "), BorderLayout.NORTH);
 		p_center_lieferungen.add(new JScrollPane(tbl_lieferungsUebersicht), BorderLayout.CENTER);

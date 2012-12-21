@@ -40,24 +40,42 @@ public class Lager extends DefaultMutableTreeNode {
 		}
 	}
 
-	// Element (Blatt oder Knoten) hinzufügen
+	/**
+	 * Fügt dem Baum ein neues Element hinzu und gibt dieses Lager dann zurück.
+	 * 
+	 * @param bez
+	 *            Name des Elements (Lagername)
+	 * @return Das soeben erstellte Lager
+	 */
 	public Lager addTreeElement(String bez) {
 		blatt = new Lager(bez);
 		this.add(blatt);
 		this.isBestandHaltend = false; // übergeordneter Knoten darf keinen Bestand zeigen - falls diese Methode an einem Blatt aufgerufen wurde ist
 										// dieses ebenfalls nicht mehr fähig
 										// einen Bestand anzuzeigen
-	
+
 		this.setUserObject(this.name); // übergeordneten Knoten umbenennen, sodass der Bestand nicht mehr angezeigt wird
-	
+
 		return blatt;
 	}
-
+	
+	/**
+	 * Fügt eine neue Buchung der Liste der Buchungen dieses Lagers hinzu.
+	 * 
+	 * @param b Die hinzuzufügende Buchung
+	 * @return true, wenn die Buchung erfolgreich hinzugefügt wurde.
+	 */
 	public boolean addBuchung(Buchung b) {
 		return buchungen.add(b);
 	}
-
-	//Überprüfung ob der Lagername bereits vorgekommen ist
+	
+	/**
+	 * Überprüfung, ob der Lagername bereits vorgekommen ist
+	 * 
+	 * @param bez
+	 *            Zu überprüfender Name.
+	 * @return true, wenn der Name verwendet werden kann.
+	 */
 	private boolean checkNamen(String bez) {
 		if (namensListe.isEmpty())
 			return true;
@@ -70,19 +88,22 @@ public class Lager extends DefaultMutableTreeNode {
 		return true;
 	}
 
-//	public boolean checkBestandsaenderung(int menge) {
-//		if ((this.bestand + menge) >= 0) {
-//			return true;
-//		}
-//		return false;
-//	}
-
 	/**
+	 * Versucht den Bestand des Lagers zu ändern. Sollten Fehler auftreten,
+	 * werden LagerVerwaltungsExceptions geworfen.
 	 * 
 	 * @param menge
+	 * @return diff Positive Differenz zwischen der Menge, die abgebucht werden
+	 *         soll und dem Lagersaldo. Bei Zubuchungen liefert es 0.
 	 * @throws LagerverwaltungsException
+	 *             Wenn Fehler beim Ändern auftreten.
 	 */
 	public int veraenderBestand(int menge) {
+		if (this.bestand == 0 && menge < 0) {
+			List<String> result = new ArrayList<String>();
+			result.add("Bestand kleiner 0 nicht möglich.");
+			throw new LagerverwaltungsException("Bestand vom Lager \"" + this.name + "\" kann nicht geändert werden.", result, null);
+		}
 		if ((this.bestand + menge >= 0)) {
 			this.bestand = this.bestand + menge;
 			this.setUserObject(this.name + " " + this.bestand); // Ändert angezeigten Namen im Baum
@@ -92,9 +113,6 @@ public class Lager extends DefaultMutableTreeNode {
 			this.bestand = 0;
 			this.setUserObject(this.name + " 0");
 			return diff;
-//			List<String> result = new ArrayList<String>();
-//			result.add("Bestand kleiner 0 nicht möglich.");
-//			throw new LagerverwaltungsException("Bestand vom Lager \"" + this.name + "\" kann nicht geändert werden.", result, null);
 		}
 	}
 
@@ -103,8 +121,7 @@ public class Lager extends DefaultMutableTreeNode {
 	 * Namen inne hat.
 	 * 
 	 * @param name
-	 *            Der neue Name
-	 * @return
+	 *            Der neue Name.
 	 */
 	public void veraendereName(String name) {
 		if (checkNamen(name)) {
@@ -118,14 +135,23 @@ public class Lager extends DefaultMutableTreeNode {
 		}
 	}
 
+	/**
+	 * Entfernt eine bestimmtes Buchungsobjekt aus der Liste aller Buchungen auf
+	 * diesem Lager. Insbesondere ist dies für die undo/redo-Funktionalität
+	 * wichtig.
+	 * 
+	 * @param b
+	 *            Die zu entferndene Buchung
+	 * @return true wenn die Liste das zu entfernde Element enthält
+	 */
 	public boolean removeBuchung(Buchung b) {
 		return buchungen.remove(b);
 	}
 
 	/**
+	 * Gibt den eigenen oder oder kumulierten Bestand aller Unterlager zurück
 	 * 
-	 * @return Gibt den eigenen oder oder kumulierten Bestand aller Unterlager
-	 *         zurück
+	 * @return der kumulierte Bestand aller Unterlager
 	 */
 	public int getBestand() {
 		int bestand_summe = 0;
@@ -141,11 +167,21 @@ public class Lager extends DefaultMutableTreeNode {
 		}
 	}
 
+	/**
+	 * Gibt eine List<Buchung> mit allen Buchungen, die auf diesem Lager gebucht
+	 * wurden, zurück.
+	 * 
+	 * @return Die Liste aller Buchungen des Lagers.
+	 */
 	public List<Buchung> getBuchungen() {
 		return buchungen;
 	}
 
-	//Gibt den eigenen Bestand des ausgewählten Lagers zurück
+	/**
+	 * Gibt den eigenen Bestand dieses Lagers zurück
+	 * 
+	 * @return Bestand dieses Lagers
+	 */
 	public int getEinzelBestand() {
 		return this.bestand;
 	}
@@ -173,19 +209,41 @@ public class Lager extends DefaultMutableTreeNode {
 		}
 	}
 
+	/**
+	 * Methode um herauszufinden, ob dieses Lager einen Bestand haben kann, oder
+	 * nicht.
+	 * 
+	 * @return true, wenn dieses Lager einen Bestand halten kann.
+	 */
 	public boolean isBestandHaltend() {
 		return this.isBestandHaltend;
 	}
 
+	/**
+	 * Gibt den Namen des Lagers zurück.
+	 * 
+	 * @return Der Name des Lagers
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Gibt die gesamte Lagerstruktur als ein Lager zurück.
+	 * 
+	 * @return Das Wurzellager
+	 */
 	public static Lager getTree() {
 		return wurzel;
 	}
 
-	// Wurzel erstellen
+	/**
+	 * Erstellt das Wurzelelement für die Lagerbaumstruktur.
+	 * 
+	 * @param bez
+	 *            Der Name des Wurzelelement.
+	 * @return Das Wurzelelement.
+	 */
 	public static Lager addWurzel(String bez) {
 		wurzel = new Lager(bez);
 		wurzel.name = bez;

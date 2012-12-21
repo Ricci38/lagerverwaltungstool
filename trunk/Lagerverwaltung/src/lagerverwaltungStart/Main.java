@@ -10,12 +10,18 @@ import model.Lieferung;
 import view.Oberflaeche;
 import view.Tools;
 import view.impl.OberflaecheImpl;
-import controller.Lagerverwaltung_handler;
+import controller.GUI_handler;
 import controller.befehle.IBuchungBefehl;
 
+/**
+ * 
+ * @author Dominik Klüter & Philo Könneker
+ * @version 1.0.0
+ * 
+ */
 public class Main {
 
-	public static final String VERSION = "0.9.3b";
+	public static final String VERSION = "1.0.0b";
 
 	/**
 	 * @param args
@@ -29,14 +35,14 @@ public class Main {
 			pane_value = JOptionPane.showConfirmDialog(null, "Willkommen im Lagerverwaltungstool v" + VERSION
 					+ "!\nSoll eine Beispielhierarchie für die Lagerverwaltung geladen werden?", "Lagerhierarchie laden", JOptionPane.YES_NO_OPTION);
 
-			Lagerverwaltung_handler myLagerverwaltungHandler = new Lagerverwaltung_handler();
+			GUI_handler myLagerverwaltungHandler = new GUI_handler();
 
 			OberflaecheImpl.setLagerListener(myLagerverwaltungHandler);
 			OberflaecheImpl.setLieferungListener(myLagerverwaltungHandler);
 			
 			Oberflaeche gui = OberflaecheImpl.getInstance();
 
-			myLagerverwaltungHandler.announceGUI_Lager(gui);
+			myLagerverwaltungHandler.announceGui(gui);
 			gui.showLagerverwaltung();
 
 			if (pane_value == JOptionPane.YES_OPTION) {
@@ -57,7 +63,7 @@ public class Main {
 	private static void beispielHierarchieLaden(Lager root) {
 		//Anlegen der Lagerhierarchie
 		Lager[][] lager = new Lager[10][10];
-		IBuchungBefehl befehlBuchung = Lagerverwaltung_handler.getBefehlBuchung();
+		IBuchungBefehl befehlBuchung = GUI_handler.getBefehlBuchung();
 		lager[0][0] = root.addTreeElement("Deutschland");
 			lager[1][0]= lager[0][0].addTreeElement("Niedersachsen");
 				lager[2][0] = lager[1][0].addTreeElement("Hannover-Misburg");
@@ -92,7 +98,7 @@ public class Main {
 		befehlBuchung.execute(lager[1][9], 100, datum1, 10); //Spanien
 		befehlBuchung.execute(lager[0][2], 100, datum1, 10); //Großbritannien
 		
-		Lagerverwaltung_handler.getBefehlLieferung().execute(datum1, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
+		GUI_handler.getBefehlLieferung().execute(datum1, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 		
 		//2. Lieferung
@@ -102,7 +108,7 @@ public class Main {
 		befehlBuchung.execute(lager[1][3], 400, datum2, 20); //Hessen
 		befehlBuchung.execute(lager[1][4], 200, datum2, 10); //Sachsen
 		
-		Lagerverwaltung_handler.getBefehlLieferung().execute(datum2, Buchung.getGesamtMenge(), "Initiale Zubuchung" , Buchung.getNeueBuchungen());
+		GUI_handler.getBefehlLieferung().execute(datum2, Buchung.getGesamtMenge(), "Initiale Zubuchung" , Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 		
 		//3. Lieferung
@@ -113,7 +119,7 @@ public class Main {
 		befehlBuchung.execute(lager[1][9], 2500, datum3, 25); //Spanien
 		befehlBuchung.execute(lager[0][2], 2000, datum3, 20); //Großbritannien
 		
-		Lagerverwaltung_handler.getBefehlLieferung().execute(datum3, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
+		GUI_handler.getBefehlLieferung().execute(datum3, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 		
 		//4. Lieferung
@@ -122,7 +128,7 @@ public class Main {
 		befehlBuchung.execute(lager[1][6], 2000, datum4, 40); //MV
 		befehlBuchung.execute(lager[2][1], 500, datum4, 10); //Nienburg
 		
-		Lagerverwaltung_handler.getBefehlLieferung().execute(datum4, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
+		GUI_handler.getBefehlLieferung().execute(datum4, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 		
 		//5. Lieferung
@@ -133,7 +139,7 @@ public class Main {
 		befehlBuchung.execute(lager[1][2], 1875, datum5, 15); //Bremen
 		befehlBuchung.execute(lager[2][6], 2500, datum5, 20); //Mailand
 		
-		Lagerverwaltung_handler.getBefehlLieferung().execute(datum5, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
+		GUI_handler.getBefehlLieferung().execute(datum5, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 	}
 }
