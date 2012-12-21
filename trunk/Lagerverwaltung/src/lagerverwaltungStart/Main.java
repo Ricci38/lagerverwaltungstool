@@ -54,7 +54,7 @@ public class Main {
 			
 			Tools.showMsg("Bitte passen Sie bei vielen kleinen Buchungen innerhalb einer Lieferung auf.\n\nAufgrund des verwendeten Rundungssystems kann es, je nach Anzahl der Buchungen und der Gesamtmenge, zu Abweichungen kommen.");
 		} catch (Exception e) {
-			Tools.showErr("Because FUCK YOU! That's why!");
+			Tools.showErr("Because FUCK YOU! That's why!");	//FIXME Ohne Schimpfwörter
 			System.exit(1);
 		}
 
