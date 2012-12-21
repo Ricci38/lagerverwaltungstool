@@ -520,7 +520,7 @@ public class OberflaecheImpl implements Oberflaeche {
 				spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
 				daten = new String[b.size()][3];
 
-				for (Buchung bu : b) {
+				for (Buchung bu : b) { // Daten für die Tabelle sammeln
 					daten[i][0] = ((Integer) bu.getBuchungID()).toString();
 					daten[i][1] = sdf.format(bu.getDatum());
 					daten[i++][2] = ((Integer) bu.getMenge()).toString();
@@ -530,7 +530,7 @@ public class OberflaecheImpl implements Oberflaeche {
 				spalten = new String[] { "Buchungs ID", "Lager", "Datum", "Menge" };
 				daten = new String[b.size()][4];
 
-				for (Buchung bu : b) {
+				for (Buchung bu : b) { // Gesammelte Daten in den Array übertragen
 					daten[i][0] = ((Integer) bu.getBuchungID()).toString();
 					daten[i][1] = bu.getLagerName();
 					daten[i][2] = sdf.format(bu.getDatum());
@@ -541,7 +541,7 @@ public class OberflaecheImpl implements Oberflaeche {
 				private static final long serialVersionUID = 6620092595652821138L;
 
 				@Override
-				public boolean isCellEditable(int arg0, int arg1) {
+				public boolean isCellEditable(int arg0, int arg1) { // Einzelnen Zellen der Tabelle können nicht mehr bearbeitet werden
 					return false;
 				}
 			};
@@ -555,7 +555,7 @@ public class OberflaecheImpl implements Oberflaeche {
 			saldo.setFocusable(false);
 
 		}
-		p_center_lagerbuchungen.updateUI();
+		p_center_lagerbuchungen.updateUI(); // Anzeige aktualisieren
 	}
 
 	/**
@@ -607,7 +607,7 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		int i = buchungsListe.size();
 
-		for (Buchung b : buchungsListe) {
+		for (Buchung b : buchungsListe) { // Daten für Tabelle sammeln
 			daten.get(0).add(((Integer) b.getBuchungID()).toString());
 			daten.get(1).add(b.getLagerName());
 			daten.get(2).add(sdf.format(b.getDatum()));
@@ -617,8 +617,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		if (i > 0) {
 			String[][] tblDaten = new String[i][4];
 
-			for (int j = 0; j < i; j++) {
-
+			for (int j = 0; j < i; j++) { // Gesammelte Daten in den Array übertragen
 				tblDaten[j][0] = daten.get(0).get(j);
 				tblDaten[j][1] = daten.get(1).get(j);
 				tblDaten[j][2] = daten.get(2).get(j);
@@ -639,7 +638,7 @@ public class OberflaecheImpl implements Oberflaeche {
 			tbl_buchungsUebersicht.getTableHeader().setReorderingAllowed(false);
 			p_center_lieferungdetails.add(new JScrollPane(tbl_buchungsUebersicht), BorderLayout.CENTER);
 		}
-		p_center_lieferungdetails.updateUI();
+		p_center_lieferungdetails.updateUI(); // Anzeige aktualisieren
 	}
 
 	/**
@@ -661,7 +660,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		String[] spalten = new String[] { "Datum", "Buchungsart", "Anzahl Buchungen", "Bestandsänderung" };
 		String[][] daten = new String[lieferungen.size()][4];
 
-		for (Lieferung l : lieferungen) {
+		for (Lieferung l : lieferungen) { // Daten für Tabelle in Array übertragen
 			daten[i][0] = sdf.format(l.getLieferungsDatum());
 			daten[i][1] = l.getLieferungsTyp();
 			daten[i][2] = ((Integer) l.getBuchungen().size()).toString();
@@ -673,7 +672,7 @@ public class OberflaecheImpl implements Oberflaeche {
 			private static final long serialVersionUID = -6588102605213723085L;
 
 			@Override
-			public boolean isCellEditable(int arg0, int arg1) {
+			public boolean isCellEditable(int arg0, int arg1) { // Einzelnen Zellen der Tabelle können nicht mehr bearbeitet werden
 				return false;
 			}
 		};
@@ -684,7 +683,7 @@ public class OberflaecheImpl implements Oberflaeche {
 		tbl_lieferungsUebersicht.addMouseListener(listener_LieferungsUebersicht);
 		p_center_lieferungen.add(new JLabel("Lieferungsübersicht: "), BorderLayout.NORTH);
 		p_center_lieferungen.add(new JScrollPane(tbl_lieferungsUebersicht), BorderLayout.CENTER);
-		p_center_lieferungen.updateUI();
+		p_center_lieferungen.updateUI(); // Anzeige aktualisieren
 	}
 
 	@Override
@@ -755,6 +754,8 @@ public class OberflaecheImpl implements Oberflaeche {
 	 * Überschreibt die Methode clone(), welche von java.lang.Object geerbt
 	 * wird. Wirft immer eine CloneNotSupportedException, da dies ein Singelton
 	 * ist.
+	 * 
+	 * @author Philo Könneker
 	 * 
 	 * @throws CloneNotSupportedException
 	 */

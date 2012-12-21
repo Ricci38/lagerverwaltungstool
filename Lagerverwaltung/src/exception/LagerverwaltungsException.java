@@ -46,6 +46,12 @@ public class LagerverwaltungsException extends RuntimeException implements Seria
 		this.result = result;
 	}
 
+	/**
+	 * Gibt eine Zeichenkette zurück, bei der jede Nachricht in einer neuen
+	 * Zeile ist.
+	 * 
+	 * @return msg Alle Nachrichten der geworfenen Exception
+	 */
 	@Override
 	public String getMessage() {
 		String msg = super.getMessage();
