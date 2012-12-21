@@ -33,7 +33,7 @@ public class Main {
 			Lager wurzel = Lager.addWurzel("Lagerverwaltung");
 			
 			pane_value = JOptionPane.showConfirmDialog(null, "Willkommen im Lagerverwaltungstool v" + VERSION
-					+ "!\nSoll eine Beispielhierarchie für die Lagerverwaltung geladen werden?", "Lagerhierarchie laden", JOptionPane.YES_NO_OPTION);
+					+ "!\nSoll eine Beispielhierarchie mit Beispielbuchungen für die Lagerverwaltung geladen werden?", "Lagerhierarchie laden", JOptionPane.YES_NO_OPTION);
 
 			GUI_handler myLagerverwaltungHandler = new GUI_handler();
 
@@ -46,7 +46,7 @@ public class Main {
 			gui.showLagerverwaltung();
 
 			if (pane_value == JOptionPane.YES_OPTION) {
-				beispielHierarchieLaden(wurzel);
+				beispielLaden(wurzel);
 			}
 
 			gui.selectTreeRoot();
@@ -60,7 +60,7 @@ public class Main {
 
 	}
 
-	private static void beispielHierarchieLaden(Lager root) {
+	private static void beispielLaden(Lager root) {
 		//Anlegen der Lagerhierarchie
 		Lager[][] lager = new Lager[10][10];
 		IBuchungBefehl befehlBuchung = GUI_handler.getBefehlBuchung();
