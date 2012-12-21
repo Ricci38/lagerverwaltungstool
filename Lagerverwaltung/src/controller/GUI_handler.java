@@ -33,9 +33,10 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	private static ILieferungBefehl befehlLieferung = new LieferungBefehlImpl();
 
 	Oberflaeche gui;
-	
+
 	/**
-	 * TODO finde Text plox
+	 * Deligiert alle möglichen Klicks auf Buttons in der Oberfläche an die
+	 * entsprechenden Methoden
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -47,23 +48,9 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 		} else if (e.getActionCommand().toLowerCase().equals(("Lager umbenennen").toLowerCase())) {
 			lagerUmebennnen(e);
 		} else if (e.getActionCommand().toLowerCase().equals(("undo").toLowerCase())) {
-			gui.enableJetztBuchen();
-			befehlBuchung.undo();
-			gui.enableRedo();
-			gui.disableAlleBuchungenBestaetigen();
-			if (!befehlBuchung.hasRemainingUndos())
-				gui.disableUndo();
-			gui.refreshTree(gui.getAusgewaehlterKnoten());
+			undo();
 		} else if (e.getActionCommand().toLowerCase().equals(("redo").toLowerCase())) {
-			befehlBuchung.redo();
-			gui.disableGesamtmenge();
-			gui.disableBuchungsArt();
-			gui.enableUndo();
-			if (!befehlBuchung.hasRemainingRedos())
-				gui.disableRedo();
-			if (gui.getVerbleibendeMenge() == 0)
-				gui.enableAlleBuchungenBestaetigen();
-			gui.refreshTree(gui.getAusgewaehlterKnoten());
+			redo();
 		} else if (e.getActionCommand().toLowerCase().equals(("Jetzt buchen").toLowerCase())) {
 			jetztBuchen(e);
 		} else if (e.getActionCommand().toLowerCase().equals(("Bestätigen").toLowerCase())) {
@@ -76,7 +63,8 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	}
 
 	/**
-	 * TODO finde Text plox
+	 * Reagiert auf Änderung der Auswahl eines Lagers in der Baumstruktur der
+	 * Oberfläche
 	 */
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
@@ -87,7 +75,8 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	}
 
 	/**
-	 * TODO finde Text plox
+	 * Reagiert auf das Anklicken eines Tabelleneintrags in der
+	 * Lieferungsübersicht oder auf das Anklicken von Textfeldern.
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -189,6 +178,39 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	}
 
 	/**
+	 * Führt die passende Aktion zu dem Button "Neue Lieferung" aus
+	 * 
+	 * @param e
+	 *            Wird aus actionPerformed(ActionEvent) übergeben
+	 */
+	private void neueLieferung(ActionEvent e) {
+		if (gui.isCardNeueLieferungAktiv()) {
+			int value = JOptionPane.showOptionDialog(null,
+					"Möchten Sie die aktuelle Lieferung abbrechen um eine neue Lieferung zu machen?\nAlle Änderungen werden dabei verworfen!", "Sicher?",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+			if (value == JOptionPane.YES_OPTION) {
+				lieferungAbbrechen(e); // Aktion entspricht dem Lieferungs
+										// Abbruch
+			} else if (value == JOptionPane.NO_OPTION) {
+				return;
+			}
+		}
+		gui.disableNeuesLager();
+		gui.disableAlleBuchungenBestaetigen();
+		gui.disableLagerUmbenennen();
+		gui.enableBuchungsArt();
+		gui.selectTreeRoot();
+		gui.showCardNeueLieferung();
+		gui.showUndoRedo();
+		gui.enableGesamtmenge();
+		gui.refreshTree(gui.getAusgewaehlterKnoten());
+		gui.disableUndo();
+		gui.disableRedo();
+		gui.disableNeuesLager();
+	}
+
+	/**
 	 * Führt die passende Aktion zu dem Button "Lager umbenennen" aus
 	 * 
 	 * @param e
@@ -261,36 +283,33 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	}
 
 	/**
-	 * Führt die passende Aktion zu dem Button "Neue Lieferung" aus
-	 * 
-	 * @param e
-	 *            Wird aus actionPerformed(ActionEvent) übergeben
+	 * Macht die zuletzt getätigte Buchung rückgängig und passt die Oberfläche
+	 * anschließend an.
 	 */
-	private void neueLieferung(ActionEvent e) {
-		if (gui.isCardNeueLieferungAktiv()) {
-			int value = JOptionPane.showOptionDialog(null,
-					"Möchten Sie die aktuelle Lieferung abbrechen um eine neue Lieferung zu machen?\nAlle Änderungen werden dabei verworfen!", "Sicher?",
-					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-
-			if (value == JOptionPane.YES_OPTION) {
-				lieferungAbbrechen(e); // Aktion entspricht dem Lieferungs
-										// Abbruch
-			} else if (value == JOptionPane.NO_OPTION) {
-				return;
-			}
-		}
-		gui.disableNeuesLager();
+	private void undo() {
+		befehlBuchung.undo();
+		gui.enableJetztBuchen();
+		gui.enableRedo();
 		gui.disableAlleBuchungenBestaetigen();
-		gui.disableLagerUmbenennen();
-		gui.enableBuchungsArt();
-		gui.selectTreeRoot();
-		gui.showCardNeueLieferung();
-		gui.showUndoRedo();
-		gui.enableGesamtmenge();
+		if (!befehlBuchung.hasRemainingUndos())
+			gui.disableUndo();
 		gui.refreshTree(gui.getAusgewaehlterKnoten());
-		gui.disableUndo();
-		gui.disableRedo();
-		gui.disableNeuesLager();
+	}
+
+	/**
+	 * Wiederholt die zuletzt rückgängig gemachte Buchung und passt die
+	 * Oberfläche anschließend an.
+	 */
+	private void redo() {
+		befehlBuchung.redo();
+		gui.disableGesamtmenge();
+		gui.disableBuchungsArt();
+		gui.enableUndo();
+		if (!befehlBuchung.hasRemainingRedos())
+			gui.disableRedo();
+		if (gui.getVerbleibendeMenge() == 0)
+			gui.enableAlleBuchungenBestaetigen();
+		gui.refreshTree(gui.getAusgewaehlterKnoten());
 	}
 
 	/**
@@ -366,46 +385,6 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	}
 
 	/**
-	 * Holt sich die Werte für die Berechnung der zu buchenden Menge aus der GUI
-	 * und berechnet die zu verbuchende Menge
-	 * 
-	 * @return Die Menge, die bei einer Buchung verbucht werden muss
-	 */
-	private int getBuchungsMenge() {
-		String gesamtmenge_str, prozentualerAnteil_str;
-		int gesamtmenge, prozentualerAnteil;
-		gesamtmenge_str = gui.getGesamtmenge();
-		prozentualerAnteil_str = gui.getProzentualerAnteil();
-		List<String> result = new ArrayList<String>();
-
-		if ((gesamtmenge_str.matches("\\d+") && !Tools.isStringANumber(gesamtmenge_str))
-				|| (prozentualerAnteil_str.matches("\\d+") && !Tools.isStringANumber(prozentualerAnteil_str))) {
-			result.add("Erlaubter Zahlenraum: 1 bis " + Integer.MAX_VALUE);
-			throw new LagerverwaltungsException("Zahl ist leider zu lang.", result, null);
-		}
-
-		if (Tools.isStringANumber(gesamtmenge_str) && Tools.isStringANumber(prozentualerAnteil_str)) {
-			gesamtmenge = Integer.parseInt(gesamtmenge_str);
-			prozentualerAnteil = Integer.parseInt(prozentualerAnteil_str);
-
-			if (gesamtmenge < 1) {
-				result.add("Es sind nur Gesamtmengen größer 0 zulässig!");
-				throw new LagerverwaltungsException("Gesamtmenge ist zu klein.", result, null);
-			} else {
-				if ((prozentualerAnteil < 1) || (prozentualerAnteil > 100)) {
-					result.add("Es sind nur ganzzahlige Werte von 1 bis 100 erlaubt.");
-					throw new LagerverwaltungsException("Ungültiger prozentueler Anteil!", result, null);
-				} else
-					// Abrunden
-					return (int) Math.floor(((double) (gesamtmenge * prozentualerAnteil) / 100));
-			}
-		} else {
-			result.add("Es sind nur ganzzahlige Werte erlaubt!");
-			throw new LagerverwaltungsException("Ungültige Eingabe", result, null);
-		}
-	}
-
-	/**
 	 * Führt die passende Aktion zu dem Button "Bestätigen" in der Ansicht
 	 * "Neue Lieferung" aus
 	 * 
@@ -475,7 +454,48 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	}
 
 	/**
+	 * Holt sich die Werte für die Berechnung der zu buchenden Menge aus der GUI
+	 * und berechnet die zu verbuchende Menge
+	 * 
+	 * @return Die Menge, die bei einer Buchung verbucht werden muss
+	 */
+	private int getBuchungsMenge() {
+		String gesamtmenge_str, prozentualerAnteil_str;
+		int gesamtmenge, prozentualerAnteil;
+		gesamtmenge_str = gui.getGesamtmenge();
+		prozentualerAnteil_str = gui.getProzentualerAnteil();
+		List<String> result = new ArrayList<String>();
+
+		if ((gesamtmenge_str.matches("\\d+") && !Tools.isStringANumber(gesamtmenge_str))
+				|| (prozentualerAnteil_str.matches("\\d+") && !Tools.isStringANumber(prozentualerAnteil_str))) {
+			result.add("Erlaubter Zahlenraum: 1 bis " + Integer.MAX_VALUE);
+			throw new LagerverwaltungsException("Zahl ist leider zu lang.", result, null);
+		}
+
+		if (Tools.isStringANumber(gesamtmenge_str) && Tools.isStringANumber(prozentualerAnteil_str)) {
+			gesamtmenge = Integer.parseInt(gesamtmenge_str);
+			prozentualerAnteil = Integer.parseInt(prozentualerAnteil_str);
+
+			if (gesamtmenge < 1) {
+				result.add("Es sind nur Gesamtmengen größer 0 zulässig!");
+				throw new LagerverwaltungsException("Gesamtmenge ist zu klein.", result, null);
+			} else {
+				if ((prozentualerAnteil < 1) || (prozentualerAnteil > 100)) {
+					result.add("Es sind nur ganzzahlige Werte von 1 bis 100 erlaubt.");
+					throw new LagerverwaltungsException("Ungültiger prozentueler Anteil!", result, null);
+				} else
+					// Abrunden
+					return (int) Math.floor(((double) (gesamtmenge * prozentualerAnteil) / 100));
+			}
+		} else {
+			result.add("Es sind nur ganzzahlige Werte erlaubt!");
+			throw new LagerverwaltungsException("Ungültige Eingabe", result, null);
+		}
+	}
+
+	/**
 	 * Macht dem Objekt dieser Klasse die GUI bekannt.
+	 * 
 	 * @param gui
 	 */
 	public void announceGui(Oberflaeche gui) {

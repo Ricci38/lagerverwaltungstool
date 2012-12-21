@@ -13,6 +13,9 @@ import controller.befehle.ILieferungBefehl;
 
 public class LieferungBefehlImpl implements ILieferungBefehl {
 
+	/**
+	 * Führt die Schritte, die für eine neue Lieferung nötig sind, aus.
+	 */
 	@Override
 	public Lieferung execute(Date d, int menge, String typ, List<Buchung> buchungen) {
 		for (Buchung b : buchungen) {
