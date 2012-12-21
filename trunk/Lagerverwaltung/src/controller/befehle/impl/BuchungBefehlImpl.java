@@ -18,13 +18,13 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 	private final Stack<Lager> lagerStackRedo = new Stack<Lager>();
 
 	@Override
-	public Buchung execute(Lager l, int menge, Date d, int prozent) {
+	public int execute(Lager l, int menge, Date d, int prozent) {
 		Buchung b;
-		l.veraenderBestand(menge);
-		l.addBuchung(b = new Buchung(menge, d, l, prozent));
+		int diff = l.veraenderBestand(menge);
+		l.addBuchung(b = new Buchung(menge + diff, d, l, prozent));
 		buchungsStackUndo.push(b);
 		lagerStackUndo.push(l);
-		return b;
+		return diff;
 	}
 
 	@Override
@@ -39,11 +39,13 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 			gui.showLagerFuerBuchung(l.getName());
 			gui.setVerbleibendeMenge(gui.getVerbleibendeMenge() + (gui.isAbBuchung() ? -b.getMenge() : b.getMenge()));
 			gui.setVerbleibenderProzentanteil(gui.getVerbleibenderProzentanteil() + b.getProzentAnteil());
-			gui.showLagerFuerBuchung(gui.getAusgewaehlterKnoten().getName());
+			gui.showLagerFuerBuchung(gui.getAusgewaehlterKnoten() != null ? gui.getAusgewaehlterKnoten().getName() : "Lagerverwaltung");
 		} catch (Exception e) {
 			// Sollte normalerweise nicht mehr benötigt werden :)
 			// Nur für den Fall, dass irgendetwas schief läuft
-			Tools.showMsg("Sie haben gewonnen!\n\nUnd zwar ein Stickstoffatom.\nWir gratulieren Ihnen herzlichst! :)");
+			// Zeile 42 produzierte früher eine NullPointerException, deshalb dieser catch-Block
+			Tools.showMsg("Sie haben gewonnen!\n\nUnd zwar ein Stickstoffatom.\nWir gratulieren Ihnen herzlichst! :)\n\n" + e.getMessage());
+			e.printStackTrace();
 			return;
 		}
 	}
@@ -59,10 +61,11 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 			Buchung.getNeueBuchungen().add(b);
 			gui.setVerbleibendeMenge(gui.getVerbleibendeMenge() - (gui.isAbBuchung() ? -b.getMenge() : b.getMenge()));
 			gui.setVerbleibenderProzentanteil(gui.getVerbleibenderProzentanteil() - b.getProzentAnteil());
-			gui.showLagerFuerBuchung(gui.getAusgewaehlterKnoten().getName());
+			gui.showLagerFuerBuchung(gui.getAusgewaehlterKnoten() != null ? gui.getAusgewaehlterKnoten().getName() : "Lagerverwaltung");
 		} catch (Exception e) {
 			// Sollte normalerweise nicht mehr benötigt werden :)
 			// Nur für den Fall, dass irgendetwas schief läuft
+			// Zeile 64 produzierte früher eine NullPointerException, deshalb dieser catch-Block
 			Tools.showMsg("Sie haben gewonnen!\n\nUnd zwar ein Sauerstoffatom.\nWir gratulieren Ihnen herzlichst! :)");
 		}
 	}

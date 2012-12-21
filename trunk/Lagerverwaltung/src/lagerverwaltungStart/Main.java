@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 import model.Buchung;
 import model.Lager;
 import model.Lieferung;
+import view.Oberflaeche;
 import view.Tools;
 import view.impl.OberflaecheImpl;
 import controller.Lagerverwaltung_handler;
@@ -14,34 +15,42 @@ import controller.befehle.IBuchungBefehl;
 
 public class Main {
 
-	public static final String VERSION = "0.9.1b";
+	public static final String VERSION = "0.9.3b";
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		int pane_value;
+		try {
+			int pane_value;
 
-		Lager wurzel = Lager.addWurzel("Lagerverwaltung");
-		pane_value = JOptionPane.showConfirmDialog(null, "Willkommen im Lagerverwaltungstool v" + VERSION
-				+ "!\nSoll eine Beispielhierarchie für die Lagerverwaltung geladen werden?", "Lagerhierarchie laden", JOptionPane.YES_NO_OPTION);
+			Lager wurzel = Lager.addWurzel("Lagerverwaltung");
+			
+			pane_value = JOptionPane.showConfirmDialog(null, "Willkommen im Lagerverwaltungstool v" + VERSION
+					+ "!\nSoll eine Beispielhierarchie für die Lagerverwaltung geladen werden?", "Lagerhierarchie laden", JOptionPane.YES_NO_OPTION);
 
-		Lagerverwaltung_handler myLagerverwaltungHandler = new Lagerverwaltung_handler();
+			Lagerverwaltung_handler myLagerverwaltungHandler = new Lagerverwaltung_handler();
 
-		OberflaecheImpl.setLagerListener(myLagerverwaltungHandler);
-		OberflaecheImpl.setLieferungListener(myLagerverwaltungHandler);
+			OberflaecheImpl.setLagerListener(myLagerverwaltungHandler);
+			OberflaecheImpl.setLieferungListener(myLagerverwaltungHandler);
+			
+			Oberflaeche gui = OberflaecheImpl.getInstance();
 
-		myLagerverwaltungHandler.announceGUI_Lager(OberflaecheImpl.getInstance());
-		OberflaecheImpl.getInstance().showLagerverwaltung();
+			myLagerverwaltungHandler.announceGUI_Lager(gui);
+			gui.showLagerverwaltung();
 
-		if (pane_value == JOptionPane.YES_OPTION) {
-			beispielHierarchieLaden(wurzel);
+			if (pane_value == JOptionPane.YES_OPTION) {
+				beispielHierarchieLaden(wurzel);
+			}
+
+			gui.selectTreeRoot();
+			gui.showLieferungen(Lieferung.getAllLieferungen());
+			
+			Tools.showMsg("Bitte passen Sie bei vielen kleinen Buchungen innerhalb einer Lieferung auf.\n\nAufgrund des verwendeten Rundungssystems kann es, je nach Anzahl der Buchungen und der Gesamtmenge, zu Abweichungen kommen.");
+		} catch (Exception e) {
+			Tools.showErr("Because FUCK YOU! That's why!");
+			System.exit(1);
 		}
-
-		OberflaecheImpl.getInstance().selectTreeRoot();
-		OberflaecheImpl.getInstance().showLieferungen(Lieferung.getAllLieferungen());
-		
-		Tools.showMsg("Bitte passen Sie bei vielen kleinen Buchungen innerhalb einer Lieferung auf.\n\nAufgrund des verwendeten Rundungssystems kann es, je nach Anzahl der Buchungen und der Gesamtmenge, zu Abweichungen kommen.");
 
 	}
 
@@ -83,7 +92,7 @@ public class Main {
 		befehlBuchung.execute(lager[1][9], 100, datum1, 10); //Spanien
 		befehlBuchung.execute(lager[0][2], 100, datum1, 10); //Großbritannien
 		
-		Lagerverwaltung_handler.getBefehlLieferung().execute(datum1, Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+		Lagerverwaltung_handler.getBefehlLieferung().execute(datum1, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 		
 		//2. Lieferung
@@ -93,7 +102,7 @@ public class Main {
 		befehlBuchung.execute(lager[1][3], 400, datum2, 20); //Hessen
 		befehlBuchung.execute(lager[1][4], 200, datum2, 10); //Sachsen
 		
-		Lagerverwaltung_handler.getBefehlLieferung().execute(datum2, Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+		Lagerverwaltung_handler.getBefehlLieferung().execute(datum2, Buchung.getGesamtMenge(), "Initiale Zubuchung" , Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 		
 		//3. Lieferung
@@ -104,7 +113,7 @@ public class Main {
 		befehlBuchung.execute(lager[1][9], 2500, datum3, 25); //Spanien
 		befehlBuchung.execute(lager[0][2], 2000, datum3, 20); //Großbritannien
 		
-		Lagerverwaltung_handler.getBefehlLieferung().execute(datum3, Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+		Lagerverwaltung_handler.getBefehlLieferung().execute(datum3, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 		
 		//4. Lieferung
@@ -113,7 +122,7 @@ public class Main {
 		befehlBuchung.execute(lager[1][6], 2000, datum4, 40); //MV
 		befehlBuchung.execute(lager[2][1], 500, datum4, 10); //Nienburg
 		
-		Lagerverwaltung_handler.getBefehlLieferung().execute(datum4, Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+		Lagerverwaltung_handler.getBefehlLieferung().execute(datum4, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 		
 		//5. Lieferung
@@ -124,7 +133,7 @@ public class Main {
 		befehlBuchung.execute(lager[1][2], 1875, datum5, 15); //Bremen
 		befehlBuchung.execute(lager[2][6], 2500, datum5, 20); //Mailand
 		
-		Lagerverwaltung_handler.getBefehlLieferung().execute(datum5, Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+		Lagerverwaltung_handler.getBefehlLieferung().execute(datum5, Buchung.getGesamtMenge(), "Initiale Zubuchung", Buchung.getNeueBuchungen());
 		befehlBuchung.clearAll();
 	}
 }

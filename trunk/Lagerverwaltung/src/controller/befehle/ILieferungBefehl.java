@@ -8,6 +8,6 @@ import model.Lieferung;
 
 public interface ILieferungBefehl {
 
-	public abstract Lieferung execute(Date d, int menge, List<Buchung> buchungen);
+	public abstract Lieferung execute(Date d, int menge, String typ, List<Buchung> buchungen);
 
 }
