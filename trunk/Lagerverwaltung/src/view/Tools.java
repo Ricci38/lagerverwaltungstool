@@ -15,6 +15,9 @@ public class Tools {
 	/**
 	 * Fügt einem Container mit GridBagLayout eine neue Komponente hinzu.
 	 * 
+	 * Diese Methode wurde in Anlehnung an Hißmann, M. (2012), Vorlesungsunterlagen erstellt.
+	 * @author Hißmann
+	 * 
 	 * @param cont
 	 *            Der Container, dem die Komponente hinzugefügt werden soll
 	 * @param gbl
