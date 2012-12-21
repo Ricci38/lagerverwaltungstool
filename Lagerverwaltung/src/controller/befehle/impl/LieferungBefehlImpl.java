@@ -8,7 +8,7 @@ import model.Buchung;
 import model.Lieferung;
 import view.Tools;
 import view.impl.OberflaecheImpl;
-import controller.Lagerverwaltung_handler;
+import controller.GUI_handler;
 import controller.befehle.ILieferungBefehl;
 
 public class LieferungBefehlImpl implements ILieferungBefehl {
@@ -27,7 +27,7 @@ public class LieferungBefehlImpl implements ILieferungBefehl {
 		}
 		
 		Lieferung l = new Lieferung(d, menge, typ, buchungen);
-		Lagerverwaltung_handler.getBefehlBuchung().clearAll();
+		GUI_handler.getBefehlBuchung().clearAll();
 		OberflaecheImpl.getInstance().showLieferungen(Lieferung.getAllLieferungen());
 		return l;
 	}

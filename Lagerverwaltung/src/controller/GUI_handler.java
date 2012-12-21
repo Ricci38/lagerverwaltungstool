@@ -2,9 +2,11 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -23,14 +25,18 @@ import controller.befehle.impl.BuchungBefehlImpl;
 import controller.befehle.impl.LieferungBefehlImpl;
 import exception.LagerverwaltungsException;
 
-public class Lagerverwaltung_handler implements ActionListener, TreeSelectionListener, MouseListener {
+public class GUI_handler extends MouseAdapter implements ActionListener, TreeSelectionListener {
 
-	Oberflaeche gui;
 	static int lieferungID = 0;
 
 	private static IBuchungBefehl befehlBuchung = new BuchungBefehlImpl();
 	private static ILieferungBefehl befehlLieferung = new LieferungBefehlImpl();
 
+	Oberflaeche gui;
+	
+	/**
+	 * TODO finde Text plox
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
@@ -44,6 +50,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			gui.enableJetztBuchen();
 			befehlBuchung.undo();
 			gui.enableRedo();
+			gui.disableAlleBuchungenBestaetigen();
 			if (!befehlBuchung.hasRemainingUndos())
 				gui.disableUndo();
 			gui.refreshTree(gui.getAusgewaehlterKnoten());
@@ -68,6 +75,9 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		}
 	}
 
+	/**
+	 * TODO finde Text plox
+	 */
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		if (gui.isCardUebersichtAktiv())
@@ -76,6 +86,9 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			gui.showLagerFuerBuchung(gui.getAusgewaehlterKnoten().getName());
 	}
 
+	/**
+	 * TODO finde Text plox
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		try {
@@ -98,22 +111,12 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		}
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-	}
-
+	/**
+	 * Führt die passende Aktion zu dem Button "Neues Lager" aus
+	 * 
+	 * @param e
+	 *            Wird aus actionPerformed(ActionEvent) übergeben
+	 */
 	private void neuesLager(ActionEvent e) {
 		// Neuen Knoten hinzufügen
 		Lager pre_knoten = gui.getAusgewaehlterKnoten();
@@ -140,7 +143,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 					menge_str = bestand.getText().trim();
 
 					if (pane_value == JOptionPane.OK_OPTION) {
-
 						if (name.isEmpty()) {
 							JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!", "Ungültige Bezeichnung",
 									JOptionPane.ERROR_MESSAGE);
@@ -162,7 +164,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 							continue;
 						}
 					}
-
 					// falls auf OK geklickt wurde und...
 				} while ((pane_value == JOptionPane.OK_OPTION) && ((name.isEmpty() || name == null) || (menge_str.isEmpty() || menge_str == null)));
 
@@ -185,9 +186,14 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			Tools.showErr("Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
 			return;
 		}
-		
 	}
 
+	/**
+	 * Führt die passende Aktion zu dem Button "Lager umbenennen" aus
+	 * 
+	 * @param e
+	 *            Wird aus actionPerformed(ActionEvent) übergeben
+	 */
 	private void lagerUmebennnen(ActionEvent e) {
 		// Neuen Knoten hinzufügen
 		Lager knoten = gui.getAusgewaehlterKnoten();
@@ -232,17 +238,17 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				} catch (LagerverwaltungsException ex) {
 					// Falls der Lagername bereits vergeben wurde, wird eine Exception geworfen
 					Tools.showErr(ex);
+					return;
 				}
 			}
 
 		}
-		// Falls kein Lager ausgewählt wurde wird ein Fehler ausgegeben
-		else
-		{
+		// Falls kein Lager ausgewählt wurde, wird ein Fehler ausgegeben
+		else {
 			Tools.showMsg("Es ist kein Lager ausgewählt, das umgenannt werden kann!");
 			return;
 		}
-		
+
 		JTable tbl_lieferungsUebersicht = gui.getTbl_lieferungsUebersicht();
 		int selectedRow = tbl_lieferungsUebersicht.getSelectedRow();
 		if (selectedRow == -1) // Keine Zeile ausgewählt
@@ -254,11 +260,17 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		gui.showLagerbuchungen(knoten.getBuchungen());
 	}
 
+	/**
+	 * Führt die passende Aktion zu dem Button "Neue Lieferung" aus
+	 * 
+	 * @param e
+	 *            Wird aus actionPerformed(ActionEvent) übergeben
+	 */
 	private void neueLieferung(ActionEvent e) {
 		if (gui.isCardNeueLieferungAktiv()) {
 			int value = JOptionPane.showOptionDialog(null,
-					"Möchten Sie die aktuelle Lieferung abbrechen um eine neue Lieferung zu machen?\nAlle Änderungen werden dabei verworfen!",
-					"Sicher?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+					"Möchten Sie die aktuelle Lieferung abbrechen um eine neue Lieferung zu machen?\nAlle Änderungen werden dabei verworfen!", "Sicher?",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 			if (value == JOptionPane.YES_OPTION) {
 				lieferungAbbrechen(e); // Aktion entspricht dem Lieferungs
@@ -281,11 +293,22 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		gui.disableNeuesLager();
 	}
 
+	/**
+	 * Führt die passende Aktion zu dem Button "Jetzt Buchen" aus
+	 * 
+	 * @param e
+	 *            Wird aus actionPerformed(ActionEvent) übergeben
+	 */
 	private void jetztBuchen(ActionEvent e) {
-		int restMenge, restProzent, gesamtMenge, diff;
-		int menge = getBuchungsMenge();
+		int restMenge, restProzent, gesamtMenge, diff = 0;
 		Lager l = gui.getAusgewaehlterKnoten();
-
+		int menge = -1;
+		try {
+			menge = getBuchungsMenge();
+		} catch (LagerverwaltungsException ex) {
+			Tools.showErr(ex);
+			return;
+		}
 		if (menge != -1) {
 			gesamtMenge = Integer.parseInt(gui.getGesamtmenge());
 			if (gui.getVerbleibendeMenge() == -1)
@@ -298,7 +321,6 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			restProzent = gui.getVerbleibenderProzentanteil() - Integer.parseInt(gui.getProzentualerAnteil());
 
 			if (restMenge >= 0) {
-
 				// Falls weniger als 1 % der Restmenge verbleiben, wird die
 				// Restmenge der aktuellen Buchung hinzugefügt
 				if (restProzent < 1 && restMenge > 0) {
@@ -308,11 +330,15 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				}
 				if (gui.isAbBuchung())
 					menge = menge * -1;
-				diff = befehlBuchung.execute(l, menge, new Date(), Integer.parseInt(gui.getProzentualerAnteil()));
-				
+				try {
+					diff = befehlBuchung.execute(l, menge, new Date(), Integer.parseInt(gui.getProzentualerAnteil()));
+				} catch (LagerverwaltungsException ex) {
+					Tools.showErr(ex);
+					return;
+				}
 				restMenge += diff;
-				restProzent += (int)((diff / (float)gesamtMenge) * 100);
-				
+				restProzent += (int) ((diff / (float) gesamtMenge) * 100);
+
 				gui.disableBuchungsArt();
 				gui.disableGesamtmenge();
 				gui.setVerbleibendeMenge(restMenge);
@@ -333,37 +359,59 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				return;
 			}
 		}
-
 		gui.showLagerFuerBuchung(l.getName());
 		gui.refreshTree(l);
 		befehlBuchung.clearRedos();
 		gui.disableRedo();
 	}
 
+	/**
+	 * Holt sich die Werte für die Berechnung der zu buchenden Menge aus der GUI
+	 * und berechnet die zu verbuchende Menge
+	 * 
+	 * @return Die Menge, die bei einer Buchung verbucht werden muss
+	 */
 	private int getBuchungsMenge() {
 		String gesamtmenge_str, prozentualerAnteil_str;
 		int gesamtmenge, prozentualerAnteil;
 		gesamtmenge_str = gui.getGesamtmenge();
 		prozentualerAnteil_str = gui.getProzentualerAnteil();
+		List<String> result = new ArrayList<String>();
+
+		if ((gesamtmenge_str.matches("\\d+") && !Tools.isStringANumber(gesamtmenge_str))
+				|| (prozentualerAnteil_str.matches("\\d+") && !Tools.isStringANumber(prozentualerAnteil_str))) {
+			result.add("Erlaubter Zahlenraum: 1 bis " + Integer.MAX_VALUE);
+			throw new LagerverwaltungsException("Zahl ist leider zu lang.", result, null);
+		}
 
 		if (Tools.isStringANumber(gesamtmenge_str) && Tools.isStringANumber(prozentualerAnteil_str)) {
 			gesamtmenge = Integer.parseInt(gesamtmenge_str);
 			prozentualerAnteil = Integer.parseInt(prozentualerAnteil_str);
 
-			if (gesamtmenge < 1)
-				Tools.showErr("Es sind nur Gesamtmengen größer 0 zulässig!");
-			else {
-				if ((prozentualerAnteil < 1) || (prozentualerAnteil > 100))
-					Tools.showErr("Ungültiger prozentueler Anteil! Nur ganzzahlige Werte von 1 bis 100.");
-				else
+			if (gesamtmenge < 1) {
+				result.add("Es sind nur Gesamtmengen größer 0 zulässig!");
+				throw new LagerverwaltungsException("Gesamtmenge ist zu klein.", result, null);
+			} else {
+				if ((prozentualerAnteil < 1) || (prozentualerAnteil > 100)) {
+					result.add("Es sind nur ganzzahlige Werte von 1 bis 100 erlaubt.");
+					throw new LagerverwaltungsException("Ungültiger prozentueler Anteil!", result, null);
+				} else
 					// Abrunden
 					return (int) Math.floor(((double) (gesamtmenge * prozentualerAnteil) / 100));
 			}
-		} else
-			Tools.showErr("Es sind nur ganzzahlige Werte erlaubt!");
-		return -1; // Ungültige Eingabe
+		} else {
+			result.add("Es sind nur ganzzahlige Werte erlaubt!");
+			throw new LagerverwaltungsException("Ungültige Eingabe", result, null);
+		}
 	}
 
+	/**
+	 * Führt die passende Aktion zu dem Button "Bestätigen" in der Ansicht
+	 * "Neue Lieferung" aus
+	 * 
+	 * @param e
+	 *            Wird aus actionPerformed(ActionEvent) übergeben
+	 */
 	private void lieferungBestaetigen(ActionEvent e) {
 		if (!Buchung.getNeueBuchungen().isEmpty()) {
 			befehlLieferung.execute(new Date(), Buchung.getGesamtMenge(), gui.isAbBuchung() ? "Abbuchung" : "Zubuchung", Buchung.getNeueBuchungen());
@@ -380,6 +428,13 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 			Tools.showErr("Bitte zuerst auf \"Jetzt buchen\" klicken");
 	}
 
+	/**
+	 * Führt die passende Aktion zu dem Button "Abbrechen" in der Ansicht
+	 * "Neue Lieferung" aus
+	 * 
+	 * @param e
+	 *            Wird aus actionPerformed(ActionEvent) übergeben
+	 */
 	private void lieferungAbbrechen(ActionEvent e) {
 		befehlBuchung.undoAll();
 		gui.enableNeuesLager();
@@ -392,12 +447,22 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		gui.refreshTree();
 	}
 
+	/**
+	 * Führt die passende Aktion zu dem Button "Lieferungs-/ Lagerübersicht"
+	 * aus. Alle aktuellen Buchungen, die nicht bestätigt wurden, werden
+	 * abgebrochen und die Lieferungsübersicht wird wieder angezeigt.
+	 * 
+	 * @param e
+	 *            Wird aus actionPerformed(ActionEvent) übergeben
+	 */
 	private void zeigeLieferungsLagerUebersicht(ActionEvent e) {
 		// Falls eine neue Lieferung durchgeführt wird
 		if (gui.isCardNeueLieferungAktiv()) {
-			int value = JOptionPane.showOptionDialog(null,
-					"Möchten Sie die aktuelle Lieferung abbrechen um zu der Lieferungs- / Lagerübersicht zu gelangen?\nAlle Änderungen werden dabei verworfen!",
-					"Sicher?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+			int value = JOptionPane
+					.showOptionDialog(
+							null,
+							"Möchten Sie die aktuelle Lieferung abbrechen um zu der Lieferungs- / Lagerübersicht zu gelangen?\nAlle Änderungen werden dabei verworfen!",
+							"Sicher?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 			if (value == JOptionPane.YES_OPTION) {
 				lieferungAbbrechen(e); // Aktion entspricht dem Lieferungs
@@ -409,14 +474,28 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		gui.refreshTree();
 	}
 
-	public void announceGUI_Lager(Oberflaeche myGUI) {
-		this.gui = myGUI;
+	/**
+	 * Macht dem Objekt dieser Klasse die GUI bekannt.
+	 * @param gui
+	 */
+	public void announceGui(Oberflaeche gui) {
+		this.gui = gui;
 	}
 
+	/**
+	 * Gibt die Referenz zum BuchungBefehlImpl-Objekt zurück
+	 * 
+	 * @return Referenz zum BuchungBefehlImpl-Objekt
+	 */
 	public static IBuchungBefehl getBefehlBuchung() {
 		return befehlBuchung;
 	}
 
+	/**
+	 * Gibt die Referenz zum LieferungBefehlImpl-Objekt zurück
+	 * 
+	 * @return Referenz zum LieferungBefehlImpl-Objekt
+	 */
 	public static ILieferungBefehl getBefehlLieferung() {
 		return befehlLieferung;
 	}
