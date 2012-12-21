@@ -9,21 +9,14 @@ public class Lieferung {
 	private final Date lieferungsDatum;
 	private final List<Buchung> buchungen;
 	private final int gesamtMenge;
+	private final String lieferungsTyp;
 	private static List<Lieferung> lieferungen = new ArrayList<Lieferung>();
 
-	public Lieferung(Date d, int gesamtMenge, List<Buchung> b) {
+	public Lieferung(Date d, int gesamtMenge, String typ, List<Buchung> b) {
 		this.lieferungsDatum = d;
 		this.gesamtMenge = gesamtMenge;
+		this.lieferungsTyp = typ;
 		this.buchungen = new ArrayList<Buchung>(b);
-		lieferungen.add(this);
-	}
-
-	public Lieferung(Date d, Buchung b) {
-		this.lieferungsDatum = d;
-		List<Buchung> bl = new ArrayList<Buchung>();
-		bl.add(b);
-		this.buchungen = bl;
-		this.gesamtMenge = b.getMenge();
 		lieferungen.add(this);
 	}
 
@@ -55,5 +48,9 @@ public class Lieferung {
 			if (date.equals(sdf.format(l.getLieferungsDatum()))) return l;
 		}
 		return null;
+	}
+
+	public String getLieferungsTyp() {
+		return lieferungsTyp;
 	}
 }

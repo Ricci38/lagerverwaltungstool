@@ -255,15 +255,26 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	}
 
 	private void neueLieferung(ActionEvent e) {
+		if (gui.isCardNeueLieferungAktiv()) {
+			int value = JOptionPane.showOptionDialog(null,
+					"Möchten Sie die aktuelle Lieferung abbrechen um eine neue Lieferung zu machen?\nAlle Änderungen werden dabei verworfen!",
+					"Sicher?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+			if (value == JOptionPane.YES_OPTION) {
+				lieferungAbbrechen(e); // Aktion entspricht dem Lieferungs
+										// Abbruch
+			} else if (value == JOptionPane.NO_OPTION) {
+				return;
+			}
+		}
 		gui.disableNeuesLager();
-		gui.disableNeueLieferung();
 		gui.disableAlleBuchungenBestaetigen();
+		gui.disableLagerUmbenennen();
 		gui.enableBuchungsArt();
 		gui.selectTreeRoot();
 		gui.showCardNeueLieferung();
 		gui.showUndoRedo();
 		gui.enableGesamtmenge();
-		gui.disableNeueLieferung();
 		gui.refreshTree(gui.getAusgewaehlterKnoten());
 		gui.disableUndo();
 		gui.disableRedo();
@@ -271,7 +282,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 	}
 
 	private void jetztBuchen(ActionEvent e) {
-		int restMenge, restProzent, gesamtMenge;
+		int restMenge, restProzent, gesamtMenge, diff;
 		int menge = getBuchungsMenge();
 		Lager l = gui.getAusgewaehlterKnoten();
 
@@ -297,12 +308,16 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 				}
 				if (gui.isAbBuchung())
 					menge = menge * -1;
-				befehlBuchung.execute(l, menge, new Date(), Integer.parseInt(gui.getProzentualerAnteil()));
+				diff = befehlBuchung.execute(l, menge, new Date(), Integer.parseInt(gui.getProzentualerAnteil()));
+				
+				restMenge += diff;
+				restProzent += (int)((diff / (float)gesamtMenge) * 100);
+				
+				gui.disableBuchungsArt();
+				gui.disableGesamtmenge();
 				gui.setVerbleibendeMenge(restMenge);
 				gui.setVerbleibenderProzentanteil(restProzent);
 				gui.showVerbleibendeMenge();
-				gui.disableBuchungsArt();
-				gui.disableGesamtmenge();
 				gui.enableUndo();
 
 				if (restMenge <= 0 || restProzent <= 0) {
@@ -351,13 +366,14 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 
 	private void lieferungBestaetigen(ActionEvent e) {
 		if (!Buchung.getNeueBuchungen().isEmpty()) {
-			befehlLieferung.execute(new Date(), Buchung.getGesamtMenge(), Buchung.getNeueBuchungen());
+			befehlLieferung.execute(new Date(), Buchung.getGesamtMenge(), gui.isAbBuchung() ? "Abbuchung" : "Zubuchung", Buchung.getNeueBuchungen());
 			gui.enableNeuesLager();
 			gui.enableLagerUebersicht();
+			gui.enableLagerUmbenennen();
 			gui.hideUndoRedo();
 			gui.showCardUebersicht();
-			gui.enableLagerUmbenennen();
 			gui.setVerbleibendeMenge(-1);
+			gui.setVerbleibenderProzentanteil(-1);
 			gui.refreshTree();
 			befehlBuchung.clearAll();
 		} else
@@ -368,9 +384,11 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		befehlBuchung.undoAll();
 		gui.enableNeuesLager();
 		gui.enableLagerUebersicht();
+		gui.enableLagerUmbenennen();
 		gui.hideUndoRedo();
 		gui.showCardUebersicht();
 		gui.setVerbleibendeMenge(-1);
+		gui.setVerbleibenderProzentanteil(-1);
 		gui.refreshTree();
 	}
 
@@ -378,7 +396,7 @@ public class Lagerverwaltung_handler implements ActionListener, TreeSelectionLis
 		// Falls eine neue Lieferung durchgeführt wird
 		if (gui.isCardNeueLieferungAktiv()) {
 			int value = JOptionPane.showOptionDialog(null,
-					"Möchten Sie die aktuelle Lieferung abbrechen um zu der Lieferungs- / Lagerübersicht zu gelangen?\nAlle Änderungen werden verworfen!",
+					"Möchten Sie die aktuelle Lieferung abbrechen um zu der Lieferungs- / Lagerübersicht zu gelangen?\nAlle Änderungen werden dabei verworfen!",
 					"Sicher?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 			if (value == JOptionPane.YES_OPTION) {

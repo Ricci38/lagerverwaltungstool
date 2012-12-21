@@ -40,6 +40,7 @@ import view.Oberflaeche;
 import view.Tools;
 
 //TODO Eigenständigkeitserklärung
+//XXX Wie werden Ablieferungen in der Übersicht vermerkt?
 public class OberflaecheImpl implements Oberflaeche {
 
 	// TODO Variablen sortieren (z.B. nach Type & Name)
@@ -344,28 +345,6 @@ public class OberflaecheImpl implements Oberflaeche {
 	}
 
 	@Override
-	public void hideLagerverwaltung() {
-		lagerverwaltung.setVisible(false);
-	}
-
-	@Override
-	public void hideUndoRedo() {
-		undo.setVisible(false);
-		redo.setVisible(false);
-	}
-
-	@Override
-	public void showUndoRedo() {
-		undo.setVisible(true);
-		redo.setVisible(true);
-	}
-
-	@Override
-	public void showLagerverwaltung() {
-		lagerverwaltung.setVisible(true);
-	}
-
-	@Override
 	public boolean isAbBuchung() {
 		return abBuchung.isSelected();
 	}
@@ -434,6 +413,17 @@ public class OberflaecheImpl implements Oberflaeche {
 	}
 
 	@Override
+	public void hideLagerverwaltung() {
+		lagerverwaltung.setVisible(false);
+	}
+
+	@Override
+	public void hideUndoRedo() {
+		undo.setVisible(false);
+		redo.setVisible(false);
+	}
+
+	@Override
 	public void showCardNeueLieferung() {
 		((CardLayout) p_center.getLayout()).show(p_center, "NeueLieferung");
 		restMenge.setVisible(false);
@@ -462,23 +452,37 @@ public class OberflaecheImpl implements Oberflaeche {
 			p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
 		else {
 			p_center_lagerbuchungen.setLayout(new BorderLayout());
-	
+
 			if (b.isEmpty())
 				b.addAll(getAllBuchungen(l));
-	
-			int i = 0;
-			String[] spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
-			String[][] daten = new String[b.size()][3];
-	
-			for (Buchung bu : b) {
-				daten[i][0] = ((Integer) bu.getBuchungID()).toString();
-				daten[i][1] = sdf.format(bu.getDatum());
-				daten[i++][2] = ((Integer) bu.getMenge()).toString();
+
+			String[] spalten;
+			String[][] daten;
+			if (l.isLeaf()) {
+				int i = 0;
+				spalten = new String[] { "Buchungs ID", "Datum", "Menge" };
+				daten = new String[b.size()][3];
+
+				for (Buchung bu : b) {
+					daten[i][0] = ((Integer) bu.getBuchungID()).toString();
+					daten[i][1] = sdf.format(bu.getDatum());
+					daten[i++][2] = ((Integer) bu.getMenge()).toString();
+				}
+			} else {
+				int i = 0;
+				spalten = new String[] { "Buchungs ID","Lager", "Datum", "Menge" };
+				daten = new String[b.size()][4];
+
+				for (Buchung bu : b) {
+					daten[i][0] = ((Integer) bu.getBuchungID()).toString();
+					daten[i][1] = bu.getLagerName();
+					daten[i][2] = sdf.format(bu.getDatum());
+					daten[i++][3] = ((Integer) bu.getMenge()).toString();
+				}
 			}
-	
 			tbl_lagerbuchungen = new JTable(daten, spalten) {
 				private static final long serialVersionUID = 6620092595652821138L;
-	
+
 				@Override
 				public boolean isCellEditable(int arg0, int arg1) {
 					return false;
@@ -490,6 +494,7 @@ public class OberflaecheImpl implements Oberflaeche {
 			p_center_lagerbuchungen.add(new JScrollPane(tbl_lagerbuchungen), BorderLayout.CENTER);
 			saldo.setEditable(false);
 			saldo.setFocusable(false);
+
 		}
 		p_center_lagerbuchungen.updateUI();
 	}
@@ -504,6 +509,11 @@ public class OberflaecheImpl implements Oberflaeche {
 		if (verbleibendeMenge != 0)
 			enableJetztBuchen();
 		p_center_neue_lieferung_center.updateUI();
+	}
+
+	@Override
+	public void showLagerverwaltung() {
+		lagerverwaltung.setVisible(true);
 	}
 
 	@Override
@@ -571,13 +581,14 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		int i = 0;
 
-		String[] spalten = new String[] { "Datum", "Anzahl Buchungen", "Gesamtmenge" };
-		String[][] daten = new String[lieferungen.size()][3];
+		String[] spalten = new String[] { "Datum", "Buchungsart", "Anzahl Buchungen", "Bestandsänderung" };
+		String[][] daten = new String[lieferungen.size()][4];
 
 		for (Lieferung l : lieferungen) {
 			daten[i][0] = sdf.format(l.getLieferungsDatum());
-			daten[i][1] = ((Integer) l.getBuchungen().size()).toString();
-			daten[i][2] = ((Integer) l.getGesamtMenge()).toString();
+			daten[i][1] = l.getLieferungsTyp();
+			daten[i][2] = ((Integer) l.getBuchungen().size()).toString();
+			daten[i][3] = ((Integer) l.getGesamtMenge()).toString();
 			i++;
 		}
 
@@ -601,6 +612,12 @@ public class OberflaecheImpl implements Oberflaeche {
 	public void showTabLieferungsBuchungen(List<Buchung> buchungen) {
 		theInstance.showLieferungsdetails(buchungen);
 		p_center_tabbs.setSelectedComponent(p_center_lieferungdetails);
+	}
+
+	@Override
+	public void showUndoRedo() {
+		undo.setVisible(true);
+		redo.setVisible(true);
 	}
 
 	@Override
@@ -631,7 +648,7 @@ public class OberflaecheImpl implements Oberflaeche {
 	 * @return the singelton object of the class 'Oberflaeche'
 	 */
 	public static synchronized Oberflaeche getInstance() {
-		if (theInstance == null) {
+		if (null == theInstance) {
 			theInstance = new OberflaecheImpl();
 		}
 		return theInstance;
