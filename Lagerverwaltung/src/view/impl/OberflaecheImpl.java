@@ -220,8 +220,8 @@ public class OberflaecheImpl implements Oberflaeche {
 		buchungsArt.add(zuBuchung);
 		buchungsArt.add(abBuchung);
 
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, zuBuchung, 0, 0, 1, 1, 0, 0, GridBagConstraints.NONE);
-		Tools.addComponent(p_center_neue_lieferung_center, gbl, abBuchung, 0, 1, 1, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, zuBuchung, 0, 0, 2, 1, 0, 0, GridBagConstraints.NONE);
+		Tools.addComponent(p_center_neue_lieferung_center, gbl, abBuchung, 0, 1, 2, 1, 0, 0, GridBagConstraints.NONE);
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, new JLabel("Gesamtmenge :"), 0, 3, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, gesamtmenge = new JTextField("Gesamtmenge"), 1, 3, 1, 1, 0, 0, GridBagConstraints.HORIZONTAL);
 		Tools.addComponent(p_center_neue_lieferung_center, gbl, restMenge = new JLabel("Verbleibende Menge: " + verbleibendeMenge), 0, 4, 3, 1, 0, 0,
