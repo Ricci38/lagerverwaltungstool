@@ -4,6 +4,11 @@ import java.util.Date;
 
 import model.Lager;
 
+/**
+ * @version 1.1.0
+ * @author Dominik Klüter
+ *
+ */
 public interface IBuchungBefehl {
 	
 	public int execute(Lager l, int menge, Date d, int prozent);

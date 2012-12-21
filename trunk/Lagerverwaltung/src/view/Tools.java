@@ -8,6 +8,11 @@ import java.awt.Insets;
 
 import javax.swing.JOptionPane;
 
+/**
+ * @version 1.1.0
+ * @author Philo Könneker
+ *
+ */
 public class Tools {
 
 	final static Insets insets = new Insets(5, 5, 5, 5);

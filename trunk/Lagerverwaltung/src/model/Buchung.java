@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @version 1.1.0
+ * @author Philo Könneker
+ *
+ */
 public class Buchung {
 
 	private static int id;

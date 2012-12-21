@@ -10,6 +10,11 @@ import view.Tools;
 import view.impl.OberflaecheImpl;
 import controller.befehle.IBuchungBefehl;
 
+/**
+ * @version 1.1.0
+ * @author Philo Könneker
+ * 
+ */
 public class BuchungBefehlImpl implements IBuchungBefehl {
 
 	private final Stack<Buchung> buchungsStackUndo = new Stack<Buchung>();
@@ -52,7 +57,7 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 		} catch (Exception e) {
 			// Sollte normalerweise nicht mehr benötigt werden :)
 			// Nur für den Fall, dass irgendetwas schief läuft
-			// Zeile 42 produzierte früher eine NullPointerException, deshalb dieser catch-Block
+			// Zeile 55 produzierte früher eine NullPointerException, deshalb dieser catch-Block
 			Tools.showMsg("Sie haben gewonnen!\n\nUnd zwar ein Stickstoffatom.\nWir gratulieren Ihnen herzlichst! :)\n\n" + e.getMessage());
 			e.printStackTrace();
 			return;
@@ -77,7 +82,7 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 		} catch (Exception e) {
 			// Sollte normalerweise nicht mehr benötigt werden :)
 			// Nur für den Fall, dass irgendetwas schief läuft
-			// Zeile 64 produzierte früher eine NullPointerException, deshalb dieser catch-Block
+			// Zeile 80 produzierte früher eine NullPointerException, deshalb dieser catch-Block
 			Tools.showMsg("Sie haben gewonnen!\n\nUnd zwar ein Sauerstoffatom.\nWir gratulieren Ihnen herzlichst! :)");
 		}
 	}
@@ -94,6 +99,10 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 		clearAll();
 	}
 
+	/**
+	 * Leer alle Stacks und die Liste von neuen Buchungen in Buchung, um eine
+	 * neue Lieferung zu ermöglichen.
+	 */
 	@Override
 	public void clearAll() {
 		buchungsStackUndo.clear();
@@ -118,7 +127,7 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 	 */
 	@Override
 	public boolean hasRemainingUndos() {
-		return buchungsStackUndo.size() != 0 ? true : false;
+		return buchungsStackUndo.size() != 0;
 	}
 
 	/**
@@ -127,7 +136,7 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 	 */
 	@Override
 	public boolean hasRemainingRedos() {
-		return buchungsStackRedo.size() != 0 ? true : false;
+		return buchungsStackRedo.size() != 0;
 	}
 
 }

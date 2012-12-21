@@ -40,6 +40,12 @@ import model.Lieferung;
 import view.Oberflaeche;
 import view.Tools;
 
+/**
+ * @version 1.1.0
+ * @author Dominik Klüter
+ * @author Philo Könneker
+ * 
+ */
 public class OberflaecheImpl implements Oberflaeche {
 
 	// ### Singeltonvariable ###
@@ -78,7 +84,11 @@ public class OberflaecheImpl implements Oberflaeche {
 	private boolean isCardUebersichtAktiv = false;
 	private boolean isCardNeueLieferungAktiv = false;
 
-	// ### privater Konstruktor (Singelton) ###
+	/**
+	 * privater Konstruktor (Singelton)
+	 * 
+	 * @author Philo Könneker
+	 */
 	private OberflaecheImpl() {
 		buildLagerverwaltung();
 		hideUndoRedo();
@@ -87,6 +97,9 @@ public class OberflaecheImpl implements Oberflaeche {
 
 	/**
 	 * Erstellt die Oberfläche für das Hauptfenster der Lagerverwaltung
+	 * 
+	 * @author Dominik Klüter
+	 * @author Philo Könneker
 	 */
 	private void buildLagerverwaltung() {
 		if (lagerverwaltung != null)
@@ -184,6 +197,7 @@ public class OberflaecheImpl implements Oberflaeche {
 
 		gbl = new GridBagLayout();
 
+		// ### baut das Panel für "Neue Lieferung" zusammen
 		buildCardNeueLieferung();
 
 		p_center = new JPanel();
@@ -195,6 +209,12 @@ public class OberflaecheImpl implements Oberflaeche {
 		c.add(p_center, BorderLayout.CENTER);
 	}
 
+	/**
+	 * Baut das Panel für "Neue Lieferung" zusammen
+	 * 
+	 * @author Dominik Klüter
+	 * @author Philo Könneker
+	 */
 	private void buildCardNeueLieferung() {
 		p_center_neue_lieferung = new JPanel();
 		p_center_neue_lieferung_north = new JPanel();
@@ -244,6 +264,9 @@ public class OberflaecheImpl implements Oberflaeche {
 		disableJetztBuchen();
 	}
 
+	/**
+	 * Setzte das Panel für "Neue Lieferung" auf den Anfangszustand zurück
+	 */
 	private void resetCardNeueLieferung() {
 		lagerBezeichnung.setVisible(false);
 		prozentAnteil.setVisible(false);
@@ -359,6 +382,15 @@ public class OberflaecheImpl implements Oberflaeche {
 		return isCardUebersichtAktiv;
 	}
 
+	/**
+	 * Gibt eine List<Buchung> mit allen Buchungen, die auf dem Lager, welches
+	 * übergeben wurde, und dessen Unterlager getätigt wurden.
+	 * 
+	 * @author Dominik Klüter
+	 * 
+	 * @return b Liste aller Buchungen des Lagers incl. der Buchungen aller
+	 *         seiner Unterlager
+	 */
 	@Override
 	public List<Buchung> getAllBuchungen(Lager l) {
 		List<Buchung> b = new ArrayList<Buchung>();
@@ -372,6 +404,11 @@ public class OberflaecheImpl implements Oberflaeche {
 		return b;
 	}
 
+	/**
+	 * Gibt das aktuell in der Lagerstruktur augewählte Lager zurück
+	 * 
+	 * @return lager Das im Baum ausgewählte Lager
+	 */
 	@Override
 	public Lager getAusgewaehlterKnoten() {
 		return (Lager) lagerTree.getLastSelectedPathComponent();
@@ -423,6 +460,13 @@ public class OberflaecheImpl implements Oberflaeche {
 		redo.setVisible(false);
 	}
 
+	/**
+	 * Zeigt das Panel "Neue Lieferung" an und versteckt das Panel
+	 * "Lieferungs- & Buchungsübersicht". Ebenfalls setzt es die das Panel
+	 * "Neue Lieferung" auf den Startzustand zurück.
+	 * 
+	 * @author Dominik Klüter
+	 */
 	@Override
 	public void showCardNeueLieferung() {
 		((CardLayout) p_center.getLayout()).show(p_center, "NeueLieferung");
@@ -431,25 +475,35 @@ public class OberflaecheImpl implements Oberflaeche {
 		isCardNeueLieferungAktiv = true;
 		verbleibendeMenge = -1;
 		verbleibenderProzentanteil = -1;
+		resetCardNeueLieferung();
 		gesamtmenge.setText("Gesamtmenge");
 	}
 
+	/**
+	 * Zeigt das Panel "Lieferungs- & Buchungsübersicht".
+	 */
 	@Override
 	public void showCardUebersicht() {
 		((CardLayout) p_center.getLayout()).show(p_center, "Übersicht");
 		isCardUebersichtAktiv = true;
 		isCardNeueLieferungAktiv = false;
-		resetCardNeueLieferung();
 	}
 
+	/**
+	 * Zeigt die Buchungen eines beliebigen Lagers an. Es holt sich, für den
+	 * Fall, dass es Unterlager hat, alle Buchungen von allen seinen Unterlagen
+	 * und zeigt diese dann zusammen mit dem Lagernamen an.
+	 * 
+	 * @author Philo Könneker
+	 */
 	@Override
-	public void showLagerbuchungen(List<Buchung> b) {
-		if (null == getAusgewaehlterKnoten() || null == b)
+	public void showLagerbuchungen(Lager l) {
+		if (null == getAusgewaehlterKnoten())
 			return;
 		p_center_lagerbuchungen.removeAll();
-		Lager l = getAusgewaehlterKnoten();
-		if ((l.isLeaf() && l.getBestand() == 0))
-			p_center_lagerbuchungen.add(new JLabel("Es wurden noch keine Buchungen ausgeführt."));
+		List<Buchung> b = l.getBuchungen();
+		if ((l.isLeaf() && b.isEmpty()))
+			p_center_lagerbuchungen.add(new JLabel("<html><body>Es wurden noch keine Buchungen ausgeführt.<br>Saldo des Lagers \"" + l.getName() + "\": 0"));
 		else {
 			p_center_lagerbuchungen.setLayout(new BorderLayout());
 
@@ -470,7 +524,7 @@ public class OberflaecheImpl implements Oberflaeche {
 				}
 			} else {
 				int i = 0;
-				spalten = new String[] { "Buchungs ID","Lager", "Datum", "Menge" };
+				spalten = new String[] { "Buchungs ID", "Lager", "Datum", "Menge" };
 				daten = new String[b.size()][4];
 
 				for (Buchung bu : b) {
@@ -501,6 +555,13 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center_lagerbuchungen.updateUI();
 	}
 
+	/**
+	 * Wird, während das Panel "Neue Lieferung" aktiv ist, ein Lager angeklickt,
+	 * so zeigt diese Methode den Lagernamen und das Feld für den protzentualen
+	 * Anteil an.
+	 * 
+	 * @author Dominik Klüter
+	 */
 	@Override
 	public void showLagerFuerBuchung(String n) {
 		resetCardNeueLieferung();
@@ -518,12 +579,16 @@ public class OberflaecheImpl implements Oberflaeche {
 		lagerverwaltung.setVisible(true);
 	}
 
+	/**
+	 * Zeigt die Buchungen, die zu der angeklickenten Lieferung (in der Tabelle
+	 * in der alle Lieferungen aufgelistet sind), an
+	 * 
+	 * @author Philo Könneker
+	 */
 	@Override
 	public void showLieferungsdetails(List<Buchung> buchungsListe) {
-
 		if (buchungsListe.isEmpty())
 			return;
-
 		p_center_lieferungdetails.setLayout(new BorderLayout());
 
 		// Aufbau einer 4 x X Matrix
@@ -561,7 +626,7 @@ public class OberflaecheImpl implements Oberflaeche {
 				private static final long serialVersionUID = 861599783877862457L;
 
 				@Override
-				public boolean isCellEditable(int arg0, int arg1) {
+				public boolean isCellEditable(int arg0, int arg1) { // Einzelnen Zellen der Tabelle können nicht mehr bearbeitet werden
 					return false;
 				}
 			};
@@ -574,6 +639,11 @@ public class OberflaecheImpl implements Oberflaeche {
 		p_center_lieferungdetails.updateUI();
 	}
 
+	/**
+	 * Zeigt alle getätigten Lieferungen in einer Tabelle an.
+	 * 
+	 * @author Philo Könneker
+	 */
 	@Override
 	public void showLieferungen(List<Lieferung> lieferungen) {
 		if (lieferungen.isEmpty()) {
@@ -637,19 +707,29 @@ public class OberflaecheImpl implements Oberflaeche {
 		lagerTree.expandRow(0);
 	}
 
-	// ### JTree neu aufbauen ###
+	/**
+	 * Baut den gesamten JTree (Lagerstruktur) neu auf.
+	 */
 	@Override
 	public void refreshTree() {
 		((DefaultTreeModel) lagerTree.getModel()).reload();
 	}
 
+	/**
+	 * Baut den JTree (Lagerstruktur) ausgehend von dem angegebenen Lager bis in
+	 * die zu den Blättern jenes Lagers neu auf.
+	 */
 	@Override
 	public void refreshTree(TreeNode node) {
 		((DefaultTreeModel) lagerTree.getModel()).reload(node);
 	}
 
 	/**
-	 * Get the instance of this singelton
+	 * Gibt die Instanz der Oberfläche zurück. Um ein Mehrfachinitialisierung zu
+	 * verhindern, auch wenn dies eher unwahrscheinlich ist, ist diese Methode
+	 * 'synchronized'.
+	 * 
+	 * @author Philo Könneker
 	 * 
 	 * @return the singelton object of the class 'Oberflaeche'
 	 */
@@ -668,7 +748,13 @@ public class OberflaecheImpl implements Oberflaeche {
 		listener_LieferungsUebersicht = l;
 	}
 
-	// ### Disabling clone() by throwing CloneNotSupportedException ###
+	/**
+	 * Überschreibt die Methode clone(), welche von java.lang.Object geerbt
+	 * wird. Wirft immer eine CloneNotSupportedException, da dies ein Singelton
+	 * ist.
+	 * 
+	 * @throws CloneNotSupportedException
+	 */
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException("This is a singelton, dude! No cloning allowed!");

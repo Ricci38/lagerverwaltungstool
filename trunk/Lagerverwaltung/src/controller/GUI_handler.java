@@ -25,9 +25,15 @@ import controller.befehle.impl.BuchungBefehlImpl;
 import controller.befehle.impl.LieferungBefehlImpl;
 import exception.LagerverwaltungsException;
 
+/**
+ * @version 1.1.0
+ * @author Dominik Klüter
+ * @author Philo Könneker
+ * 
+ */
 public class GUI_handler extends MouseAdapter implements ActionListener, TreeSelectionListener {
 
-	static int lieferungID = 0;
+	static int lieferungID = 0; // Startwert = 0
 
 	private static IBuchungBefehl befehlBuchung = new BuchungBefehlImpl();
 	private static ILieferungBefehl befehlLieferung = new LieferungBefehlImpl();
@@ -37,6 +43,8 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	/**
 	 * Deligiert alle möglichen Klicks auf Buttons in der Oberfläche an die
 	 * entsprechenden Methoden
+	 * 
+	 * @author Dominik Klüter
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -65,11 +73,13 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	/**
 	 * Reagiert auf Änderung der Auswahl eines Lagers in der Baumstruktur der
 	 * Oberfläche
+	 * 
+	 * @author Dominik Klüter
 	 */
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		if (gui.isCardUebersichtAktiv())
-			gui.showLagerbuchungen(((Lager) e.getPath().getLastPathComponent()).getBuchungen());
+			gui.showLagerbuchungen((Lager) e.getPath().getLastPathComponent());
 		else if (gui.isCardNeueLieferungAktiv() && null != gui.getAusgewaehlterKnoten() && gui.getAusgewaehlterKnoten().isLeaf())
 			gui.showLagerFuerBuchung(gui.getAusgewaehlterKnoten().getName());
 	}
@@ -77,6 +87,8 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	/**
 	 * Reagiert auf das Anklicken eines Tabelleneintrags in der
 	 * Lieferungsübersicht oder auf das Anklicken von Textfeldern.
+	 * 
+	 * @author Philo Könneker
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -85,7 +97,6 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 			int selectedRow = tbl_lieferungsUebersicht.getSelectedRow();
 			if (selectedRow == -1) // Keine Zeile ausgewählt
 				return;
-
 			// Wert (Datum) der ausgewählten Zeile und ersten Spalte
 			String value = tbl_lieferungsUebersicht.getValueAt(selectedRow, 0).toString();
 			gui.showTabLieferungsBuchungen(Lieferung.getLieferung(value).getBuchungen());
@@ -95,14 +106,13 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 			// Bei Text: Textfeld wird geleert
 			if (!Tools.isStringANumber(((JTextField) e.getSource()).getText()))
 				((JTextField) e.getSource()).setText("");
-		} catch (NullPointerException npe) {
-			Tools.showMsg("Sie haben soeben einen NullPointer gewonnen!\nUnd niemand weiß warum.");
 		}
 	}
 
 	/**
 	 * Führt die passende Aktion zu dem Button "Neues Lager" aus
 	 * 
+	 * @author Dominik Klüter
 	 * @param e
 	 *            Wird aus actionPerformed(ActionEvent) übergeben
 	 */
@@ -135,15 +145,15 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 						if (name.isEmpty()) {
 							JOptionPane.showMessageDialog(null, "Es ist ein ungültiger Lagername eingegeben worden!", "Ungültige Bezeichnung",
 									JOptionPane.ERROR_MESSAGE);
-						} else if (!(null == menge_str || menge_str.isEmpty())) {
+						} else if (!(null == menge_str || menge_str.isEmpty())) { // wenn keine Menge im Pop-Up angegeben wurde
 							if (Tools.isStringANumber(menge_str)) {
 								menge = Integer.parseInt(menge_str);
 								if (menge < 0) {
-									Tools.showMsg("Es sind keine negativen Bestände möglich!");
+									Tools.showErr("Es sind keine negativen Bestände möglich!");
 									menge_str = ""; // Zuweisung eines leeren Strings, damit die do while Schleife erneut durchläuft
 								}
 							} else {
-								Tools.showMsg("Als Menge sind nur Zahlen erlaubt!");
+								Tools.showErr("Als Menge sind nur Zahlen erlaubt!");
 								menge_str = ""; // Zuweisung eines leeren Strings, damit die do while Schleife erneut durchläuft
 							}
 						}
@@ -172,7 +182,7 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 		}
 		// Falls kein Lager ausgewählt wurde wird ein Fehler ausgegeben
 		else {
-			Tools.showErr("Es ist kein Lager ausgewählt, unter das das neue erstellt werden soll!");
+			Tools.showErr("Es ist kein Lager ausgewählt, unter dem das neue Lager erstellt werden soll!");
 			return;
 		}
 	}
@@ -180,6 +190,8 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	/**
 	 * Führt die passende Aktion zu dem Button "Neue Lieferung" aus
 	 * 
+	 * @author Dominik Klüter
+	 * @author Philo Könneker
 	 * @param e
 	 *            Wird aus actionPerformed(ActionEvent) übergeben
 	 */
@@ -213,6 +225,8 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	/**
 	 * Führt die passende Aktion zu dem Button "Lager umbenennen" aus
 	 * 
+	 * @author Dominik Klüter
+	 * @author Philo Könneker
 	 * @param e
 	 *            Wird aus actionPerformed(ActionEvent) übergeben
 	 */
@@ -253,6 +267,7 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 				// falls auf OK geklickt wurde und...
 			} while (true);
 
+			pane.setVisible(false);
 			if (pane_value == JOptionPane.OK_OPTION) {
 				try {
 					knoten.veraendereName(neuerName);
@@ -279,12 +294,14 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 		// Wert (Datum) der ausgewählten Zeile und ersten Spalte
 		String value = tbl_lieferungsUebersicht.getValueAt(selectedRow, 0).toString();
 		gui.showLieferungsdetails(Lieferung.getLieferung(value).getBuchungen());
-		gui.showLagerbuchungen(knoten.getBuchungen());
+		gui.showLagerbuchungen(knoten);
 	}
 
 	/**
 	 * Macht die zuletzt getätigte Buchung rückgängig und passt die Oberfläche
 	 * anschließend an.
+	 * 
+	 * @author Philo Könneker
 	 */
 	private void undo() {
 		befehlBuchung.undo();
@@ -299,6 +316,8 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	/**
 	 * Wiederholt die zuletzt rückgängig gemachte Buchung und passt die
 	 * Oberfläche anschließend an.
+	 * 
+	 * @auther Philo Könneker
 	 */
 	private void redo() {
 		befehlBuchung.redo();
@@ -315,6 +334,8 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	/**
 	 * Führt die passende Aktion zu dem Button "Jetzt Buchen" aus
 	 * 
+	 * @author Dominik Klüter
+	 * @author Philo Könneker
 	 * @param e
 	 *            Wird aus actionPerformed(ActionEvent) übergeben
 	 */
@@ -372,7 +393,7 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 
 				// Lagerbuchungen aktualisieren, sodass die Tabelle die soeben
 				// getätigte Buchung aufführt
-				gui.showLagerbuchungen(l.getBuchungen());
+				gui.showLagerbuchungen(l);
 			} else {
 				Tools.showErr("Der prozentuale Anteil ist zu hoch!\n\nDer größte mögliche Wert wäre: " + gui.getVerbleibenderProzentanteil() + "%");
 				return;
@@ -388,6 +409,8 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	 * Führt die passende Aktion zu dem Button "Bestätigen" in der Ansicht
 	 * "Neue Lieferung" aus
 	 * 
+	 * @author Philo Könneker
+	 * @author Dominik Klüter
 	 * @param e
 	 *            Wird aus actionPerformed(ActionEvent) übergeben
 	 */
@@ -411,6 +434,7 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	 * Führt die passende Aktion zu dem Button "Abbrechen" in der Ansicht
 	 * "Neue Lieferung" aus
 	 * 
+	 * @author Philo Könneker
 	 * @param e
 	 *            Wird aus actionPerformed(ActionEvent) übergeben
 	 */
@@ -431,6 +455,7 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	 * aus. Alle aktuellen Buchungen, die nicht bestätigt wurden, werden
 	 * abgebrochen und die Lieferungsübersicht wird wieder angezeigt.
 	 * 
+	 * @author Dominik Klüter
 	 * @param e
 	 *            Wird aus actionPerformed(ActionEvent) übergeben
 	 */
@@ -444,10 +469,7 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 							"Sicher?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 			if (value == JOptionPane.YES_OPTION) {
-				lieferungAbbrechen(e); // Aktion entspricht dem Lieferungs
-										// Abbruch
-			} else if (value == JOptionPane.NO_OPTION) {
-				// mach nichts
+				lieferungAbbrechen(e); // Aktion entspricht dem Lieferungs Abbruch
 			}
 		}
 		gui.refreshTree();
@@ -457,6 +479,8 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 	 * Holt sich die Werte für die Berechnung der zu buchenden Menge aus der GUI
 	 * und berechnet die zu verbuchende Menge
 	 * 
+	 * @author Dominik Klüter
+	 * @author Philo Könneker
 	 * @return Die Menge, die bei einer Buchung verbucht werden muss
 	 */
 	private int getBuchungsMenge() {

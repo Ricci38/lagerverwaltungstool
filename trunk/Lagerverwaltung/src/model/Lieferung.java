@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @version 1.1.0
+ * @author Philo Könneker
+ *
+ */
 public class Lieferung {
 	private final Date lieferungsDatum;
 	private final List<Buchung> buchungen;
