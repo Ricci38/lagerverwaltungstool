@@ -14,6 +14,8 @@ import controller.GUI_handler;
 import controller.befehle.IBuchungBefehl;
 
 /**
+ * Die Lagerverwaltung von Dominik Klüter und Philo Könneker.
+ * 
  * @version 1.1.0
  * @author Dominik Klüter
  * 
