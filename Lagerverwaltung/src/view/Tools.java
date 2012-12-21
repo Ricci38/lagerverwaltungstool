@@ -9,9 +9,12 @@ import java.awt.Insets;
 import javax.swing.JOptionPane;
 
 /**
+ * Stellt verschiedene Methoden zur Verfügung, die in verschiedenen Klassen zum
+ * Einsatz kommen können.
+ * 
  * @version 1.1.0
  * @author Philo Könneker
- *
+ * 
  */
 public class Tools {
 
@@ -20,7 +23,9 @@ public class Tools {
 	/**
 	 * Fügt einem Container mit GridBagLayout eine neue Komponente hinzu.
 	 * 
-	 * Diese Methode wurde in Anlehnung an Hißmann, M. (2012), Vorlesungsunterlagen erstellt.
+	 * Diese Methode wurde in Anlehnung an Hißmann, M. (2012),
+	 * Vorlesungsunterlagen erstellt.
+	 * 
 	 * @author Hißmann
 	 * 
 	 * @param cont

@@ -26,6 +26,9 @@ import controller.befehle.impl.LieferungBefehlImpl;
 import exception.LagerverwaltungsException;
 
 /**
+ * Diese Klasse kümmert sich um alle Aktionen, die zur Laufzeit auf der
+ * Oberfläche getätigt werden.
+ * 
  * @version 1.1.0
  * @author Dominik Klüter
  * @author Philo Könneker

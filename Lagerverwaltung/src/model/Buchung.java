@@ -5,9 +5,17 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * Stellt eine Buchung mit einer Buchungsmenge, dem prozentualen Anteil der
+ * Gesamtmenge, einer eindeutigen Identifikationsnummer, dem Buchungsdatum, und
+ * dem Lager, auf dem die jeweilige Buchung ausgeführt worden ist. Des Weiteren
+ * enthält diese Klasse eine Liste, die zur Laufzeit Buchungen enthält, die
+ * gerade in der Übersicht "Neue Lieferung" erstellt wurden, aber die Lieferung
+ * als Ganzes noch nicht bestätigt und abgeschlossen worden ist.
+ * 
+ * 
  * @version 1.1.0
  * @author Philo Könneker
- *
+ * 
  */
 public class Buchung {
 

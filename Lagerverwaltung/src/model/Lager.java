@@ -8,9 +8,13 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import exception.LagerverwaltungsException;
 
 /**
+ * Stellt ein Lager mit einem Namen, gegebenfalls einem Bestand und gegebenfalls
+ * untergeordneten Lagern (Blättern) dar. Des Weiteren enthält diese Klasse das
+ * Wurzelelement der Lagerstruktur und eine Liste aller vergebenen Lagernamen.
+ * 
  * @version 1.1.0
  * @author Dominik Klüter
- *
+ * 
  */
 public class Lager extends DefaultMutableTreeNode {
 
@@ -63,17 +67,18 @@ public class Lager extends DefaultMutableTreeNode {
 
 		return blatt;
 	}
-	
+
 	/**
 	 * Fügt eine neue Buchung der Liste der Buchungen dieses Lagers hinzu.
 	 * 
-	 * @param b Die hinzuzufügende Buchung
+	 * @param b
+	 *            Die hinzuzufügende Buchung
 	 * @return true, wenn die Buchung erfolgreich hinzugefügt wurde.
 	 */
 	public boolean addBuchung(Buchung b) {
 		return buchungen.add(b);
 	}
-	
+
 	/**
 	 * Überprüfung, ob der Lagername bereits vorgekommen ist
 	 * 
@@ -195,7 +200,9 @@ public class Lager extends DefaultMutableTreeNode {
 	 * Setzt den Bestand eines Lagers, insofern das Lager einen Bestand haben
 	 * darf und die übergebene Menge größer oder gleich 0 ist.
 	 * 
-	 * Wird nicht mehr verwendet - stattdessen wird die Methode veraenderBestand(int) verwendet
+	 * Wird nicht mehr verwendet - stattdessen wird die Methode
+	 * veraenderBestand(int) verwendet
+	 * 
 	 * @see veraenderBestand(int)
 	 * 
 	 * @deprecated since Version 1.1.0

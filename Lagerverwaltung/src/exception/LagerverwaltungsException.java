@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Eigene Exception, die bei Fehlern, die während der Laufzeit entstehen,
+ * geworfen und vom Aufrufer verarbeitet wird.
+ * 
  * @version 1.1.0
  * @author Philo Könneker
  * 
