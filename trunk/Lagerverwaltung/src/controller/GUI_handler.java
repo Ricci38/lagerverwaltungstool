@@ -205,8 +205,7 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 			if (value == JOptionPane.YES_OPTION) {
-				lieferungAbbrechen(e); // Aktion entspricht dem Lieferungs
-										// Abbruch
+				lieferungAbbrechen(e); // Aktion entspricht dem Abbruch einer Lieferung
 			} else if (value == JOptionPane.NO_OPTION) {
 				return;
 			}
@@ -349,23 +348,22 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 		try {
 			menge = getBuchungsMenge();
 		} catch (LagerverwaltungsException ex) {
-			Tools.showErr(ex);
+			Tools.showErr(ex); // Bei fehlerhafter Eingabe
 			return;
 		}
 		if (menge != -1) {
 			gesamtMenge = Integer.parseInt(gui.getGesamtmenge());
-			if (gui.getVerbleibendeMenge() == -1)
+			if (gui.getVerbleibendeMenge() == -1) // Die -1 steht dafür, dass noch keine Buchung getätigt wurde.
 				gui.setVerbleibendeMenge(gesamtMenge);
 
-			if (gui.getVerbleibenderProzentanteil() == -1)
+			if (gui.getVerbleibenderProzentanteil() == -1) // Die -1 steht dafür, dass noch keine Buchung getätigt wurde.
 				gui.setVerbleibenderProzentanteil(100);
 
 			restMenge = gui.getVerbleibendeMenge() - menge;
 			restProzent = gui.getVerbleibenderProzentanteil() - Integer.parseInt(gui.getProzentualerAnteil());
 
 			if (restMenge >= 0) {
-				// Falls weniger als 1 % der Restmenge verbleiben, wird die
-				// Restmenge der aktuellen Buchung hinzugefügt
+				// Falls weniger als 1 % der Restmenge verbleiben, wird die Restmenge der aktuellen Buchung hinzugefügt
 				if (restProzent < 1 && restMenge > 0) {
 					Tools.showMsg("Die Restmenge von " + (gui.getVerbleibendeMenge() - menge) + " wurde zur letzten Buchungsmenge hinzugefügt.");
 					menge = gui.getVerbleibendeMenge();
@@ -376,7 +374,7 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 				try {
 					diff = befehlBuchung.execute(l, menge, new Date(), Integer.parseInt(gui.getProzentualerAnteil()));
 				} catch (LagerverwaltungsException ex) {
-					Tools.showErr(ex);
+					Tools.showErr(ex); // Falls versucht wurde z.B. zu viel von einem Lager abzubuchen
 					return;
 				}
 				restMenge += diff;
@@ -394,8 +392,7 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 					gui.enableAlleBuchungenBestaetigen();
 				}
 
-				// Lagerbuchungen aktualisieren, sodass die Tabelle die soeben
-				// getätigte Buchung aufführt
+				// Lagerbuchungen aktualisieren, sodass die Tabelle die soeben getätigte Buchung aufführt
 				gui.showLagerbuchungen(l);
 			} else {
 				Tools.showErr("Der prozentuale Anteil ist zu hoch!\n\nDer größte mögliche Wert wäre: " + gui.getVerbleibenderProzentanteil() + "%");
@@ -475,7 +472,7 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 				lieferungAbbrechen(e); // Aktion entspricht dem Lieferungs Abbruch
 			}
 		}
-		gui.refreshTree();
+		gui.refreshTree(); // Baum neu aufbauen
 	}
 
 	/**
@@ -493,6 +490,7 @@ public class GUI_handler extends MouseAdapter implements ActionListener, TreeSel
 		prozentualerAnteil_str = gui.getProzentualerAnteil();
 		List<String> result = new ArrayList<String>();
 
+		// Falls die eingegebenen Zahlen in den Feldern "Gesamtmenge" und "prozentualer Anteil" zu groß für einen Integer sind
 		if ((gesamtmenge_str.matches("\\d+") && !Tools.isStringANumber(gesamtmenge_str))
 				|| (prozentualerAnteil_str.matches("\\d+") && !Tools.isStringANumber(prozentualerAnteil_str))) {
 			result.add("Erlaubter Zahlenraum: 1 bis " + Integer.MAX_VALUE);

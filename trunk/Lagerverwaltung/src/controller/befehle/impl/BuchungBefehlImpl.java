@@ -31,7 +31,7 @@ public class BuchungBefehlImpl implements IBuchungBefehl {
 	public int execute(Lager l, int menge, Date d, int prozent) {
 		Buchung b;
 		int diff = l.veraenderBestand(menge);
-		if (diff == menge)
+		if (diff == menge) // Falls die zurückgegebene Differnz mit der Buchungsmenge identisch ist, wird keine Buchung ausgeführt
 			return diff;
 		l.addBuchung(b = new Buchung(menge + diff, d, l, prozent + ((diff > 0) ? (int) (menge / (float) prozent) : 0)));
 		buchungsStackUndo.push(b);

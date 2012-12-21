@@ -30,7 +30,8 @@ public class Lager extends DefaultMutableTreeNode {
 	private static final long serialVersionUID = -6664495404957376450L;
 
 	/**
-	 * Erstellt ein neues Lager
+	 * Erstellt ein neues Lager und fügt den Namen des neuen Lagers der Liste
+	 * aller Lagernamen hinzu
 	 * 
 	 * @param bez
 	 *            Der Name des Lagers
@@ -59,9 +60,7 @@ public class Lager extends DefaultMutableTreeNode {
 	public Lager addTreeElement(String bez) {
 		blatt = new Lager(bez);
 		this.add(blatt);
-		this.isBestandHaltend = false; // übergeordneter Knoten darf keinen Bestand zeigen - falls diese Methode an einem Blatt aufgerufen wurde ist
-										// dieses ebenfalls nicht mehr fähig
-										// einen Bestand anzuzeigen
+		this.isBestandHaltend = false; // übergeordneter Knoten darf keinen Bestand zeigen - falls diese Methode an einem Blatt aufgerufen wurde, ist dieses ebenfalls nicht mehr fähig einen Bestand zu halten und anzuzeigen
 
 		this.setUserObject(this.name); // übergeordneten Knoten umbenennen, sodass der Bestand nicht mehr angezeigt wird
 
@@ -80,7 +79,7 @@ public class Lager extends DefaultMutableTreeNode {
 	}
 
 	/**
-	 * Überprüfung, ob der Lagername bereits vorgekommen ist
+	 * Überprüfung, ob der Lagername bereits in Verwendung ist
 	 * 
 	 * @param bez
 	 *            Zu überprüfender Name.
@@ -134,8 +133,12 @@ public class Lager extends DefaultMutableTreeNode {
 	 *            Der neue Name.
 	 */
 	public void veraendereName(String name) {
+		if (this.name.equalsIgnoreCase(name))
+			return;
 		if (checkNamen(name)) {
+			namensListe.remove(this.name);
 			this.name = name;
+			namensListe.add(name);
 			this.setUserObject(this.isBestandHaltend ? name + " " + this.bestand : name); // Ändert angezeigten Namen im Baum
 			return;
 		} else {
