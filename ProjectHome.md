@@ -1,0 +1,1 @@
+Dies ist ein Lagerverwaltungstool in Java, welches im Rahmen einer Hausarbeit an der Hochschule Weserbergland entsteht.
